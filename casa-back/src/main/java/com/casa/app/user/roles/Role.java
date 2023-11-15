@@ -1,4 +1,4 @@
-package com.casa.app.user;
+package com.casa.app.user.roles;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

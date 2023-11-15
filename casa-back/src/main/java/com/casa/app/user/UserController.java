@@ -25,7 +25,7 @@ public class UserController {
     @PermitAll
     @PostMapping
     public ResponseEntity<?> create(){
-        User u = userService.createUser();
+        User u = userService.createRegularUser();
         return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
     }
 }
