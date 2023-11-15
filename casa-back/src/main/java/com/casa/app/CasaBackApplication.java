@@ -1,4 +1,4 @@
-package com.casa.casaback;
+package com.casa.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
