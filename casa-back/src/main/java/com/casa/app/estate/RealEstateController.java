@@ -12,13 +12,13 @@ public class RealEstateController {
     @Autowired
     RealEstateService realEstateService;
 
-    @PostMapping
+    @PostMapping("/create")
     public RealEstateDTO create(@RequestBody RealEstateCreateDTO estateDTO) {
         return realEstateService.create(estateDTO);
     }
 
 
-    @GetMapping
+    @GetMapping("/getAllByOwner")
     public List<RealEstateDTO> getAllByOwner() {
         return realEstateService.getAllByOwner();
     }
