@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -37,8 +38,12 @@ public class UnregisteredUserController {
             user = regularUserService.register(dto);
         } catch (NotFoundException e) {
             throw new RuntimeException(e);
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not save file");
         }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity.ok(user);
     }
 
     @PermitAll
