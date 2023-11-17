@@ -9,6 +9,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RealEstatePermissionKey implements Serializable {
-    private long userId;
-    private long realEstateId;
+    private long user;
+    private long realEstate;
 }

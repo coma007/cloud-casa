@@ -17,7 +17,7 @@ public class RealEstatePermissionDTO {
 
     public RealEstatePermissionDTO(RealEstatePermission permission) {
         this.user = permission.getUser();
-        this.realEstate = new RealEstateDTO(permission.getRealEstate(), permission.getUser());
+        this.realEstate = new RealEstateDTO(permission.getRealEstate());
         this.type = permission.getType().name();
     }
 }

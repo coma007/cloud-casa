@@ -4,6 +4,7 @@ import com.casa.app.user.User;
 import com.casa.app.user.roles.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -25,6 +25,4 @@ public class RealEstatePermission {
     private RealEstate realEstate;
 
     private PermissionType type;
-
 }
-

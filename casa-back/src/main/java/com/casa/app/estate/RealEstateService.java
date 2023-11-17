@@ -1,5 +1,7 @@
 package com.casa.app.estate;
 
+import com.casa.app.location.City;
+import com.casa.app.location.LocationService;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
 import com.casa.app.request.RealEstateRequestService;
 import com.casa.app.user.regular_user.RegularUser;
@@ -15,6 +17,8 @@ public class RealEstateService {
     @Autowired
     RegularUserRepository regularUserRepository; // todo change to service
     @Autowired
+    LocationService locationService;
+    @Autowired
     RealEstatePermissionService realEstatePermissionService;
     @Autowired
     RealEstateRequestService realEstateRequestService;
@@ -24,12 +28,14 @@ public class RealEstateService {
         // TODO get user from session
         RegularUser currentUser = regularUserRepository.getById(Long.valueOf(3));
 
-        RealEstate estate = new RealEstate(estateDTO);
+        City city = locationService.getByName(estateDTO.getCity().getName());
+        RealEstate estate = new RealEstate(estateDTO, city);
         estate = realEstateRepository.save(estate);
 
         realEstatePermissionService.createOwnershipPermission(currentUser, estate);
-        realEstateRequestService.createRequest(currentUser, estate);
+        realEstateRequestService.createRequest(estate);
 
-        return new RealEstateDTO(estate, currentUser);
+        return new RealEstateDTO(estate);
     }
+
 }
