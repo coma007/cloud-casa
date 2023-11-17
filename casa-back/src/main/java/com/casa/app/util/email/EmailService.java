@@ -67,7 +67,7 @@ public class EmailService {
     public void sendVerificationEmail(RegularUser user, String url) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
         String toAddress = user.getEmail();
         String fromAddress = getMailProperties().getProperty("mail.user");
-        String senderName = "Shuttle";
+        String senderName = "Casa";
 
 
         String subject = "Please verify your registration";

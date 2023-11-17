@@ -26,34 +26,5 @@ public class RegularUserService {
     @Autowired
     private RegularUserRepository userRepository;
 
-    public RegularUser register(RegularUserDTO dto) throws NotFoundException, IOException {
-        RegularUser regularUser = RegularUserDTO.toModel(dto);
-        MultipartFile multipartFile = dto.getFile();
 
-        regularUser.setActive(false);
-
-        Optional<Role> r = roleRepository.getFirstByName(Roles.regular);
-        if(r.isEmpty()) throw new NotFoundException();
-        regularUser.setRole(r.get());
-
-        regularUser.setImageExtension(getExtension(Objects.requireNonNull(multipartFile.getOriginalFilename())));
-
-        regularUser = userRepository.save(regularUser);
-
-//        TODO move this to init
-        FileUtil.createImagesIfNotExists();
-        File file = new File(FileUtil.imagesDir + multipartFile.getOriginalFilename());
-        try (OutputStream os = new FileOutputStream(file)) {
-            os.write(multipartFile.getBytes());
-        } catch (IOException e) {
-            userRepository.delete(regularUser);
-            throw e;
-        }
-        return regularUser;
-
-    }
-
-    public String getExtension(String filename){
-        return filename.substring(filename.lastIndexOf(".") + 1);
-    }
 }
