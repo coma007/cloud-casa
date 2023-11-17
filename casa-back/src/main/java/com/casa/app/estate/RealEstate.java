@@ -1,6 +1,7 @@
 package com.casa.app.estate;
 
 
+import com.casa.app.location.Address;
 import com.casa.app.permission.real_estate_permission.RealEstatePermission;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
@@ -15,13 +16,14 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RealEstate implements Serializable {
+public class RealEstate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String address;
+    @Embedded
+    private Address address;
     private RealEstateType type;
     private double size;
     private int numberOfFloors;

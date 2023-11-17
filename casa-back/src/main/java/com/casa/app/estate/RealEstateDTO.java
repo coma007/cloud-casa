@@ -1,5 +1,6 @@
 package com.casa.app.estate;
 
+import com.casa.app.location.Address;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
 import com.casa.app.request.RealEstateRequestDTO;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class RealEstateDTO {
 
     private String name;
-    private String address;
+    private Address address;
     private String type;
     private double size;
     private int numberOfFloors;
