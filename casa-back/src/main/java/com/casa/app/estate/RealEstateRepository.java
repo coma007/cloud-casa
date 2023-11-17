@@ -1,4 +1,4 @@
-package com.casa.app.estates;
+package com.casa.app.estate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

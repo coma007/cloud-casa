@@ -1,7 +1,7 @@
-package com.casa.app.estates;
+package com.casa.app.estate;
 
 
-import com.casa.app.estates.request.RealEstateRequest;
+import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

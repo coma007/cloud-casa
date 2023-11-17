@@ -1,4 +1,4 @@
-package com.casa.app.estates.request;
+package com.casa.app.request;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,12 +1,9 @@
-package com.casa.app.estates;
+package com.casa.app.estate;
 
-import com.casa.app.estates.request.RealEstateRequest;
 import com.casa.app.location.City;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.security.Permission;
 
 @Data
 @AllArgsConstructor

@@ -1,6 +1,6 @@
 package com.casa.app.device;
 
-import com.casa.app.estates.RealEstate;
+import com.casa.app.estate.RealEstate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,12 +1,15 @@
-package com.casa.app.estates;
+package com.casa.app.estate;
 
-import com.casa.app.estates.request.RealEstateRequest;
+import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
-import com.casa.app.permission.real_estate_permission.RealEstatePermission;
-import jakarta.persistence.*;
+import com.casa.app.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.security.Permission;
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RealEstateDTO {
 
     private String name;
@@ -16,10 +19,10 @@ public class RealEstateDTO {
     private int numberOfFloors;
     private City city;
     private RealEstateRequest request;
-    private RealEstatePermission owner;
+    private User owner; // TODO change to dto
 
 
-    public RealEstateDTO(RealEstate estate, RealEstatePermission permission) {
+    public RealEstateDTO(RealEstate estate, User user) {
         this.name = estate.getName();
         this.address = estate.getAddress();
         this.type = estate.getType().name();
@@ -27,6 +30,6 @@ public class RealEstateDTO {
         this.numberOfFloors = estate.getNumberOfFloors();
         this.city = estate.getCity();
         this.request = estate.getRequest();
-        this.owner = permission;
+        this.owner = user;
     }
 }
