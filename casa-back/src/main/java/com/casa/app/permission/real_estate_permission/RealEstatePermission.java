@@ -1,6 +1,8 @@
 package com.casa.app.permission.real_estate_permission;
 
+import com.casa.app.estates.RealEstate;
 import com.casa.app.permission.PermissionType;
+import com.casa.app.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +21,5 @@ public class RealEstatePermission {
     private long realEstateId;
 
     private PermissionType type;
+
 }

@@ -30,4 +30,12 @@ public class RealEstate {
     @OneToOne
     private RealEstateRequest request;
 
+    public RealEstate(RealEstateCreateDTO estate) {
+        this.name = estate.getName();
+        this.address = estate.getAddress();
+        this.type = RealEstateType.valueOf(estate.getType().toUpperCase());
+        this.size = estate.getSize();
+        this.numberOfFloors = estate.getNumberOfFloors();
+        this.imageExtension = ""; // TODO setup image extension
+    }
 }

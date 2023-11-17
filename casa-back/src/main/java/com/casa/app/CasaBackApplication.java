@@ -12,7 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class CasaBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CasaBackApplication.class, args);
+			SpringApplication.run(CasaBackApplication.class, args);
 	}
 
 }

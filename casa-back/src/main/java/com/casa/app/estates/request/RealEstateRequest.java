@@ -1,9 +1,7 @@
 package com.casa.app.estates.request;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.casa.app.estates.RealEstate;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +15,16 @@ public class RealEstateRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    private RealEstate realEstate;
+
     private boolean approved;
+
     private String comment;
+
+    public RealEstateRequest(RealEstate estate) {
+        this.realEstate = estate;
+        this.approved = false;
+        this.comment = "";
     }
+}
