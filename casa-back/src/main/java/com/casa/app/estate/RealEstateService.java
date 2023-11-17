@@ -9,6 +9,9 @@ import com.casa.app.user.regular_user.RegularUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class RealEstateService {
 
@@ -36,6 +39,15 @@ public class RealEstateService {
         realEstateRequestService.createRequest(estate);
 
         return new RealEstateDTO(estate);
+    }
+
+    public List<RealEstateDTO> getAllByOwner() {
+
+        // TODO get user from session
+        RegularUser currentUser = regularUserRepository.getById(Long.valueOf(3));
+
+        List<RealEstate> estates = realEstateRepository.getAllByOwnerUser(currentUser);
+        return estates.stream().map(estate->new RealEstateDTO(estate)).collect(Collectors.toList());
     }
 
 }
