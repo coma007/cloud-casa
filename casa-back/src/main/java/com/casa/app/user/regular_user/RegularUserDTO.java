@@ -22,6 +22,7 @@ public class RegularUserDTO {
         user.setFirstName(dto.firstName);
         user.setLastName(dto.lastName);
         user.setUsername(dto.getUsername());
+        user.setPassword(dto.getPassword());
         return user;
     }
 }

@@ -27,4 +27,12 @@ public class UserController {
         return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
     }
 
+//    TODO remove
+    @PermitAll
+    @PutMapping("/{id}")
+    public ResponseEntity<?> gbd(@PathVariable Long id){
+        User u = userService.getById(id);
+        return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
+    }
+
 }

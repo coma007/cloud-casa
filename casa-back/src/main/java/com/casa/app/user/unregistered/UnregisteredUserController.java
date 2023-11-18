@@ -2,12 +2,14 @@ package com.casa.app.user.unregistered;
 
 import com.casa.app.exceptions.InvalidTokenException;
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.user.User;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserDTO;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.user.unregistered.verification_token.VerificationTokenRepository;
 import com.casa.app.util.email.EmailService;
+import com.casa.app.util.email.JWTUtil;
 import jakarta.annotation.security.PermitAll;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +46,13 @@ public class UnregisteredUserController {
     private RegularUserService regularUserService;
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
     private UnregisteredUserService unregisteredUserService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @Value("${server.ip}")
     private String IP;
@@ -103,5 +118,25 @@ public class UnregisteredUserController {
 //            httpHeaders.setLocation(yahoo);
             return new ResponseEntity<>(httpHeaders, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody CredentialsDTO dto){
+        UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
+
+        Authentication auth = null;
+        try {
+            auth = authenticationManager.authenticate(authReq);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.badRequest().body("Wrong credentials");
+        }catch (DisabledException e) {
+            return ResponseEntity.badRequest().body("User is disabled!");
+        }
+
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(auth);
+        long id = ((User) auth.getPrincipal()).getId();
+        String token = jwtUtil.generateToken(id, dto.getUsername(), auth.getAuthorities());
+        return ResponseEntity.ok(token);
     }
 }

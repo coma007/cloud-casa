@@ -13,6 +13,7 @@ import com.casa.app.user.unregistered.verification_token.VerificationToken;
 import com.casa.app.user.unregistered.verification_token.VerificationTokenRepository;
 import com.casa.app.util.email.EmailService;
 import com.casa.app.util.email.FileUtil;
+import com.casa.app.util.email.JWTUtil;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,12 +48,19 @@ public class UnregisteredUserService {
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @Value("${server.ip}")
     private String IP;
     @Value("${server.port}")
     private int PORT;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     public RegularUser register(RegularUserDTO dto) throws NotFoundException, IOException {
+        dto.setPassword(encoder.encode(dto.getPassword()));
         RegularUser regularUser = RegularUserDTO.toModel(dto);
         MultipartFile multipartFile = dto.getFile();
 
@@ -146,8 +154,7 @@ public class UnregisteredUserService {
         }
 
         regularUser.setActive(true);
-//        TODO
-//        regularUser.setJwt(jwtTokenUtil.generateToken(passenger.getId(), passenger.getEmail(), null));
+        regularUser.setJwt(jwtUtil.generateToken(regularUser.getId(), regularUser.getEmail(), null));
         regularUserRepository.save(regularUser);
 
         return true;
