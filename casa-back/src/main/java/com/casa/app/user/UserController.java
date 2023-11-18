@@ -25,15 +25,15 @@ public class UserController {
     @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
-        User u = userService.getById(id);
-        return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
+        UserDTO u = userService.getById(id);
+        return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
 //    TODO remove
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity<?> gbd(@PathVariable Long id){
-        User u = userService.getById(id);
+        UserDTO u = userService.getById(id);
         return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
     }
 

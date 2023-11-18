@@ -4,8 +4,9 @@ import com.casa.app.exceptions.InvalidTokenException;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.user.UserRepository;
 import com.casa.app.user.regular_user.RegularUser;
-import com.casa.app.user.regular_user.RegularUserDTO;
+import com.casa.app.user.regular_user.dtos.NewRegularUserDTO;
 import com.casa.app.user.regular_user.RegularUserRepository;
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import com.casa.app.user.roles.Role;
 import com.casa.app.user.roles.RoleRepository;
 import com.casa.app.user.roles.Roles;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -59,9 +59,9 @@ public class UnregisteredUserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public RegularUser register(RegularUserDTO dto) throws NotFoundException, IOException {
+    public RegularUserDTO register(NewRegularUserDTO dto) throws NotFoundException, IOException {
         dto.setPassword(encoder.encode(dto.getPassword()));
-        RegularUser regularUser = RegularUserDTO.toModel(dto);
+        RegularUser regularUser = NewRegularUserDTO.toModel(dto);
         MultipartFile multipartFile = dto.getFile();
 
         regularUser.setActive(false);
@@ -91,7 +91,7 @@ public class UnregisteredUserService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-        return regularUser;
+        return RegularUserDTO.toDto(regularUser);
 
     }
 

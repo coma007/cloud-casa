@@ -1,5 +1,6 @@
-package com.casa.app.user.regular_user;
+package com.casa.app.user.regular_user.dtos;
 
+import com.casa.app.user.regular_user.RegularUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegularUserDTO {
+public class NewRegularUserDTO {
     public String username;
     public String firstName;
     public String lastName;
@@ -16,7 +17,7 @@ public class RegularUserDTO {
     public String password;
     public MultipartFile file;
 
-    public static RegularUser toModel(RegularUserDTO dto){
+    public static RegularUser toModel(NewRegularUserDTO dto){
         RegularUser user = new RegularUser();
         user.setEmail(dto.email);
         user.setFirstName(dto.firstName);

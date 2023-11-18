@@ -4,14 +4,12 @@ import com.casa.app.exceptions.InvalidTokenException;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.user.User;
 import com.casa.app.user.regular_user.RegularUser;
-import com.casa.app.user.regular_user.RegularUserDTO;
-import com.casa.app.user.regular_user.RegularUserRepository;
+import com.casa.app.user.regular_user.dtos.NewRegularUserDTO;
 import com.casa.app.user.regular_user.RegularUserService;
-import com.casa.app.user.unregistered.verification_token.VerificationTokenRepository;
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import com.casa.app.util.email.EmailService;
 import com.casa.app.util.email.JWTUtil;
 import jakarta.annotation.security.PermitAll;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -26,10 +24,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -61,8 +57,8 @@ public class UnregisteredUserController {
 
     @PermitAll
     @RequestMapping(path = "/register", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> register(@ModelAttribute RegularUserDTO dto){
-        RegularUser user = null;
+    public ResponseEntity<?> register(@ModelAttribute NewRegularUserDTO dto){
+        RegularUserDTO user = null;
         try {
             user = unregisteredUserService.register(dto);
         } catch (NotFoundException e) {

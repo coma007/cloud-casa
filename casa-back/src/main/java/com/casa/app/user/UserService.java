@@ -24,8 +24,8 @@ public class UserService {
     @Autowired
     private JWTUtil jwtUtil;
 
-    public User getById(Long id){
-        return userRepository.getReferenceById(id);
+    public UserDTO getById(Long id){
+        return UserDTO.toDto(userRepository.getReferenceById(id));
     }
     public User getUserByToken(String token){
         String username = jwtUtil.getUsernameFromToken(token);
