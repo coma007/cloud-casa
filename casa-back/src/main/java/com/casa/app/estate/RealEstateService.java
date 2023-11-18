@@ -36,7 +36,7 @@ public class RealEstateService {
         estate = realEstateRepository.save(estate);
 
         realEstatePermissionService.createOwnershipPermission(currentUser, estate);
-        realEstateRequestService.createRequest(estate);
+        realEstateRequestService.create(estate);
 
         return new RealEstateDTO(estate);
     }
