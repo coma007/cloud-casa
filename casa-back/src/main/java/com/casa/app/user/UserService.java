@@ -4,6 +4,7 @@ import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.roles.Role;
 import com.casa.app.user.roles.RoleRepository;
+import com.casa.app.util.email.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,14 @@ public class UserService {
     @Autowired
     public RoleRepository roleRepository;
 
-    public User getById(Long id){
-        return userRepository.getReferenceById(id);
-    }
+    @Autowired
+    private JWTUtil jwtUtil;
 
-    public RegularUser createRegularUser(){
-        Optional<Role> r = roleRepository.getFirstByName("admin");
-        return regularUserRepository.save(new RegularUser(0L, "asd", "asd", r.get(), "asd", "Asd", "asd", true, "asd"));
+    public UserDTO getById(Long id){
+        return UserDTO.toDto(userRepository.getReferenceById(id));
+    }
+    public User getUserByToken(String token){
+        String username = jwtUtil.getUsernameFromToken(token);
+        return userRepository.getFirstByUsername(username);
     }
 }

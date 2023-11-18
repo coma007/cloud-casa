@@ -1,11 +1,18 @@
 package com.casa.app.user;
 
+import com.casa.app.user.regular_user.RegularUser;
+import com.casa.app.user.roles.Role;
+import com.casa.app.util.email.EmailService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 //@CrossOrigin
 @RestController
@@ -18,14 +25,16 @@ public class UserController {
     @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
-        User u = userService.getById(id);
+        UserDTO u = userService.getById(id);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+//    TODO remove
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
+    public ResponseEntity<?> gbd(@PathVariable Long id){
+        UserDTO u = userService.getById(id);
         return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
     }
 
-    @PermitAll
-    @PostMapping
-    public ResponseEntity<?> create(){
-        User u = userService.createRegularUser();
-        return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);
-    }
 }

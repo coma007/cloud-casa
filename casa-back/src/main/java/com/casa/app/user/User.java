@@ -28,6 +28,8 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.EAGER)
     private Role role;
 
+    private String jwt;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(role);
