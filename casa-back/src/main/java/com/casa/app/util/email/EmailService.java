@@ -4,6 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
 
+import com.casa.app.estate.RealEstate;
+import com.casa.app.estate.RealEstateDTO;
+import com.casa.app.request.RealEstateRequest;
+import com.casa.app.request.RealEstateRequestDTO;
 import com.casa.app.user.regular_user.RegularUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,6 +83,28 @@ public class EmailService {
 
         content = content.replace("[[name]]", user.getFirstName());
         content = content.replace("[[URL]]", url);
+
+        Session session = getSession();
+        sendEmail(session, toAddress, subject, content);
+    }
+
+    public void sendNotificationEmail(RealEstateRequest request) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
+        String toAddress = request.getRealEstate().getOwner().getUser().getEmail();
+        String fromAddress = getMailProperties().getProperty("mail.user");
+        String senderName = "Casa";
+
+        String subject = "Real Estate Notification";
+        String content = "Dear [[name]],<br>"
+                + "Your request for real estate registration <b>[[estate]]</b> has been processed.<br>"
+                + "<b>Current status</b>: [[status]] <br>"
+                + "<b>Comment</b>: [[comment]] <br>"
+                + "Thank you,<br>"
+                + "Casa";
+
+        content = content.replace("[[name]]", request.getRealEstate().getOwner().getUser().getFirstName());
+        content = content.replace("[[estate]]", request.getRealEstate().getName());
+        content = content.replace("[[status]]", request.isApproved() ? "approved" : "declined");
+        content = content.replace("[[comment]]", request.getComment());
 
         Session session = getSession();
         sendEmail(session, toAddress, subject, content);

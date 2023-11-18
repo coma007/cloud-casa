@@ -1,6 +1,8 @@
 package com.casa.app.estate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +15,13 @@ public class RealEstateController {
     RealEstateService realEstateService;
 
     @PostMapping("/create")
-    public RealEstateDTO create(@RequestBody RealEstateCreateDTO estateDTO) {
-        return realEstateService.create(estateDTO);
+    public ResponseEntity<RealEstateDTO> create(@RequestBody RealEstateCreateDTO estateDTO) {
+        return new ResponseEntity<>(realEstateService.create(estateDTO), HttpStatus.OK);
     }
 
 
     @GetMapping("/getAllByOwner")
-    public List<RealEstateDTO> getAllByOwner() {
-        return realEstateService.getAllByOwner();
+    public ResponseEntity<List<RealEstateDTO>> getAllByOwner() {
+        return new ResponseEntity<>(realEstateService.getAllByOwner(), HttpStatus.OK);
     }
 }
