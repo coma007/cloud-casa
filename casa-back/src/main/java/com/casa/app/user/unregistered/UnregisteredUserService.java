@@ -87,8 +87,8 @@ public class UnregisteredUserService {
         }
 
         try {
-            emailService.sendVerificationEmail(regularUser, "http://" + IP + ":" + PORT + "/api/verify?token=" + token.getToken());
-        } catch (MessagingException e) {
+                emailService.sendVerificationEmail(regularUser, "http://" + IP + ":" + PORT + "/api/verify?token=" + token.getToken());
+            } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
         return RegularUserDTO.toDto(regularUser);

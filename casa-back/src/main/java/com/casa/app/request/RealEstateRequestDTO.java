@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 public class RealEstateRequestDTO {
 
+    private Long id;
     private boolean approved;
     private String comment;
 
     public RealEstateRequestDTO(RealEstateRequest request) {
+        this.id = request.getId();
         this.approved = request.isApproved();
         this.comment = request.getComment();
     }

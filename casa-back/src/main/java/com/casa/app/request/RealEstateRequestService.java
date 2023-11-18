@@ -25,4 +25,10 @@ public class RealEstateRequestService {
         return new RealEstateRequestDTO(request);
     }
 
+    public void manageRequest(RealEstateRequestDTO requestDTO) {
+        RealEstateRequest request = realEstateRequestRepository.getById(requestDTO.getId());
+        request.setApproved(requestDTO.isApproved());
+        request.setComment(requestDTO.getComment());
+        realEstateRequestRepository.save(request);
+    }
 }
