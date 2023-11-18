@@ -31,7 +31,7 @@ public class UserController {
 
 //    TODO remove
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('admin')")
+    @PreAuthorize("hasAnyAuthority('super admin')")
     public ResponseEntity<?> gbd(@PathVariable Long id){
         UserDTO u = userService.getById(id);
         return new ResponseEntity<>(u.getUsername(), HttpStatus.OK);

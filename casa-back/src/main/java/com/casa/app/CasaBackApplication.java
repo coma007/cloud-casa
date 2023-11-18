@@ -18,7 +18,7 @@ public class CasaBackApplication {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
-		FileUtil.createImagesIfNotExists();
+		FileUtil.createIfNotExists(FileUtil.imagesDir);
 	}
 
 }
