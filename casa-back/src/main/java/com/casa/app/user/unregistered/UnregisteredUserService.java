@@ -78,9 +78,7 @@ public class UnregisteredUserService {
         regularUser = userRepository.save(regularUser);
         verificationTokenRepository.save(token);
 
-//        TODO move this to init
-        FileUtil.createImagesIfNotExists();
-        File file = new File(FileUtil.imagesDir + multipartFile.getOriginalFilename());
+        File file = new File(FileUtil.imagesDir + regularUser.getId().toString() + "." + regularUser.getImageExtension());
         try (OutputStream os = new FileOutputStream(file)) {
             os.write(multipartFile.getBytes());
         } catch (IOException e) {
@@ -99,20 +97,6 @@ public class UnregisteredUserService {
 
     public String getExtension(String filename){
         return filename.substring(filename.lastIndexOf(".") + 1);
-    }
-
-
-    private RegularUser createNewRegularUser(RegularUserDTO userDTO) throws NotFoundException {
-        RegularUser newPassenger = RegularUserDTO.toModel(userDTO);
-        Optional<Role> regularUserRole = roleRepository.getFirstByName("regular user");
-        if(regularUserRole.isEmpty()) throw new NotFoundException();
-        newPassenger.setRole(regularUserRole.get());
-
-//        TODO
-//        String encodedPassword = passwordEncoder.encode(userDTO.password);
-        String encodedPassword = userDTO.password;
-        newPassenger.setPassword(encodedPassword);
-        return newPassenger;
     }
 
     private VerificationToken generateToken() {
