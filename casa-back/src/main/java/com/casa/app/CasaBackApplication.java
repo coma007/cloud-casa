@@ -13,7 +13,7 @@ import org.springframework.context.event.EventListener;
 public class CasaBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CasaBackApplication.class, args);
+			SpringApplication.run(CasaBackApplication.class, args);
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
