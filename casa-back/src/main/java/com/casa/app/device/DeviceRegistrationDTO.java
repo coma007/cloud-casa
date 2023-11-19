@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceRegistrationDTO<T extends DeviceDTO> {
+public class DeviceRegistrationDTO {
     private String type;
-    private T deviceDTO;
+    private Object device;
 }

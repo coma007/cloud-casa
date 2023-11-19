@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import java.util.List;
 
 
 @Entity
@@ -18,5 +22,6 @@ import lombok.NoArgsConstructor;
 public class AirConditioning extends Device {
     private int minTemperature;
     private int maxTemperature;
-    private AirConditioningMode[] supportedModes;
+
+    private List<AirConditioningMode> supportedModes;
 }

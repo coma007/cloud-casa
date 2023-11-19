@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 @Data
@@ -23,6 +25,7 @@ public class Device {
     @ManyToOne
     private RealEstate realEstate;
 
+    @Cascade(CascadeType.ALL)
     @OneToOne
     private ConnectionCredentials credentials;
 }
