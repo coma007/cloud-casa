@@ -28,13 +28,13 @@ export const ApiService = {
                 data: response.data,
                 status: response.status,
             };
-        } catch (error: any) {
+        } catch (error) {
             return Promise.reject(handleRequestError(error));
         }
     },
 };
 
-function handleRequestError(error: AxiosError): ServiceError {
+function handleRequestError(error : any): ServiceError {
     if (axios.isAxiosError(error)) {
         if (error.response) {
             return {
@@ -49,4 +49,3 @@ function handleRequestError(error: AxiosError): ServiceError {
     }
     return { message: error.message };
 }
-

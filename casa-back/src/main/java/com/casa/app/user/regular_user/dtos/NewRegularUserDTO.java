@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NewRegularUserDTO {
-    public String username;
     public String firstName;
     public String lastName;
     public String email;
@@ -19,10 +18,9 @@ public class NewRegularUserDTO {
 
     public static RegularUser toModel(NewRegularUserDTO dto){
         RegularUser user = new RegularUser();
-        user.setEmail(dto.email);
         user.setFirstName(dto.firstName);
         user.setLastName(dto.lastName);
-        user.setUsername(dto.getUsername());
+        user.setUsername(dto.getEmail());
         user.setPassword(dto.getPassword());
         return user;
     }

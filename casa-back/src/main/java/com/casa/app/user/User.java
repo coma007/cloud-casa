@@ -25,7 +25,7 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
 
     private String jwt;
