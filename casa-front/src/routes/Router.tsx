@@ -11,12 +11,13 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route element={<NonAuthGuard />}>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
+           
                     <Route index element={<EstateOverview />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
                 </Route>
                 <Route element={<AuthGuard />}>
+                <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                     {/* <Route index element={<EstateOverview />} /> */}
                 </Route>
             </Routes>
