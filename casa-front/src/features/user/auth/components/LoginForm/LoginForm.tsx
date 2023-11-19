@@ -58,7 +58,7 @@ const LoginForm = () => {
     <Formik
        initialValues={{
          password: '',
-         email: '',
+         username: '',
          token: '',
        }}
        validationSchema={schema}
@@ -68,11 +68,11 @@ const LoginForm = () => {
        {({ errors, touched, setFieldValue, validateForm, isValid, handleSubmit }) => (
 
           <Form className={LoginFormCSS.form}> 
-            <Field name="username" component={InputField} className={LoginFormCSS.input} usage="Email" value={username} onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+            <Field name="username" component={InputField} className={LoginFormCSS.input} usage="Username" value={username} onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
                     setUsername(e.target.value);
-                    setFieldValue("email", e.target.value);
+                    setFieldValue("username", e.target.value);
                   }}/>
-            <ErrorMsg val={errors["email"]} />
+            <ErrorMsg val={errors["username"]} />
 
             <Field name="password" component={InputField} className={LoginFormCSS.input} usage="Password" value={password} onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
                     setPassword(e.target.value);
