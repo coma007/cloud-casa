@@ -1,6 +1,6 @@
-package com.casa.app.user;
+package com.casa.app.user.dtos;
 
-import com.casa.app.user.regular_user.RegularUser;
+import com.casa.app.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

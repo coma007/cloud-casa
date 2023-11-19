@@ -15,6 +15,7 @@ import com.casa.app.user.unregistered.verification_token.VerificationTokenReposi
 import com.casa.app.util.email.EmailService;
 import com.casa.app.util.email.FileUtil;
 import com.casa.app.util.email.JWTUtil;
+import com.casa.app.util.email.Random;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,20 +103,11 @@ public class UnregisteredUserService {
     private VerificationToken generateToken() {
         VerificationToken token = new VerificationToken();
 
-        String randomCode = makeRandomString(64);
+        String randomCode = Random.makeRandomString(128);
         token.setToken(randomCode);
 
         return token;
 
-    }
-
-    private String makeRandomString(int i) {
-        SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[128];
-        random.nextBytes(bytes);
-        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
-        String token = encoder.encodeToString(bytes);
-        return token;
     }
 
     public boolean verify(String verificationCode) throws InvalidTokenException, NotFoundException {

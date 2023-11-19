@@ -6,8 +6,11 @@ public class FileUtil {
     public static final String imagesDir =
             "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "static" + File.separator + "images" + File.separator;
 
-    public static void createImagesIfNotExists(){
-        File directory = new File(imagesDir);
+    public static final String pwdDir =
+            "src" + File.separator + "main" + File.separator + "resources"+ File.separator + "pwd" + File.separator ;
+
+    public static void createIfNotExists(String dir){
+        File directory = new File(dir);
         if (! directory.exists()){
             directory.mkdir();
         }
