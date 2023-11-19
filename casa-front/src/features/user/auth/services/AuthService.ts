@@ -1,7 +1,7 @@
 
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { Credentials } from "../types/User";
+import { Credentials, UserRegister } from "../types/User";
 import { LOGIN, REGISTER } from "../../../../api";
 
 export const AuthService = {
@@ -12,9 +12,13 @@ export const AuthService = {
     return response.data;
   },
 
-  register: async (user: Credentials): Promise<string> => {
+  register: async (user: UserRegister): Promise<string> => {
     let url = REGISTER();
-    let response = await axios.post(url, user);
+    let response = await axios.post(url, user, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
 

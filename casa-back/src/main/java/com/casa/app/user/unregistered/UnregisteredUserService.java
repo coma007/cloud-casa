@@ -130,7 +130,7 @@ public class UnregisteredUserService {
         }
 
         regularUser.setActive(true);
-        regularUser.setJwt(jwtUtil.generateToken(regularUser.getId(), regularUser.getEmail(), null));
+        regularUser.setJwt(jwtUtil.generateToken(regularUser.getId(), regularUser.getUsername(), null));
         regularUserRepository.save(regularUser);
 
         return true;

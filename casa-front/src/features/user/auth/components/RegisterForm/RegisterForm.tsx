@@ -10,9 +10,13 @@ import { AuthService } from '../../services/AuthService';
 
 const RegisterForm = () => {
 
-  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  let fileRef = useRef<HTMLInputElement>(null);
 
   const passwordValidator = yup.string().min(8, "password is too short")
     .matches(/[a-z]+/, "password needs to contain lowercase letter")
@@ -20,19 +24,67 @@ const RegisterForm = () => {
     .matches(/[0-9]+/, "password needs to contain number letter")
     .required();
 
+    const fileSchema = yup.object().shape({
+      file: yup.mixed()
+        .test("is-file-too-big", "File exceeds 100MB", () => {
+          let valid = true;
+          const files = fileRef?.current?.files;
+          if (files) {
+            const fileArr = Array.from(files);
+            fileArr.forEach((file) => {
+              const size = file.size / 1024 / 1024;
+              if (size > 100) {
+                valid = false;
+              }
+            });
+          }
+          return valid;
+        })
+        .test(
+          "is-file-of-correct-type",
+          "File is not of supported type",
+          () => {
+            let valid = true;
+            const files = fileRef?.current?.files;
+            if (files) {
+              const fileArr = Array.from(files);
+              fileArr.forEach((file) => {
+                const type = file.type.split("/")[1];
+                const validTypes = [
+                  "png",
+                  "jpg",
+                  "jpeg"
+                ];
+                if (!validTypes.includes(type)) {
+                  valid = false;
+                }
+              });
+            }
+            return valid;
+          }
+        )
+    })
+
   const schema = yup.object().shape({
-    "username": yup.string().required(),
+    "first name": yup.string().required(),
+    "last name": yup.string().required(),
+    email: yup.string().email().required(),
+    username: yup.string().email().required(),
     password: passwordValidator,
     "confirm password": passwordValidator.oneOf([yup.ref('password')], 'Passwords must match'),
+    "file": fileSchema
   })
+
+
 
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
-      await AuthService.register({ Username: username, Password: password })
+      if(fileRef?.current?.files === null) return;
+      await AuthService.register({ Email: email, Password: password, FirstName: firstName, LastName: lastName, File: fileRef?.current?.files[0]! })
       navigate("/login")
-    } catch (error) {
+    } catch (error: any) {
       alert(error.response.data);
     }
   }
@@ -40,7 +92,9 @@ const RegisterForm = () => {
   return (
     <Formik
       initialValues={{
-        "username": "",
+        "first name": "",
+        "last name": "",
+        email: "",
         password: "",
         "confirm password": "",
       }}
@@ -48,15 +102,29 @@ const RegisterForm = () => {
       validationSchema={schema}
       onSubmit={handleSubmit}
     >
-      {({ errors, touched, setFieldValue, validateForm, isValid }: any) => (
+      {({ errors, touched, setFieldValue, validateForm, isValid }) => (
         <Form>
           <div className={RegisterFormCSS.grid}>
             <div>
-              <Field name="username" component={InputField} className={RegisterFormCSS.inlineInput} usage="Username" value={username} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setUsername(e.target.value);
-                setFieldValue("username", e.target.value);
+              <Field name="first name" component={InputField} className={RegisterFormCSS.inlineInput} usage="First name" value={firstName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setFirstName(e.target.value);
+                setFieldValue("first name", e.target.value);
               }} />
-              <ErrorMsg val={errors["username"]} />
+              <ErrorMsg val={errors["first name"]} />
+            </div>
+            <div>
+              <Field component={InputField} className={`alignRight ${RegisterFormCSS.inlineInput}`} usage="Last name" value={lastName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setLastName(e.target.value);
+                setFieldValue("last name", e.target.value);
+              }} />
+              <ErrorMsg val={errors["last name"]} customClass="alignRight" />
+            </div>
+            <div>
+              <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setEmail(e.target.value);
+                setFieldValue("email", e.target.value);
+              }} />
+              <ErrorMsg val={errors["email"]} />
             </div>
             <div>
               <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +140,8 @@ const RegisterForm = () => {
               }} />
               <ErrorMsg val={errors["confirm password"]} customClass="alignRight" />
             </div>
+            <input name="file" ref={fileRef} id="file-upload" type="file" />
+                    <ErrorMessage name="file" />
           </div>
 
 

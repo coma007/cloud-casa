@@ -10,12 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegularUserDTO {
-    public String username;
     public String firstName;
     public String lastName;
     public String email;
 
     public static RegularUserDTO toDto(RegularUser user){
-        return new RegularUserDTO(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail());
+        return new RegularUserDTO(user.getFirstName(), user.getLastName(), user.getUsername());
     }
 }
