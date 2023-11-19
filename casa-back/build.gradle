@@ -47,6 +47,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'javax.xml.bind:jaxb-api:2.1'
+	implementation "org.springframework.integration:spring-integration-mqtt:6.1.4"
 
 }
 
