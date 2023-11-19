@@ -1,9 +1,9 @@
-import React from 'react'
-
 const EstateOverview = () => {
   return (
-    <div>EstateOverview</div>
-  )
-}
+    <div>
 
-export default EstateOverview
+    </div>
+  );
+};
+
+export default EstateOverview;
