@@ -1,18 +1,12 @@
 package com.casa.app.user;
 
-import com.casa.app.user.regular_user.RegularUser;
-import com.casa.app.user.roles.Role;
-import com.casa.app.util.email.EmailService;
+import com.casa.app.user.dtos.UserDTO;
 import jakarta.annotation.security.PermitAll;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
 
 //@CrossOrigin
 @RestController
