@@ -1,5 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
 import RegisterForm from '../register/RegisterForm';
+import SimpleMap from '../register/Map';
 
 const EstateOverview = () => {
   return (
@@ -12,7 +13,7 @@ const EstateOverview = () => {
           </div>
         </Col>
         <Col md={6}>
-          {/* Add any additional content on the right side if needed */}
+          <SimpleMap></SimpleMap>
         </Col>
       </Row>
     </div>
