@@ -32,7 +32,7 @@ const RegisterForm = () => {
     try {
       await AuthService.register({ Username: username, Password: password })
       navigate("/login")
-    } catch (error: any) {
+    } catch (error) {
       alert(error.response.data);
     }
   }

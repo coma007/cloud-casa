@@ -24,7 +24,7 @@ const LoginForm = () => {
           localStorage.setItem("token", jwt);
           navigate("/")
           
-      } catch (error: any) {
+      } catch (error) {
         if (error.response.status == 403) {
         } else {
           alert(error.response.data);
@@ -48,7 +48,7 @@ const LoginForm = () => {
       // TODO change flow bellow
       localStorage.setItem("token", jwt)
       // navigate("/")
-  } catch (error: any) {
+  } catch (error) {
     alert(error.response.data);
 }
 }
