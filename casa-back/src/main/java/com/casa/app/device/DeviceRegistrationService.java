@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeviceCreationService {
+public class DeviceRegistrationService {
 
     @Autowired
     private RealEstateService realEstateService;
@@ -60,99 +60,99 @@ public class DeviceCreationService {
     @Autowired
     private SolarPanelSystemRepository solarPanelSystemRepository;
 
-    public void createDevice(DeviceRegistrationDTO deviceDTO) {
+    public void registerDevice(DeviceRegistrationDTO deviceDTO) {
         String type = deviceDTO.getType();
         Object device = deviceDTO.getDevice();
         ObjectMapper mapper = new ObjectMapper();
         // Determine the type of device and handle creation accordingly
         switch (type) {
             case "AmbientSensor":
-                createAmbientSensor(mapper.convertValue(device, AmbientSensorDTO.class));
+                registerAmbientSensor(mapper.convertValue(device, AmbientSensorDTO.class));
                 break;
             case "AirConditioning":
-                createAirConditioning(mapper.convertValue(device, AirConditioningDTO.class));
+                registerAirConditioning(mapper.convertValue(device, AirConditioningDTO.class));
                 break;
             case "WashingMachine":
-                createWashingMachine(mapper.convertValue(device, WashingMachineDTO.class));
+                registerWashingMachine(mapper.convertValue(device, WashingMachineDTO.class));
                 break;
             case "Lamp":
-                createLamp(mapper.convertValue(device, LampDTO.class));
+                registerLamp(mapper.convertValue(device, LampDTO.class));
                 break;
             case "SprinklerSystem":
-                createSprinklerSystem(mapper.convertValue(device, SprinklerSystemDTO.class));
+                registerSprinklerSystem(mapper.convertValue(device, SprinklerSystemDTO.class));
                 break;
             case "VehicleGate":
-                createVehicleGate(mapper.convertValue(device, VehicleGateDTO.class));
+                registerVehicleGate(mapper.convertValue(device, VehicleGateDTO.class));
                 break;
             case "SolarPanelSystem":
-                createSolarPanelSystem(mapper.convertValue(device, SolarPanelSystemDTO.class));
+                registerSolarPanelSystem(mapper.convertValue(device, SolarPanelSystemDTO.class));
                 break;
             case "HouseBattery":
-                createHouseBattery(mapper.convertValue(device, HouseBatteryDTO.class));
+                registerHouseBattery(mapper.convertValue(device, HouseBatteryDTO.class));
                 break;
             case "ElectricVehicleCharger":
-                createElectricVehicleCharger(mapper.convertValue(device, ElectricVehicleChargerDTO.class));
+                registerElectricVehicleCharger(mapper.convertValue(device, ElectricVehicleChargerDTO.class));
                 break;
         }
     }
 
-    private void createElectricVehicleCharger(ElectricVehicleChargerDTO device) {
+    private void registerElectricVehicleCharger(ElectricVehicleChargerDTO device) {
         ElectricVehicleCharger newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         electricVehicleChargerRepository.save(newDevice);
     }
 
-    private void createHouseBattery(HouseBatteryDTO device) {
+    private void registerHouseBattery(HouseBatteryDTO device) {
         HouseBattery newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         houseBatteryRepository.save(newDevice);
     }
 
-    private void createSolarPanelSystem(SolarPanelSystemDTO device) {
+    private void registerSolarPanelSystem(SolarPanelSystemDTO device) {
         SolarPanelSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         solarPanelSystemRepository.save(newDevice);
     }
 
-    private void createVehicleGate(VehicleGateDTO device) {
+    private void registerVehicleGate(VehicleGateDTO device) {
         VehicleGate newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         vehicleGateRepository.save(newDevice);
     }
 
-    private void createSprinklerSystem(SprinklerSystemDTO device) {
+    private void registerSprinklerSystem(SprinklerSystemDTO device) {
         SprinklerSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         sprinklerSystemRepository.save(newDevice);
     }
 
-    private void createLamp(LampDTO device) {
+    private void registerLamp(LampDTO device) {
         Lamp newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         lampRepository.save(newDevice);
     }
 
-    private void createWashingMachine(WashingMachineDTO device) {
+    private void registerWashingMachine(WashingMachineDTO device) {
         WashingMachine newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         washingMachineRepository.save(newDevice);
     }
 
-    private void createAirConditioning(AirConditioningDTO device) {
+    private void registerAirConditioning(AirConditioningDTO device) {
         AirConditioning newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
         airConditioningRepository.save(newDevice);
     }
 
-    private void createAmbientSensor(AmbientSensorDTO device) {
+    private void registerAmbientSensor(AmbientSensorDTO device) {
         AmbientSensor newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
