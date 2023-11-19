@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import GoogleMapReact from 'google-map-react';
+import { LocationService } from "./LocationService";
 
 export interface Coordinates {
     lat: number,
     lng: number
 }
 
-export default function SimpleMap() {
+const Map = ({ setAddress }) => {
+
+    const apiKey: string | undefined = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
     const center: Coordinates = {
         lat: 45.2453226422613,
         lng: 19.847816366597577
@@ -20,11 +24,11 @@ export default function SimpleMap() {
 
 
     const handleClick = ({ x, y, lat, lng, event }: any) => {
-        console.log(lat, lng)
         setMarker({
             lat: lat,
             lng: lng,
         });
+        LocationService.getLocation(lat, lng).then((value) => setAddress(value))
     };
 
     useEffect(() => {
@@ -51,7 +55,7 @@ export default function SimpleMap() {
     return (
         <div style={{ height: '70vh', width: '100%' }}>
             <GoogleMapReact
-                // bootstrapURLKeys={{ key: 'YOUR KEY' }}
+                bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={{ lat: center.lat, lng: center.lng }}
                 defaultZoom={16}
                 yesIWantToUseGoogleMapApiInternals
@@ -62,3 +66,5 @@ export default function SimpleMap() {
         </div>
     );
 };
+
+export default Map;

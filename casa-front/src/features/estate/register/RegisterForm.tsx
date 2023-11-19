@@ -1,29 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { RealEstateCreate } from '../RealEstate';
 import { Address } from 'cluster';
 import { City } from '../Location';
+import { EstateService } from '../EstateService';
 
-interface RealEstateCreateFormProps {
-    onSubmit: (formData: RealEstateCreate) => void;
-}
 
-const RegisterForm: React.FC<RealEstateCreateFormProps> = ({ onSubmit }) => {
-    const [formData, setFormData] = useState<RealEstateCreate>({
-        name: '',
-        type: '',
-        size: 0,
-        numberOfFloors: 0,
-        address: {
-            street: '',
-            latitude: 0,
-            longitude: 0,
-        },
-        city: {
-            name: '',
-            country: '',
-        },
-    });
+const RegisterForm = ({ formData, setFormData }) => {
+
 
     const handleInputChange = (
         e: any,
@@ -43,10 +27,9 @@ const RegisterForm: React.FC<RealEstateCreateFormProps> = ({ onSubmit }) => {
         }));
     };
 
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        EstateService.register(formData);
     };
 
     return (
@@ -79,8 +62,8 @@ const RegisterForm: React.FC<RealEstateCreateFormProps> = ({ onSubmit }) => {
                                 required
                             >
                                 <option value="">Select type</option>
-                                <option value="APPARTMENT">Apartment</option>
-                                <option value="HOUSE">House</option>
+                                <option value="APPARTMENT">APPARTMENT</option>
+                                <option value="HOUSE">HOUSE</option>
                             </Form.Control>
                         </Form.Group>
                     </Col>
@@ -120,16 +103,16 @@ const RegisterForm: React.FC<RealEstateCreateFormProps> = ({ onSubmit }) => {
                     <Col>
                         <Form.Group controlId="country">
                             <Form.Label>Country</Form.Label>
-                            {/* Replace options with actual country options */}
                             <Form.Control
                                 as="select"
                                 name="country"
+                                value={formData.city.country}
                                 onChange={(e) => handleInputChange(e, 'address')}
                             >
                                 <option value="">Select country</option>
                                 <option value="Country1">Country1</option>
                                 <option value="Country2">Country2</option>
-                                {/* Add more countries as needed */}
+                                <option value={formData.city.country}>{formData.city.country}</option>
                             </Form.Control>
                         </Form.Group>
                     </Col>
@@ -138,16 +121,16 @@ const RegisterForm: React.FC<RealEstateCreateFormProps> = ({ onSubmit }) => {
                     <Col>
                         <Form.Group controlId="city">
                             <Form.Label>City</Form.Label>
-                            {/* Replace options with actual city options based on selected country */}
                             <Form.Control
                                 as="select"
                                 name="cityName"
+                                value={formData.city.name}
                                 onChange={(e) => handleInputChange(e, 'city')}
                             >
                                 <option value="">Select city</option>
                                 <option value="City1">City1</option>
                                 <option value="City2">City2</option>
-                                {/* Add more cities as needed */}
+                                <option value={formData.city.name}>{formData.city.name}</option>
                             </Form.Control>
                         </Form.Group>
                     </Col>
