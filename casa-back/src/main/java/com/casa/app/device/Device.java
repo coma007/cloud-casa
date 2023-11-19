@@ -10,15 +10,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Device {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     private String name;
     private PowerSupplyType powerSupplyType;
     private double energyConsumption;
-
+    private DeviceStatus status;
     @ManyToOne
     private RealEstate realEstate;
 

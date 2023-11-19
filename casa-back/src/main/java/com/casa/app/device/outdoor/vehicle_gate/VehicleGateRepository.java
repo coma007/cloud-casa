@@ -1,6 +1,6 @@
-package com.casa.app.device.home.air_conditioning;
+package com.casa.app.device.outdoor.vehicle_gate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AirConditioningRepository extends JpaRepository<AirConditioning, Long> {
+public interface VehicleGateRepository extends JpaRepository<VehicleGate, Long> {
 }

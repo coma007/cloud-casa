@@ -1,6 +1,6 @@
-package com.casa.app.device.home.air_conditioning;
+package com.casa.app.device.home.ambient_sensor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AirConditioningRepository extends JpaRepository<AirConditioning, Long> {
+public interface AmbientSensorRepository extends JpaRepository<AmbientSensor, Long> {
 }

@@ -1,6 +1,6 @@
-package com.casa.app.device.home.air_conditioning;
+package com.casa.app.device.large_electric.solar_panel_system;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AirConditioningRepository extends JpaRepository<AirConditioning, Long> {
+public interface SolarPanelSystemRepository extends JpaRepository<SolarPanelSystem, Long> {
 }
