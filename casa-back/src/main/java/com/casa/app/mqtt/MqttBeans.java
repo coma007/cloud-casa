@@ -61,7 +61,7 @@ public class MqttBeans {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
-                if (!topic.equals("serverMessages")) {
+                if (topic.equals("ping")) {
                     deviceStatusService.pingHandler(message.getPayload().toString());
                 }
             }

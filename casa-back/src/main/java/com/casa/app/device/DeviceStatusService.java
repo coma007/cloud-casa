@@ -24,13 +24,26 @@ public class DeviceStatusService {
         System.out.println(message);
     }
 
+    @Scheduled(fixedDelay = 1000*30)
+    private void checkStatus() {
+        for (Device d : deviceRepository.findAll()) {
+            if (d.getStatus() == DeviceStatus.ONLINE) {
+                if ((new Date()).getTime() - d.getLastSeen().getTime() > 30*1000) {
+                    System.out.println("Pobegulja");
+                    d.setStatus(DeviceStatus.OFFLINE);
+                    deviceRepository.save(d);
+                }
+            }
+        }
+    }
+
     @Autowired
     private MqttGateway mqttGateway;
     @Scheduled(fixedDelay = 10000)
     private void sendMessage() {
         for (Device d : deviceRepository.findAll()) {
             if (d.getStatus() == DeviceStatus.ONLINE) {
-                mqttGateway.sendToMqtt("Server message for" + d.getName(), d.getName());
+                mqttGateway.sendToMqtt("Server message for " + d.getName(), d.getName());
             }
         }
     }
