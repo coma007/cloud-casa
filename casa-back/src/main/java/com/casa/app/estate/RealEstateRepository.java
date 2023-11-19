@@ -10,4 +10,5 @@ import java.util.List;
 public interface RealEstateRepository extends JpaRepository<RealEstate, Long> {
 
     List<RealEstate> getAllByOwnerUser(User user);
+    RealEstate getByName(String name);
 }
