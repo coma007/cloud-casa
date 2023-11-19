@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,5 +16,5 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class VehicleGate extends Device {
     private VehicleGateMode currentMode;
-    private String[] allowedVehicles;
+    private List<String> allowedVehicles;
 }

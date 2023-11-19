@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
@@ -16,5 +18,5 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class WashingMachine extends Device {
 
-    public WashingMachineMode[] supportedMods;
+    public List<WashingMachineMode> supportedMods;
 }
