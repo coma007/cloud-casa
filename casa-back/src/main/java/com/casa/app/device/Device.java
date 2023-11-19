@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import java.util.Date;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class Device {
     private PowerSupplyType powerSupplyType;
     private double energyConsumption;
     private DeviceStatus status;
+    private Date lastSeen;
     @ManyToOne
     private RealEstate realEstate;
 

@@ -6,12 +6,4 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MqttService {
-
-    @Autowired
-    private MqttGateway mqttGateway;
-
-    @Scheduled(fixedDelay = 10000)
-    private void sendMessage() {
-        mqttGateway.sendToMqtt("Server message", "serverMessages");
-    }
 }
