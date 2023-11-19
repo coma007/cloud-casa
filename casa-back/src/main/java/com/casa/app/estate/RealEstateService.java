@@ -29,7 +29,7 @@ public class RealEstateService {
     public RealEstateDTO create(RealEstateCreateDTO estateDTO) {
 
         // TODO get user from session
-        RegularUser currentUser = regularUserRepository.getById(Long.valueOf(3));
+        RegularUser currentUser = regularUserRepository.getById(Long.valueOf(2));
 
         City city = locationService.getByName(estateDTO.getCity().getName());
         RealEstate estate = new RealEstate(estateDTO, city);
@@ -50,4 +50,7 @@ public class RealEstateService {
         return estates.stream().map(estate->new RealEstateDTO(estate)).collect(Collectors.toList());
     }
 
+    public RealEstate getByName(String name) {
+        return realEstateRepository.getByName(name);
+    }
 }

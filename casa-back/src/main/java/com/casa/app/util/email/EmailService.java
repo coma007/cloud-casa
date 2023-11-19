@@ -69,7 +69,7 @@ public class EmailService {
 
 
     public void sendVerificationEmail(RegularUser user, String url) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
-        String toAddress = user.getEmail();
+        String toAddress = user.getUsername();
         String fromAddress = getMailProperties().getProperty("mail.user");
         String senderName = "Casa";
 
@@ -89,7 +89,7 @@ public class EmailService {
     }
 
     public void sendNotificationEmail(RealEstateRequest request) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
-        String toAddress = request.getRealEstate().getOwner().getUser().getEmail();
+        String toAddress = request.getRealEstate().getOwner().getUser().getUsername();
         String fromAddress = getMailProperties().getProperty("mail.user");
         String senderName = "Casa";
 
