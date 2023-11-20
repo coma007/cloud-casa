@@ -1,6 +1,7 @@
 import React from 'react';
 import { Address, City } from './Location';
-import { RealEstateRequest } from '../request/RealEstate';
+import { RealEstateRequest } from '../request/RealEstateRequest';
+import { User } from '../user/auth/types/User';
 
 export interface RealEstateCreate {
     name: string;
@@ -20,7 +21,8 @@ export interface RealEstate {
     size: number;
     numberOfFloors: number;
     request: RealEstateRequest;
-    [key: string]: string | number | Address | City | RealEstateRequest;
+    owner: User;
+    [key: string]: string | number | Address | City | RealEstateRequest | User;
 }
 
 

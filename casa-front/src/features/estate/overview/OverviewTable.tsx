@@ -27,7 +27,7 @@ const OverviewTable = ({ items }) => {
                             <td>{item.address?.address}</td>
                             <td>{item.city?.name}</td>
                             <td>{item.city?.country}</td>
-                            <td>{item.request.approved}</td>
+                            <td>{item.request.approved === false && item.request.declined === false ? <>{"in progress"}</> : <>{item.request.approved ? "approved" : "declined"}</>}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -8,7 +8,7 @@ const EstateOverview = () => {
   const [estates, setEstates] = useState<RealEstate[]>();
 
   useEffect(() => {
-    EstateService.getAllByOwner().then((value) => setEstates(value))
+    EstateService.getAllByOwner().then((value) => { setEstates(value); console.log(value) })
   }, [])
 
   return (

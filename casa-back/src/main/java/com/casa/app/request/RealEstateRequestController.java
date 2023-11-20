@@ -1,5 +1,6 @@
 package com.casa.app.request;
 
+import com.casa.app.estate.RealEstateDTO;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -24,13 +25,13 @@ public class RealEstateRequestController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<RealEstateRequestDTO>> getAll(@RequestParam(required = false) Boolean approved) throws MessagingException, UnsupportedEncodingException {
-        List<RealEstateRequestDTO> requests;
+    public ResponseEntity<List<RealEstateDTO>> getAll(@RequestParam(required = false) Boolean approved) throws MessagingException, UnsupportedEncodingException {
+        List<RealEstateDTO> requests;
         if (approved == null) {
-            requests = realEstateRequestService.getAll();
+            requests = realEstateRequestService.getAllRealEstate();
         }
         else {
-            requests = realEstateRequestService.getAll(approved);
+            requests = realEstateRequestService.getAllRealEstate(approved);
         }
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }

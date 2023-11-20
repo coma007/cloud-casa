@@ -4,6 +4,7 @@ import EstateOverview from "../features/estate/overview/EstateOverview";
 import EstateRegisterPage from "../features/estate/register/RegisterPage";
 import LoginPage from "../features/user/auth/pages/LoginPage/LoginPage";
 import RegisterPage from "../features/user/auth/pages/RegisterPage/RegisterPage";
+import RequestOverview from "../features/request/overview/RequestOverview";
 
 const Router = () => {
 
@@ -17,6 +18,7 @@ const Router = () => {
                 <Route element={<AuthGuard />}>
                     <Route index element={<EstateOverview />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
+                    <Route path="/requests" element={<RequestOverview />} />
                     {/* <Route index element={<EstateOverview />} /> */}
                 </Route>
             </Routes>

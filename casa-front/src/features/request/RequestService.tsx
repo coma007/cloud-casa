@@ -1,10 +1,17 @@
-import { REQUEST_GET_ALL } from "../../api";
+import { REQUEST_GET_ALL, REQUEST_MANAGE } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { RealEstateRequest } from "./RealEstate";
+import { RealEstate } from "../estate/RealEstate";
+import { RealEstateRequest } from "./RealEstateRequest";
 
 export const RequestService = {
-    getAllByOwner: async function (): Promise<RealEstateRequest[]> {
-        let response: ServiceResponse<RealEstateRequest[]> = await ApiService.makeRequest('get', REQUEST_GET_ALL());
+    getAll: async function (): Promise<RealEstate[]> {
+        let response: ServiceResponse<RealEstate[]> = await ApiService.makeRequest('get', REQUEST_GET_ALL());
+        return response.data;
+    },
+
+    manage: async function (request: RealEstateRequest): Promise<RealEstateRequest> {
+        console.log(request)
+        let response: ServiceResponse<RealEstateRequest> = await ApiService.makeRequest('patch', REQUEST_MANAGE(), request);
         return response.data;
     },
 }

@@ -19,12 +19,14 @@ public class RealEstateRequest {
     private RealEstate realEstate;
 
     private boolean approved;
+    private boolean declined;
 
     private String comment;
 
     public RealEstateRequest(RealEstate estate) {
         this.realEstate = estate;
         this.approved = false;
+        this.declined = false;
         this.comment = "";
     }
 }
