@@ -8,3 +8,5 @@ export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
 
 export const REQUEST_MANAGE = () => url + "/realEstateRequest/manage";
 export const REQUEST_GET_ALL = () => url + "/realEstateRequest/getAll";
+
+export const DEVICE_REGISTER = () => url + "/device/register"
