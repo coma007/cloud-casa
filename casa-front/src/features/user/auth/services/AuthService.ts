@@ -8,7 +8,11 @@ export const AuthService = {
 
   login: async (credentials: Credentials): Promise<string> => {
     let url = LOGIN();
-    let response = await axios.post(url, credentials);
+    let response = await axios.post(url, {"username": credentials.Username, "password": credentials.Password}, {
+      headers: {
+      "Content-Type": 'application/json',
+      }
+    });
     return response.data;
   },
 

@@ -8,8 +8,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class CasaBackApplication {
 
 	public static void main(String[] args) {

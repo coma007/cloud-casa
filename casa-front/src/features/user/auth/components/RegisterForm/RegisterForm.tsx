@@ -69,10 +69,9 @@ const RegisterForm = () => {
     "first name": yup.string().required(),
     "last name": yup.string().required(),
     email: yup.string().email().required(),
-    username: yup.string().email().required(),
     password: passwordValidator,
     "confirm password": passwordValidator.oneOf([yup.ref('password')], 'Passwords must match'),
-    "file": fileSchema
+    // "file": fileSchema
   })
 
 

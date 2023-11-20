@@ -116,7 +116,7 @@ public class UnregisteredUserController {
         }
     }
 
-    @PostMapping("/login")
+    @RequestMapping(path = "/login", method = POST)
     public ResponseEntity<?> login(@RequestBody CredentialsDTO dto){
         UsernamePasswordAuthenticationToken authReq = new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
 

@@ -25,4 +25,9 @@ public class RegularUser extends User {
         this.active = active;
         this.imageExtension = imageExtension;
     }
+
+    @Override
+    public boolean isEnabled() {
+        return this.active;
+    }
 }
