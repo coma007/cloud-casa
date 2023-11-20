@@ -34,7 +34,8 @@ public class RealEstateService {
 
         RegularUser currentUser = regularUserService.getUserByToken();
 
-        City city = locationService.getByName(estateDTO.getCity().getName());
+        City city = locationService.getByName(estateDTO.getCity());
+
         RealEstate estate = new RealEstate(estateDTO, city);
         estate = realEstateRepository.save(estate);
 

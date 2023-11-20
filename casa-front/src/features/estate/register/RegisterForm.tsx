@@ -6,7 +6,7 @@ import { City } from '../Location';
 import { EstateService } from '../EstateService';
 
 
-const RegisterForm = ({ formData, setFormData }) => {
+const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, setSelectedCity, selectedCountry, setSelectedCountry }) => {
 
 
     const handleInputChange = (
@@ -25,6 +25,13 @@ const RegisterForm = ({ formData, setFormData }) => {
                 }
                 : { [name]: value }),
         }));
+
+        if (nestedKey == "country") {
+            setSelectedCountry(value);
+        }
+        if (nestedKey == "city") {
+            setSelectedCity(value);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -107,13 +114,15 @@ const RegisterForm = ({ formData, setFormData }) => {
                             <Form.Control
                                 as="select"
                                 name="country"
-                                value={formData.city.country}
-                                onChange={(e) => handleInputChange(e, 'address')}
+                                value={selectedCountry  }
+                                onChange={(e) => handleInputChange(e, 'country')}
                             >
                                 <option value="">Select country</option>
-                                <option value="Country1">Country1</option>
-                                <option value="Country2">Country2</option>
-                                <option value={formData.city.country}>{formData.city.country}</option>
+                                {countries.map((country, index) => (
+                                    <option key={index} value={country}>
+                                        {country}
+                                    </option>
+                                ))}
                             </Form.Control>
                         </Form.Group>
                     </Col>
@@ -125,13 +134,15 @@ const RegisterForm = ({ formData, setFormData }) => {
                             <Form.Control
                                 as="select"
                                 name="cityName"
-                                value={formData.city.name}
+                                value={selectedCity}
                                 onChange={(e) => handleInputChange(e, 'city')}
                             >
                                 <option value="">Select city</option>
-                                <option value="City1">City1</option>
-                                <option value="City2">City2</option>
-                                <option value={formData.city.name}>{formData.city.name}</option>
+                                {cities.map((city, index) => (
+                                    <option key={index} value={city}>
+                                        {city}
+                                    </option>
+                                ))}
                             </Form.Control>
                         </Form.Group>
                     </Col>

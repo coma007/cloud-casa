@@ -1,6 +1,7 @@
 package com.casa.app.estate;
 
 import com.casa.app.location.Address;
+import com.casa.app.location.CityDTO;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
 import com.casa.app.request.RealEstateRequestDTO;
@@ -20,7 +21,7 @@ public class RealEstateDTO {
     private String type;
     private double size;
     private int numberOfFloors;
-    private City city;
+    private CityDTO city;
     private RealEstateRequestDTO request;
     private RegularUserDTO owner; // TODO change to dto
 
@@ -31,7 +32,7 @@ public class RealEstateDTO {
         this.type = estate.getType().name();
         this.size = estate.getSize();
         this.numberOfFloors = estate.getNumberOfFloors();
-        this.city = estate.getCity();
+        this.city = new CityDTO(estate.getCity());
         this.request = new RealEstateRequestDTO(estate.getRequest());
         this.owner = RegularUserDTO.toDto(estate.getOwner().getUser());
     }

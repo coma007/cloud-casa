@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ApiService, ServiceResponse } from "../../../api/ApiService";
 import { Address, City } from "../Location";
+import { LOCATION_CITIES, LOCATION_COUNTRIES } from "../../../api";
 
 export const LocationService = {
     getLocation: async function (lat: number, lng: number): Promise<[Address, City]> {
@@ -38,4 +39,14 @@ export const LocationService = {
         }
         return [fullAddress, fullCity];
     },
+
+    getAllCities: async function (country: string): Promise<City[]> {
+        let response: ServiceResponse<City[]> = await ApiService.makeRequest('get', LOCATION_CITIES(country));
+        return response.data;
+    },
+
+    getAllCountries: async function (): Promise<string[]> {
+        let response: ServiceResponse<string[]> = await ApiService.makeRequest('get', LOCATION_COUNTRIES());
+        return response.data;
+    }
 }

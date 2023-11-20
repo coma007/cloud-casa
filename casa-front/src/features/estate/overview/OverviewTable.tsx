@@ -31,7 +31,7 @@ const OverviewTable = ({ items }) => {
                         </tr>
                     ))}
                 </tbody>
-                : <>no items to show</>}
+                : <></>}
         </Table>
     );
 };

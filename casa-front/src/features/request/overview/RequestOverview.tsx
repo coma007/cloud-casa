@@ -13,7 +13,7 @@ const EstateOverview = () => {
 
   return (
     <div>
-      <h1>My Real Estates</h1>
+      <h1>Real Estates Requests Overview</h1>
       <OverviewTable items={estates} />
     </div>
   );
