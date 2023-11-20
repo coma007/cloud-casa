@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-import { RealEstate, RealEstateCreate } from "../RealEstate";
-import OverviewTable from "./OverviewTable";
-import { EstateService } from "../EstateService";
 
 const EstateOverview = () => {
 

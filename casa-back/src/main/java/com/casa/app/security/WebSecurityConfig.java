@@ -42,9 +42,9 @@ public class WebSecurityConfig  {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/login", "/api/register", "/h2-console/**")
-                .requestMatchers(HttpMethod.GET, "/**","/", "/webjars/**", "/*.html", "favicon.ico",
-                        "/**/*.html", "/**/*.css", "/**/*.js", "/h2-console/**");
+        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/login", "/api/register", "/h2-console/**");
+//                .requestMatchers(HttpMethod.GET, "/**", "/", "/webjars/**", "/*.html", "favicon.ico",
+//                        "/**/*.html", "/**/*.css", "/**/*.js", "/h2-console/**");
 
     }
 
