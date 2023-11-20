@@ -3,9 +3,13 @@ package com.casa.app.estate;
 import com.casa.app.location.City;
 import com.casa.app.location.LocationService;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
+import com.casa.app.request.RealEstateRequest;
 import com.casa.app.request.RealEstateRequestService;
+import com.casa.app.user.User;
+import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
+import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,33 +22,31 @@ public class RealEstateService {
     @Autowired
     RealEstateRepository realEstateRepository;
     @Autowired
-    RegularUserRepository regularUserRepository; // todo change to service
+    RegularUserService regularUserService;
     @Autowired
     LocationService locationService;
     @Autowired
-    RealEstatePermissionService realEstatePermissionService;
-    @Autowired
     RealEstateRequestService realEstateRequestService;
+    @Autowired
+    RealEstatePermissionService realEstatePermissionService;
 
     public RealEstateDTO create(RealEstateCreateDTO estateDTO) {
 
-        // TODO get user from session
-        RegularUser currentUser = regularUserRepository.getById(Long.valueOf(2));
+        RegularUser currentUser = regularUserService.getUserByToken();
 
         City city = locationService.getByName(estateDTO.getCity().getName());
         RealEstate estate = new RealEstate(estateDTO, city);
         estate = realEstateRepository.save(estate);
 
+        estate.setRequest(realEstateRequestService.create(estate));
         realEstatePermissionService.createOwnershipPermission(currentUser, estate);
-        realEstateRequestService.create(estate);
 
         return new RealEstateDTO(estate);
     }
 
     public List<RealEstateDTO> getAllByOwner() {
 
-        // TODO get user from session
-        RegularUser currentUser = regularUserRepository.getById(Long.valueOf(3));
+        RegularUser currentUser = regularUserService.getUserByToken();
 
         List<RealEstate> estates = realEstateRepository.getAllByOwnerUser(currentUser);
         return estates.stream().map(estate->new RealEstateDTO(estate)).collect(Collectors.toList());

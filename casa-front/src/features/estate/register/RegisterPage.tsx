@@ -8,7 +8,7 @@ import { RealEstateCreate } from '../RealEstate';
 const RegisterPage = () => {
 
     const [address, setAddress] = useState<[Address, City]>([{
-        street: '',
+        address: '',
         latitude: 0,
         longitude: 0,
     }, {

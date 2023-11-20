@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { RealEstate, RealEstateCreate } from "../RealEstate";
+import { RequestService } from "../RequestService";
+import { RealEstate } from "../../estate/RealEstate";
 import OverviewTable from "./OverviewTable";
-import { EstateService } from "../EstateService";
 
 const EstateOverview = () => {
 
   const [estates, setEstates] = useState<RealEstate[]>();
 
   useEffect(() => {
-    EstateService.getAllByOwner().then((value) => { setEstates(value); console.log(value) })
+    RequestService.getAll().then((value) => { setEstates(value); console.log(value) })
   }, [])
 
   return (

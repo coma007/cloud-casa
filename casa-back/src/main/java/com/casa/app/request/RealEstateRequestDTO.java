@@ -14,11 +14,13 @@ public class RealEstateRequestDTO {
 
     private Long id;
     private boolean approved;
+    private boolean declined;
     private String comment;
 
     public RealEstateRequestDTO(RealEstateRequest request) {
         this.id = request.getId();
         this.approved = request.isApproved();
+        this.declined = request.isDeclined();
         this.comment = request.getComment();
     }
 

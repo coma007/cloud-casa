@@ -1,9 +1,10 @@
+import axios from "axios";
 import { ApiService, ServiceResponse } from "../../../api/ApiService";
 import { Address, City } from "../Location";
 
 export const LocationService = {
     getLocation: async function (lat: number, lng: number): Promise<[Address, City]> {
-        let response: any = await ApiService.makeRequest('get', "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=" + process.env.REACT_APP_GOOGLE_MAPS_GEOCODING_API_KEY + "&sensor=true");
+        let response: any = await axios.get("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&key=" + process.env.REACT_APP_GOOGLE_MAPS_GEOCODING_API_KEY + "&sensor=true", {});
 
         let address_components = response.data.results[0].address_components;
         let country;
@@ -26,7 +27,7 @@ export const LocationService = {
 
         });
         let fullAddress: Address = {
-            street: street + " " + number,
+            address: street + " " + number,
             latitude: lat,
             longitude: lng,
 

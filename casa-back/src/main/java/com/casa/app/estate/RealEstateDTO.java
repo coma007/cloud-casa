@@ -5,6 +5,7 @@ import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
 import com.casa.app.request.RealEstateRequestDTO;
 import com.casa.app.user.User;
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class RealEstateDTO {
     private int numberOfFloors;
     private City city;
     private RealEstateRequestDTO request;
-    private User owner; // TODO change to dto
+    private RegularUserDTO owner; // TODO change to dto
 
 
     public RealEstateDTO(RealEstate estate) {
@@ -32,6 +33,6 @@ public class RealEstateDTO {
         this.numberOfFloors = estate.getNumberOfFloors();
         this.city = estate.getCity();
         this.request = new RealEstateRequestDTO(estate.getRequest());
-        this.owner = estate.getOwner().getUser();
+        this.owner = RegularUserDTO.toDto(estate.getOwner().getUser());
     }
 }

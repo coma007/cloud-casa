@@ -1,7 +1,7 @@
 export interface User {
-    Email: string
-    FirstName: string
-    LastName: string
+    email: string
+    firstName: string
+    lastName: string
 }
 
 export interface Credentials {

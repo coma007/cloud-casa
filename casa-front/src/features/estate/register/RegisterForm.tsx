@@ -29,7 +29,8 @@ const RegisterForm = ({ formData, setFormData }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        EstateService.register(formData);
+        console.log(formData)
+        EstateService.register(formData).then((value) => console.log(value));
     };
 
     return (
@@ -143,7 +144,7 @@ const RegisterForm = ({ formData, setFormData }) => {
                                 type="text"
                                 placeholder="Enter street address"
                                 name="street"
-                                value={formData.address.street}
+                                value={formData.address.address}
                                 onChange={(e) => handleInputChange(e, 'address')}
                                 required
                             />

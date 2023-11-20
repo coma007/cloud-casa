@@ -1,6 +1,6 @@
 import React from 'react';
 export interface Address {
-    street: string;
+    address: string;
     latitude: number;
     longitude: number;
     [key: string]: string | number
