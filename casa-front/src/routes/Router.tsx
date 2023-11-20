@@ -12,19 +12,18 @@ const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/register-device" element={<StepperForm/>}/>
+                <Route path="/register-device" element={<StepperForm />} />
+
+                <Route path="/requests" element={<RequestOverview />} />
                 <Route element={<NonAuthGuard />}>
-<<<<<<< Updated upstream
-=======
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                 </Route>
                 <Route element={<AdminAuthGuard />}>
-                    <Route path="/requests" element={<RequestOverview />} />
+                    {/* <Route path="/requests" element={<RequestOverview />} /> */}
                 </Route>
                 <Route element={<RegularUserAuthGuard />}>
->>>>>>> Stashed changes
-                    <Route index element={<EstateOverview />} />
+                    <Route path="/" element={<EstateOverview />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
                 </Route>
             </Routes>
