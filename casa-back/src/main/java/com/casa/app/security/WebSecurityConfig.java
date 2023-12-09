@@ -42,12 +42,22 @@ public class WebSecurityConfig  {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/api/login", "/api/register", "/h2-console/**");
-//                .requestMatchers(HttpMethod.GET, "/**", "/", "/webjars/**", "/*.html", "favicon.ico",
-//                        "/**/*.html", "/**/*.css", "/**/*.js", "/h2-console/**");
+        return (web) -> web.ignoring()
+                .requestMatchers(HttpMethod.POST, "/api/login", "/api/register",
+                        "/api/device/register", "/api/realEstate/create",
+                        "/h2-console/**")
+                .requestMatchers(HttpMethod.GET,
+                        "/webjars/**",
+                        "/*.html", "favicon.ico",
+//                        "/**/*.html", "/**/*.css", "/**/*.js",
+                        "/h2-console/**",
+                        "/api/realEstateRequest/getAll",
+                        "/api/verify",
+                        "/api/user/*",
+                        "/api/location/getAllCountries", "/api/location/getAllCities/*"
+                        )
+                .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage");
 
     }
-
-
 
 }
