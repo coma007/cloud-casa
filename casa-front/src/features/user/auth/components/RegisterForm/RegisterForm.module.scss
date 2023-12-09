@@ -19,8 +19,16 @@
     column-gap: 20px;
 }
 
+.fullLineInput {
+    display: block;
+    width: calc(200% + 20px);
+}
+
 .grid div{
     width: 100%;
 }
 
+.inline {
+    display: flex;
+}
 
