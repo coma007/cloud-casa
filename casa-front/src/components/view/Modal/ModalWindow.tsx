@@ -1,4 +1,4 @@
-import Button from 'components/forms/Button/Button'
+import Button from '../../forms/Button/Button'
 import React from 'react'
 import Modal from "react-modal"
 import ModalWindowCSS from "./ModalWindow.module.scss"
