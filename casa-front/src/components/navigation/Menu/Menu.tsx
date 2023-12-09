@@ -23,7 +23,7 @@ const Menu = ({admin} : IMenuProps) => {
                     (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Requests overview" tooltip={true} image={undefined} path="/profile" text={'REQUESTS'} />)
                     :
                     (<>
-                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Estates overview" tooltip={true} image={undefined} path="/profile" text={'ESTATES'} />
+                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Estates overview" tooltip={true} image={undefined} path="/real-estate-overview" text={'ESTATES'} />
                         <MenuItem className={MenuCSS.nonMainOption} tooltipText="Devices overview" tooltip={true} image={undefined} path="/logout" text={'DEVICES'} />
                     </>)
                 }
