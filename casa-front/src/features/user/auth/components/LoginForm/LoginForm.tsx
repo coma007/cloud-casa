@@ -47,7 +47,7 @@ const LoginForm = () => {
       const jwt = await AuthService.login({ Username: username, Password: password});
       // TODO change flow bellow
       localStorage.setItem("token", jwt)
-      // navigate("/")
+      navigate("/")
   } catch (error: any) {
     alert(error.response.data);
 }
