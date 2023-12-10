@@ -7,6 +7,7 @@ import StepperForm from "../features/device/register/DeviceRegistrationStepper";
 import ProfilePage from "../features/user/auth/pages/ProfilePage/ProfilePage";
 import EstateOverviewPage from "../features/estate/overview/EstateOverviewPage";
 import RequestOverviewPage from "../features/request/overview/RequestOverviewPage";
+import DeviceOverviewPage from "../features/device/overview/DeviceOverviewPage";
 
 const Router = () => {
 
@@ -26,6 +27,7 @@ const Router = () => {
                 <Route element={<RegularUserAuthGuard />}>
                     <Route path="/" element={<EstateOverviewPage />} />
                     <Route path="/real-estate-overview" element={<EstateOverviewPage />} />
+                    <Route path="/device-overview" element={<DeviceOverviewPage />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                 </Route>
