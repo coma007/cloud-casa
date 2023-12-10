@@ -30,11 +30,11 @@ const EstateOverviewPage = () => {
             { content: "Name", widthPercentage: 20},
             { content: "Type", widthPercentage: 12},
             { content: "Size", widthPercentage: 5},
-            { content: "Number of floors", widthPercentage: 13},
+            { content: "Floors", widthPercentage: 8},
             { content: "Address", widthPercentage: 15},
             { content: "City", widthPercentage: 15},
             { content: "Country", widthPercentage: 15},
-            { content: "Status", widthPercentage: 5}
+            { content: "Status", widthPercentage: 10}
         ],
         onClick: undefined
 }
@@ -52,7 +52,7 @@ const EstateOverviewPage = () => {
                         { content: estate.name, widthPercentage: 20},
                         { content: estate.type.toUpperCase(), widthPercentage: 12},
                         { content: estate.size, widthPercentage: 5},
-                        { content: estate.numberOfFloors, widthPercentage: 13},
+                        { content: estate.numberOfFloors, widthPercentage: 8},
                         { content: estate.address?.address, widthPercentage: 15},
                         { content: estate.city?.name, widthPercentage: 15},
                         { content: estate.city?.country, widthPercentage: 15},

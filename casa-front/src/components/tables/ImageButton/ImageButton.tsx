@@ -1,6 +1,6 @@
 import Tooltip from "../../view/Tooltip/Tooltip";
 import ImageButtonCSS from "./ImageButton.module.scss"
-import TooltipCSS from "components/view/Tooltip/Tooltip.module.scss"
+import TooltipCSS from "../../view/Tooltip/Tooltip.module.scss"
 import { MouseEventHandler } from "react";
 
 const ImageButton = (props: { path: string, tooltipText: string, onClick: MouseEventHandler<HTMLButtonElement> }) => {

@@ -3,10 +3,10 @@ import { NonAuthGuard, AdminAuthGuard, RegularUserAuthGuard } from "./GuardedRou
 import EstateRegisterPage from "../features/estate/register/RegisterPage";
 import LoginPage from "../features/user/auth/pages/LoginPage/LoginPage";
 import RegisterPage from "../features/user/auth/pages/RegisterPage/RegisterPage";
-import RequestOverview from "../features/request/overview/RequestOverview";
 import StepperForm from "../features/device/register/DeviceRegistrationStepper";
 import ProfilePage from "../features/user/auth/pages/ProfilePage/ProfilePage";
 import EstateOverviewPage from "../features/estate/overview/EstateOverviewPage";
+import RequestOverviewPage from "../features/request/overview/RequestOverviewPage";
 
 const Router = () => {
 
@@ -15,7 +15,7 @@ const Router = () => {
             <Routes>
                 <Route path="/register-device" element={<StepperForm />} />
 
-                <Route path="/requests" element={<RequestOverview />} />
+                <Route path="/requests" element={<RequestOverviewPage />} />
                 <Route element={<NonAuthGuard />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
