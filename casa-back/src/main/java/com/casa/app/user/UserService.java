@@ -30,16 +30,7 @@ public class UserService {
     public RegularUserRepository regularUserRepository;
 
     @Autowired
-    public RoleRepository roleRepository;
-
-    @Autowired
-    public EmailService emailService;
-
-    @Autowired
     private JWTUtil jwtUtil;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public UserDTO getById(Long id){
         return UserDTO.toDto(userRepository.getReferenceById(id));
@@ -51,18 +42,6 @@ public class UserService {
         return userRepository.getReferenceById(user.getId());
     }
 
-    public UserDTO createAdmin(NewUserDTO userDTO) throws NotFoundException, MessagingException, UnsupportedEncodingException {
-        Admin newUser = new Admin();
-        newUser.setUsername(userDTO.getUsername());
-        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        Optional<Role> adminRole = roleRepository.getFirstByName(Roles.admin);
-        if(adminRole.isEmpty()) throw new NotFoundException();
-        newUser.setRole(adminRole.get());
 
-        userRepository.save(newUser);
-
-        emailService.sendPasswordEmail(newUser, newUser.getUsername(), userDTO.getPassword());
-        return UserDTO.toDto(newUser);
-    }
 
 }

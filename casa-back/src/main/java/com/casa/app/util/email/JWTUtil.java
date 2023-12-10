@@ -37,14 +37,13 @@ public class JWTUtil {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Long id, String email, Collection<? extends GrantedAuthority> authorities) {
+    public String generateToken(String email, Collection<? extends GrantedAuthority> authorities) {
         return Jwts.builder()
                 .setIssuer(APP)
                 .setSubject(email)
 //                .setAudience(generateAudience())
                 .setIssuedAt(new Date())
                 .setExpiration(generateJWTExpirationDate())
-                .claim("id", id)
                 .claim("role", authorities)
                 .signWith(SIGNATURE_ALGORITHM, secret).compact();
 

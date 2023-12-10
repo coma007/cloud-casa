@@ -18,13 +18,13 @@ import java.io.UnsupportedEncodingException;
 @RequestMapping("/api/admin")
 public class AdminController {
     @Autowired
-    private UserService userService;
+    private AdminService adminService;
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('super admin')")
     public ResponseEntity<?> createNewAdmin(@RequestBody NewUserDTO newUserDTO){
         try {
-            return ResponseEntity.ok(userService.createAdmin(newUserDTO));
+            return ResponseEntity.ok(adminService.createAdmin(newUserDTO));
         } catch (NotFoundException e) {
             return ResponseEntity.internalServerError().body("Could not find role");
         } catch (MessagingException e) {
