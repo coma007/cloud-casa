@@ -23,13 +23,13 @@ public class UserController {
     @Autowired
     private SuperAdminService superAdminService;
 
-//    Conflicting with /init
-//    @PermitAll
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getById(@PathVariable Long id){
-//        UserDTO u = userService.getById(id);
-//        return new ResponseEntity<>(u, HttpStatus.OK);
-//    }
+//    Conflicting with /init so add public
+    @PermitAll
+    @GetMapping("/public/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id){
+        UserDTO u = userService.getById(id);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
 
     @PutMapping("/change-password")
     @PreAuthorize("hasAnyAuthority('super admin', 'admin', 'regular user')")

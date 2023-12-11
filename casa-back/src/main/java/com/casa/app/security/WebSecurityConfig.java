@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,6 +16,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+
+import java.util.regex.Pattern;
+
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -55,11 +61,13 @@ public class WebSecurityConfig  {
                         "/api/realEstateRequest/getAll",
                         "/api/verify",
 //                      CAREFUL
-//                      "/api/user/{id}" conflicts with for example "/api/user/init where auth is required
+//                      "/api/user/{id}" conflicts with for example "/api/user/init where auth is required,
+//                      so add public to non auth enpoint somewhere
                         "/api/location/getAllCountries", "/api/location/getAllCities/{country}"
                         )
+                .requestMatchers(new RegexRequestMatcher(".*/api.*/public.*", "GET"))
                 .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage");
 
     }
-
 }
+
