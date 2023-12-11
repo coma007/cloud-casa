@@ -7,12 +7,15 @@ import ErrorMsg from '../../../../components/error/ErrorMsg';
 import Button from '../../../../components/forms/Button/Button';
 import InputField from '../../../../components/forms/InputField/InputField';
 import { AuthService } from '../../services/AuthService';
+import ChangePasswordModal from '../ChangePasswordModal/ChangePasswordModal';
 
 const RegisterAdminForm = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [showModal, setShowModal] = useState(true);
   
   const passwordValidator = yup.string().min(8, "password is too short")
     .matches(/[a-z]+/, "password needs to contain lowercase letter")
@@ -40,51 +43,54 @@ const RegisterAdminForm = () => {
   }
 
   return (
-    <Formik
-      initialValues={{
-        email: "",
-        password: "",
-        "confirm password": "",
-      }}
-      validateOnChange
-      validationSchema={schema}
-      onSubmit={handleSubmit}
-    >
-      {({ errors, touched, setFieldValue, validateForm, isValid }) => (
-        <Form>
-          <div className={RegisterAdminFormCSS.grid}>
-            <div>
-              <Field component={InputField} className={RegisterAdminFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setEmail(e.target.value);
-                setFieldValue("email", e.target.value);
-              }} />
-              <ErrorMsg val={errors["email"]} />
+    <React.Fragment>
+      <ChangePasswordModal show={showModal} setShow={setShowModal}/>
+      <Formik
+        initialValues={{
+          email: "",
+          password: "",
+          "confirm password": "",
+        }}
+        validateOnChange
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, setFieldValue, validateForm, isValid }) => (
+          <Form>
+            <div className={RegisterAdminFormCSS.grid}>
+              <div>
+                <Field component={InputField} className={RegisterAdminFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setEmail(e.target.value);
+                  setFieldValue("email", e.target.value);
+                }} />
+                <ErrorMsg val={errors["email"]} />
+              </div>
+              <div>
+                <Field component={InputField} className={RegisterAdminFormCSS.inlineInput} usage="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value);
+                  setFieldValue("password", e.target.value);
+                }} />
+                <ErrorMsg val={errors["password"]} />
+              </div>
+              <div>
+                <Field component={InputField} className={`alignRight ${RegisterAdminFormCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setConfirmPassword(e.target.value);
+                  setFieldValue("confirm password", e.target.value);
+                }} />
+                <ErrorMsg val={errors["confirm password"]} customClass="alignRight" />
+              </div>
             </div>
-            <div>
-              <Field component={InputField} className={RegisterAdminFormCSS.inlineInput} usage="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setPassword(e.target.value);
-                setFieldValue("password", e.target.value);
-              }} />
-              <ErrorMsg val={errors["password"]} />
-            </div>
-            <div>
-              <Field component={InputField} className={`alignRight ${RegisterAdminFormCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setConfirmPassword(e.target.value);
-                setFieldValue("confirm password", e.target.value);
-              }} />
-              <ErrorMsg val={errors["confirm password"]} customClass="alignRight" />
-            </div>
-          </div>
 
 
-          <div className={RegisterAdminFormCSS.button}>
-            <span className="alignRight">
-              <Button submit="submit" onClick={null} text="Get started" />
-            </span>
-          </div>
-        </Form>
-      )}
-    </Formik >
+            <div className={RegisterAdminFormCSS.button}>
+              <span className="alignRight">
+                <Button submit="submit" onClick={null} text="Get started" />
+              </span>
+            </div>
+          </Form>
+        )}
+      </Formik >
+    </React.Fragment>
   )
 }
 export default RegisterAdminForm

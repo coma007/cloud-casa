@@ -1,8 +1,8 @@
 
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { Credentials, UserRegister } from "../types/User";
-import { LOGIN, REGISTER, REGISTER_ADMIN } from "../../../../api";
+import { Credentials, NewPassword, UserRegister } from "../types/User";
+import { CHANGE_PASSWORD, LOGIN, REGISTER, REGISTER_ADMIN } from "../../../../api";
 
 export const AuthService = {
 
@@ -29,6 +29,12 @@ export const AuthService = {
   registerAdmin: async (credentials: Credentials): Promise<string> => {
     let url = REGISTER_ADMIN();
     let response = await axios.post(url, credentials);
+    return response.data;
+  },
+
+  changePassword: async (newPassword: NewPassword): Promise<string> => {
+    let url = CHANGE_PASSWORD();
+    let response = await axios.put(url, newPassword);
     return response.data;
   },
 

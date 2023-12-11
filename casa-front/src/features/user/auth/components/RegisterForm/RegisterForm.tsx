@@ -89,69 +89,69 @@ const RegisterForm = () => {
   }
 
   return (
-    <Formik
-      initialValues={{
-        "first name": "",
-        "last name": "",
-        email: "",
-        password: "",
-        "confirm password": "",
-      }}
-      validateOnChange
-      validationSchema={schema}
-      onSubmit={handleSubmit}
-    >
-      {({ errors, touched, setFieldValue, validateForm, isValid }) => (
-        <Form>
-          <div className={RegisterFormCSS.grid}>
-            <div>
-              <Field name="first name" component={InputField} className={RegisterFormCSS.inlineInput} usage="First name" value={firstName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setFirstName(e.target.value);
-                setFieldValue("first name", e.target.value);
-              }} />
-              <ErrorMsg val={errors["first name"]} />
+      <Formik
+        initialValues={{
+          "first name": "",
+          "last name": "",
+          email: "",
+          password: "",
+          "confirm password": "",
+        }}
+        validateOnChange
+        validationSchema={schema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, setFieldValue, validateForm, isValid }) => (
+          <Form>
+            <div className={RegisterFormCSS.grid}>
+              <div>
+                <Field name="first name" component={InputField} className={RegisterFormCSS.inlineInput} usage="First name" value={firstName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setFirstName(e.target.value);
+                  setFieldValue("first name", e.target.value);
+                }} />
+                <ErrorMsg val={errors["first name"]} />
+              </div>
+              <div>
+                <Field component={InputField} className={`alignRight ${RegisterFormCSS.inlineInput}`} usage="Last name" value={lastName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setLastName(e.target.value);
+                  setFieldValue("last name", e.target.value);
+                }} />
+                <ErrorMsg val={errors["last name"]} customClass="alignRight" />
+              </div>
+              <div>
+                <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setEmail(e.target.value);
+                  setFieldValue("email", e.target.value);
+                }} />
+                <ErrorMsg val={errors["email"]} />
+              </div>
+              <div>
+                <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value);
+                  setFieldValue("password", e.target.value);
+                }} />
+                <ErrorMsg val={errors["password"]} />
+              </div>
+              <div>
+                <Field component={InputField} className={`alignRight ${RegisterFormCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setConfirmPassword(e.target.value);
+                  setFieldValue("confirm password", e.target.value);
+                }} />
+                <ErrorMsg val={errors["confirm password"]} customClass="alignRight" />
+              </div>
+              <input name="file" ref={fileRef} id="file-upload" type="file" />
+                      <ErrorMessage name="file" />
             </div>
-            <div>
-              <Field component={InputField} className={`alignRight ${RegisterFormCSS.inlineInput}`} usage="Last name" value={lastName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setLastName(e.target.value);
-                setFieldValue("last name", e.target.value);
-              }} />
-              <ErrorMsg val={errors["last name"]} customClass="alignRight" />
-            </div>
-            <div>
-              <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setEmail(e.target.value);
-                setFieldValue("email", e.target.value);
-              }} />
-              <ErrorMsg val={errors["email"]} />
-            </div>
-            <div>
-              <Field component={InputField} className={RegisterFormCSS.inlineInput} usage="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setPassword(e.target.value);
-                setFieldValue("password", e.target.value);
-              }} />
-              <ErrorMsg val={errors["password"]} />
-            </div>
-            <div>
-              <Field component={InputField} className={`alignRight ${RegisterFormCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setConfirmPassword(e.target.value);
-                setFieldValue("confirm password", e.target.value);
-              }} />
-              <ErrorMsg val={errors["confirm password"]} customClass="alignRight" />
-            </div>
-            <input name="file" ref={fileRef} id="file-upload" type="file" />
-                    <ErrorMessage name="file" />
-          </div>
 
 
-          <div className={RegisterFormCSS.button}>
-            <span className="alignRight">
-              <Button submit="submit" onClick={null} text="Get started" />
-            </span>
-          </div>
-        </Form>
-      )}
-    </Formik >
+            <div className={RegisterFormCSS.button}>
+              <span className="alignRight">
+                <Button submit="submit" onClick={null} text="Get started" />
+              </span>
+            </div>
+          </Form>
+        )}
+      </Formik >
   )
 }
 export default RegisterForm
