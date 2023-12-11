@@ -2,9 +2,9 @@ package com.casa.app.user.superuser;
 
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.user.User;
+import com.casa.app.user.UserService;
 import com.casa.app.user.roles.Role;
 import com.casa.app.user.UserRepository;
-import com.casa.app.user.UserService;
 import com.casa.app.user.roles.RoleRepository;
 import com.casa.app.user.roles.Roles;
 import com.casa.app.util.email.FileUtil;
@@ -16,10 +16,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.NotDirectoryException;
 import java.util.Optional;
 
 @Service
-public class SuperUserService {
+public class SuperAdminService {
     @Autowired
     private UserRepository userRepository;
 
@@ -28,6 +29,12 @@ public class SuperUserService {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SuperAdminRepository superAdminRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void createSuperUserPassword() throws NotFoundException {
@@ -47,13 +54,21 @@ public class SuperUserService {
             Optional<Role> superadminRoleO = roleRepository.getFirstByName(Roles.superAdmin);
             if(superadminRoleO.isEmpty()) throw new NotFoundException();
 
-            User newSuperadmin = new User();
+            SuperAdmin newSuperadmin = new SuperAdmin();
             newSuperadmin.setPassword(encoder.encode(password));
             newSuperadmin.setRole(superadminRoleO.get());
             newSuperadmin.setUsername("admin");
+            newSuperadmin.setInit(true);
 
-            userRepository.save(newSuperadmin);
+            superAdminRepository.save(newSuperadmin);
 
         }
+    }
+
+    public boolean isInit() throws NotFoundException {
+        User tokenUser = userService.getUserByToken();
+        Optional<SuperAdmin> userO = superAdminRepository.findByUsername(tokenUser.getUsername());
+        if(userO.isEmpty()) throw new NotFoundException();
+        return userO.get().isInit();
     }
 }

@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Credentials, NewPassword, UserRegister } from "../types/User";
-import { CHANGE_PASSWORD, LOGIN, REGISTER, REGISTER_ADMIN } from "../../../../api";
+import { CHANGE_PASSWORD, LOGIN, REGISTER, REGISTER_ADMIN, SUPER_AND_INIT } from "../../../../api";
 
 export const AuthService = {
 

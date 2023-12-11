@@ -11,6 +11,9 @@ import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.roles.Role;
 import com.casa.app.user.roles.RoleRepository;
 import com.casa.app.user.roles.Roles;
+import com.casa.app.user.superuser.SuperAdmin;
+import com.casa.app.user.superuser.SuperAdminRepository;
+import com.casa.app.user.superuser.SuperAdminService;
 import com.casa.app.util.email.EmailService;
 import com.casa.app.util.email.JWTUtil;
 import jakarta.mail.MessagingException;
@@ -38,6 +41,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SuperAdminRepository superAdminRepository;
+
     public UserDTO getById(Long id){
         return UserDTO.toDto(userRepository.getReferenceById(id));
     }
@@ -49,11 +55,17 @@ public class UserService {
     }
 
 
-    public void changePassword(NewPasswordDTO dto) throws InvalidCredentialsException {
+    public void changePassword(NewPasswordDTO dto) throws InvalidCredentialsException, NotFoundException {
         User tokenUser = getUserByToken();
         if(!passwordEncoder.matches(dto.getOldPassword(), tokenUser.getPassword()))
             throw new InvalidCredentialsException();
         tokenUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(tokenUser);
+        if(Objects.equals(tokenUser.getRole().getName(), Roles.superAdmin)){
+            Optional<SuperAdmin> superAdminO = superAdminRepository.findByUsername(tokenUser.getUsername());
+            if(superAdminO.isEmpty()) throw new NotFoundException();
+            superAdminO.get().setInit(false);
+            superAdminRepository.save(superAdminO.get());
+        }
     }
 }

@@ -1,5 +1,5 @@
 import RegisterAdminFormCSS from './RegisterAdminForm.module.scss'
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import * as yup from 'yup'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -8,6 +8,7 @@ import Button from '../../../../components/forms/Button/Button';
 import InputField from '../../../../components/forms/InputField/InputField';
 import { AuthService } from '../../services/AuthService';
 import ChangePasswordModal from '../ChangePasswordModal/ChangePasswordModal';
+import { UserService } from '../../../UserService';
 
 const RegisterAdminForm = () => {
 
@@ -15,7 +16,7 @@ const RegisterAdminForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [showModal, setShowModal] = useState(true);
+
   
   const passwordValidator = yup.string().min(8, "password is too short")
     .matches(/[a-z]+/, "password needs to contain lowercase letter")
@@ -29,6 +30,19 @@ const RegisterAdminForm = () => {
     "confirm password": passwordValidator.oneOf([yup.ref('password')], 'Passwords must match'),
   })
 
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    (async function () {
+        try {
+            const init = await UserService.isSuperAndInit();
+            setShowModal(init);
+        } catch (error) {
+            console.error(error);
+        }
+    })()
+}, []);
+
 
 
   const navigate = useNavigate();
@@ -41,6 +55,8 @@ const RegisterAdminForm = () => {
       alert(error.response.data);
     }
   }
+
+
 
   return (
     <React.Fragment>

@@ -42,7 +42,8 @@ public class WebSecurityConfig  {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
+        return (web) -> web
+                .ignoring()
                 .requestMatchers(HttpMethod.POST, "/api/login", "/api/register",
                         "/api/device/register", "/api/realEstate/create",
                         "/h2-console/**")
@@ -53,8 +54,9 @@ public class WebSecurityConfig  {
                         "/h2-console/**",
                         "/api/realEstateRequest/getAll",
                         "/api/verify",
-                        "/api/user/*",
-                        "/api/location/getAllCountries", "/api/location/getAllCities/*"
+//                      CAREFUL
+//                      "/api/user/{id}" conflicts with for example "/api/user/init where auth is required
+                        "/api/location/getAllCountries", "/api/location/getAllCities/{country}"
                         )
                 .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage");
 

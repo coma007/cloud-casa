@@ -4,6 +4,7 @@ export const LOGIN = () => url + "/login";
 export const REGISTER = () => url + "/register";
 export const REGISTER_ADMIN = () => url + "/admin";
 export const CHANGE_PASSWORD = () => url + "/user/change-password";
+export const SUPER_AND_INIT = () => url + "/user/init";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
