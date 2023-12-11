@@ -1,9 +1,11 @@
 .button {
     padding-bottom: 20%;
     width: 100%;
-    height: 50px;
+    height: 6.5vh;
     background-color: transparent;
     border: none;
+    z-index: 2;
+    position: inherit;
 }
 
 .button:hover {
@@ -13,8 +15,8 @@
 
 .button img {
     padding: 3px;
-    height: 100%;
-    width: auto;
+    width: 60%;
+    height: auto;
 }
 
 .button:hover img {

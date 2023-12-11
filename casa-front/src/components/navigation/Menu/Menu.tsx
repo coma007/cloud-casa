@@ -24,7 +24,7 @@ const Menu = ({admin} : IMenuProps) => {
                     :
                     (<>
                         <MenuItem className={MenuCSS.nonMainOption} tooltipText="Estates overview" tooltip={true} image={undefined} path="/real-estate-overview" text={'ESTATES'} />
-                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Devices overview" tooltip={true} image={undefined} path="/logout" text={'DEVICES'} />
+                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Devices overview" tooltip={true} image={undefined} path="/device-overview" text={'DEVICES'} />
                     </>)
                 }
             </div>
@@ -34,12 +34,6 @@ const Menu = ({admin} : IMenuProps) => {
                 <MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout" text={'LOGOUT'} />
                 </div>
             </div>
-            {/* <MenuItem className={MenuCSS.margin} tooltipText="Certificates overview" tooltip={true} image={Certificate} path="/certificates" />
-            <MenuItem className={MenuCSS.margin} tooltipText="Verify certificate" tooltip={true} image={Verify} path="/verify" />
-            <MenuItem className={MenuCSS.margin} tooltipText="New certificate" tooltip={true} image={Create} path="" onClick={openCreateModal} />
-            <MenuItem className={MenuCSS.margin} tooltipText="Requests" tooltip={true} image={Request} path="/requests" />
-            
-            <RequestCreatePage okCreateModal={null} createIsOpen={createIsOpen} closeCreateModal={closeCreateModal} /> */}
         </div>
     )
 }

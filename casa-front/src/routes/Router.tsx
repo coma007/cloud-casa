@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { NonAuthGuard, AdminAuthGuard, RegularUserAuthGuard } from "./GuardedRoute";
 import EstateRegisterPage from "../features/estate/register/RegisterPage";
-import LoginPage from "../features/user/auth/pages/LoginPage/LoginPage";
+import LoginPage, { Logout } from "../features/user/auth/pages/LoginPage/LoginPage";
 import RegisterPage from "../features/user/auth/pages/RegisterPage/RegisterPage";
 import StepperForm from "../features/device/register/DeviceRegistrationStepper";
 import ProfilePage from "../features/user/auth/pages/ProfilePage/ProfilePage";
@@ -30,6 +30,7 @@ const Router = () => {
                     <Route path="/device-overview" element={<DeviceOverviewPage />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/logout" element={<Logout />} />
                 </Route>
             </Routes>
         </BrowserRouter >
