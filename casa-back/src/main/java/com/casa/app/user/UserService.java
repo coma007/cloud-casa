@@ -1,7 +1,9 @@
 package com.casa.app.user;
 
+import com.casa.app.exceptions.InvalidCredentialsException;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.user.admin.Admin;
+import com.casa.app.user.dtos.NewPasswordDTO;
 import com.casa.app.user.dtos.NewUserDTO;
 import com.casa.app.user.dtos.UserDTO;
 import com.casa.app.user.regular_user.RegularUser;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,6 +35,9 @@ public class UserService {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public UserDTO getById(Long id){
         return UserDTO.toDto(userRepository.getReferenceById(id));
     }
@@ -43,5 +49,11 @@ public class UserService {
     }
 
 
-
+    public void changePassword(NewPasswordDTO dto) throws InvalidCredentialsException {
+        User tokenUser = getUserByToken();
+        if(!passwordEncoder.matches(dto.getOldPassword(), tokenUser.getPassword()))
+            throw new InvalidCredentialsException();
+        tokenUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(tokenUser);
+    }
 }
