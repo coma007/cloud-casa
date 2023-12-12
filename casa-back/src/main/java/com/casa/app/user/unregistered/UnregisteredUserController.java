@@ -124,7 +124,8 @@ public class UnregisteredUserController {
         try {
             auth = authenticationManager.authenticate(authReq);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.badRequest().body("Wrong credentials");
+            throw e;
+//            return ResponseEntity.badRequest().body("Wrong credentials");
         }catch (DisabledException e) {
             return ResponseEntity.badRequest().body("User is disabled!");
         }
