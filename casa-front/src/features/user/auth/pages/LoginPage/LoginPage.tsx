@@ -26,6 +26,10 @@ const LoginPage = () => {
                 <div className="rightCol">
                     <div className="authTitle">
                         <h2>Sign in</h2>
+                        <span >
+                            Welcome back!
+                            <br />Please enter your login details to access your account.
+                        </span>
                     </div>
                     <LoginForm/>
                     <div className="authBottomMessage">

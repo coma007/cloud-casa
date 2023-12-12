@@ -1,5 +1,5 @@
 .section {
-    margin: 5% 10%;
+    margin: 2% 10%;
     display: grid;
     grid-template-columns: 45% 50%;
     column-gap: 5%;
@@ -31,7 +31,7 @@
 }
 
 .warning {
-    padding: 1.5% 15%;
+    padding: 3.5% 15%;
     margin: 2.3% 0;
     border-radius: 10px;
     background-color: var(--card-background);

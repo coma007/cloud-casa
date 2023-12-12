@@ -122,23 +122,23 @@ const RequestOverviewPage = () => {
                     <Table headers={headers} rows={tableData} />
                 </div>
                 <ModalWindow
-                    height="78%"
+                    height="70%"
                     isOpen={declineIsOpen}
                     closeWithdrawalModal={closeDeclineModal}
                     okWithdrawalModal={okDeclineModal}
                     title="Decline request"
                     buttonText="Decline" >
-                        <p>Estate: {selectedRequest?.name}<br/>To decline the request, you need to provide us some more info on why you want to decline it.</p>
+                        <p>Estate: <strong>{selectedRequest?.name}</strong><br/>To decline the request, you need to provide us some more info on why you want to decline it.</p>
                         <textarea placeholder='Write your reason ...' value={declineReason} onChange={handleReasonChange}></textarea>
                 </ModalWindow>
                 <ModalWindow
-                    height="45%"
+                    height="41%"
                     isOpen={acceptIsOpen}
                     closeWithdrawalModal={closeAcceptModal}
                     okWithdrawalModal={okAcceptModal}
                     title="Accept request"
                     buttonText="Accept" >
-                        <p>Estate: {selectedRequest?.name}<br/>Are you sure you want to accept the request ?</p>
+                        <p>Estate: <strong>{selectedRequest?.name}</strong><br/>Are you sure you want to accept the request ?</p>
                 </ModalWindow>
             </div>
         </div>

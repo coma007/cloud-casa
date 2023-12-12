@@ -54,11 +54,12 @@ textarea {
 .authTitle {
   font-size: 17px;
   color: var(--primary-color);
-  margin-bottom: 7%;
+  margin-bottom: 5%;
 }
 
 .authTitle h2 {
   color: black;
+  font-weight: bold;
   font-size: 35px;
   margin-bottom: 15px;
 }
@@ -97,6 +98,7 @@ textarea {
 #root {
   --primary-color: #86919D;
   --primary-color-background: #32F0D9;
+  --primary-color-background-transparent: rgb(50, 240, 217, 0.1);
   --primary-color-transparent: rgba(134, 145, 157, 0.9);
   --card-background: rgba(134, 145, 157, 0.1);
 

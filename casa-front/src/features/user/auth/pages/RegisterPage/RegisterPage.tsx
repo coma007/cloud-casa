@@ -12,6 +12,10 @@ const RegisterPage = () => {
       <div className="rightCol">
         <div className="authTitle">
           <h2>Sign up</h2>
+          <span >
+            Welcome !
+            Sign up now to get started.
+          </span>
         </div>
         <RegisterForm />
         <div className="authBottomMessage">
