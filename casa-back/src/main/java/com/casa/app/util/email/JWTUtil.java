@@ -64,7 +64,7 @@ public class JWTUtil {
         return null;
     }
 
-    public String getEmailFromToken(String token) {
+    public String getEmailFromToken(String token) throws ExpiredJwtException{
         String username;
 
         try {
@@ -79,7 +79,7 @@ public class JWTUtil {
         return username;
     }
 
-    public Date getIssuedAtDateFromToken(String token) {
+    public Date getIssuedAtDateFromToken(String token) throws ExpiredJwtException{
         Date issueAt;
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
@@ -92,7 +92,7 @@ public class JWTUtil {
         return issueAt;
     }
 
-    public Date getExpirationDateFromToken(String token) {
+    public Date getExpirationDateFromToken(String token) throws ExpiredJwtException{
         Date expiration;
         try {
             final Claims claims = this.getAllClaimsFromToken(token);
@@ -106,7 +106,7 @@ public class JWTUtil {
         return expiration;
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    private Claims getAllClaimsFromToken(String token) throws ExpiredJwtException{
         Claims claims;
         try {
             claims = Jwts.parser()
@@ -135,7 +135,7 @@ public class JWTUtil {
     public String getAuthHeaderFromHeader(HttpServletRequest request) {
         return request.getHeader(AUTH_HEADER);
     }
-    public String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) throws ExpiredJwtException{
         String username;
 
         try {
