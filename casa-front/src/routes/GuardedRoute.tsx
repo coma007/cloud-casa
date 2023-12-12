@@ -13,7 +13,7 @@ export const NonAuthGuard = () => {
     }
     
     const role = getRole();
-    if (role === "super admin") {
+    if (role === "super admin" || role === "super admin init") {
         return <Navigate to="/register/admin" />
     } else if (role === "admin") {
         return <Navigate to="/requests" />
