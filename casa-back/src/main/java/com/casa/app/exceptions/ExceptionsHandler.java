@@ -3,13 +3,15 @@ package com.casa.app.exceptions;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class ExceptionsHandler {
+public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 //    @ExceptionHandler(value = {UserServiceException.class})
 //    public ResponseEntity<Object> handleUserServiceException(UserServiceException ex, WebRequest request) {
 //        String requestUri = ((ServletWebRequest)request).getRequest().getRequestURI().toString();
@@ -24,5 +26,10 @@ public class ExceptionsHandler {
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
         return ResponseEntity.internalServerError().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(value = {InvalidCredentialsException.class, BadCredentialsException.class})
+    public ResponseEntity<Object> handleInvalidCredentialsException(Exception ex, WebRequest request) {
+        return ResponseEntity.badRequest().body("Wrong credentials");
     }
 }
