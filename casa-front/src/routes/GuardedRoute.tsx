@@ -31,6 +31,10 @@ export const SuperAdminAuthGuard = () => {
     return getRole() === "super admin" ? <Outlet /> : <Navigate to="/login" />
 }
 
+export const SuperAdminInitAuthGuard = () => {
+    return getRole() === "super admin init" ? <Outlet /> : <Navigate to="/login" />
+}
+
 export const RegularUserAuthGuard = () => {
     return getRole() === "regular user" ? <Outlet /> : <Navigate to="/login" />
 }
