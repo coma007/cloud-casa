@@ -23,7 +23,8 @@ const Router = () => {
                     <Route path="/register" element={<RegisterPage />} />
                 </Route>
                 <Route element={<AdminAuthGuard />}>
-                    {/* <Route path="/requests" element={<RequestOverview />} /> */}
+                    <Route path="/" element={<RequestOverviewPage />} />
+                    <Route path="/requests" element={<RequestOverviewPage />} />
                 </Route>
                 <Route element={<SuperAdminAuthGuard />}>
                     <Route path="/register/admin" element={<RegisterAdminPage />} />

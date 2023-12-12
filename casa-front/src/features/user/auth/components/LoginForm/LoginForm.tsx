@@ -9,6 +9,7 @@ import LoginFormCSS from "./LoginForm.module.scss"
 import InputField from '../../../../../components/forms/InputField/InputField';
 import ErrorMsg from '../../../../../components/error/ErrorMsg';
 import Button from '../../../../../components/forms/Button/Button';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginForm = () => {
 
@@ -17,13 +18,26 @@ const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const getRole = () => {
+    const auth = localStorage.getItem("token");
+    try {
+        const decodedToken: any = jwtDecode(auth!);
+        const roleName = decodedToken?.role[0].name;
+        if (roleName) {
+            return roleName
+        } else {
+            console.error("Role name not found in the token.");
+        }
+    } catch (error) {
+        console.error("Error decoding the token");
+    }
+  }
   const onClick = () => {
     (async function () {
       try {
           const jwt = await AuthService.login({ Username: username, Password: password });
           localStorage.setItem("token", jwt);
-          navigate("/")
-          
+          console.log(getRole())
       } catch (error: any) {
         if (error.response.status == 403) {
         } else {
