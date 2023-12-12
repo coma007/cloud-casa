@@ -3,11 +3,11 @@ import ChangePasswordModalCSS from "./ChangePasswordModal.module.scss"
 import * as yup from 'yup' 
 import { Formik, Form, Field, ErrorMessage, FormikProps, FormikValues } from 'formik';
 import { useState } from 'react'
-import ErrorMsg from '../../../../components/error/ErrorMsg';
-import InputField from '../../../../components/forms/InputField/InputField';
 import Modal from 'react-bootstrap/Modal';
-import Button from '../../../../components/forms/Button/Button';
 import { AuthService } from '../../services/AuthService';
+import InputField from '../../../../../components/forms/InputField/InputField';
+import ErrorMsg from '../../../../../components/error/ErrorMsg';
+import Button from '../../../../../components/forms/Button/Button';
 
 const ChangePasswordModal = (props: { show: any, setShow: any }) => {
     const [oldPassword, setOldPassword] = useState('');
