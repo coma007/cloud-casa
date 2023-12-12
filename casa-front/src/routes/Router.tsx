@@ -17,7 +17,6 @@ const Router = () => {
             <Routes>
                 <Route path="/register-device" element={<StepperForm />} />
 
-                <Route path="/requests" element={<RequestOverviewPage />} />
                 <Route element={<NonAuthGuard />}>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
@@ -40,6 +39,7 @@ const Router = () => {
                 </Route>
             </Routes>
         </BrowserRouter >
+
     );
 };
 

@@ -40,17 +40,27 @@ public class SuperAdminService {
     public void createSuperUserPassword() throws NotFoundException {
         Optional<User> userInitOptional = userRepository.findFirstByRoleName(Roles.superAdminInit);
         Optional<User> userOptional = userRepository.findFirstByRoleName(Roles.superAdmin);
+
         if(userOptional.isEmpty() && userInitOptional.isEmpty()){
             FileUtil.createIfNotExists(FileUtil.pwdDir);
             String password = Random.makeRandomString(64);
 
             try {
+
+                File file = new File(FileUtil.pwdDir + "pwd.txt");
+
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+
                 Writer writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(FileUtil.pwdDir + "pwd.txt"), "utf-8"));
+                        new FileOutputStream(file), "utf-8"));
                 writer.write(password);
+
                 writer.close();
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
+
             }
             Optional<Role> superadminRoleO = roleRepository.getFirstByName(Roles.superAdminInit);
             if(superadminRoleO.isEmpty()) throw new NotFoundException();

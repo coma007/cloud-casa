@@ -1,6 +1,7 @@
 package com.casa.app.util.email;
 
 import java.io.File;
+import java.sql.SQLOutput;
 
 public class FileUtil {
     public static final String imagesDir =
@@ -13,6 +14,8 @@ public class FileUtil {
         File directory = new File(dir);
         if (! directory.exists()){
             directory.mkdir();
+            System.out.println("kreirao :)");
         }
+
     }
 }
