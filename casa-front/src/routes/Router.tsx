@@ -1,9 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { NonAuthGuard, AdminAuthGuard, RegularUserAuthGuard } from "./GuardedRoute";
+import { NonAuthGuard, AuthGuard, AdminAuthGuard, RegularUserAuthGuard, SuperAdminAuthGuard } from "./GuardedRoute";
 import EstateRegisterPage from "../features/estate/register/RegisterPage";
 import LoginPage, { Logout } from "../features/user/auth/pages/LoginPage/LoginPage";
 import RegisterPage from "../features/user/auth/pages/RegisterPage/RegisterPage";
 import StepperForm from "../features/device/register/DeviceRegistrationStepper";
+import RegisterAdminPage from "../features/user/auth/pages/RegisterAdminPage/RegisterAdminPage";
 import ProfilePage from "../features/user/auth/pages/ProfilePage/ProfilePage";
 import EstateOverviewPage from "../features/estate/overview/EstateOverviewPage";
 import RequestOverviewPage from "../features/request/overview/RequestOverviewPage";
@@ -23,6 +24,10 @@ const Router = () => {
                 </Route>
                 <Route element={<AdminAuthGuard />}>
                     {/* <Route path="/requests" element={<RequestOverview />} /> */}
+                </Route>
+                <Route element={<SuperAdminAuthGuard />}>
+                    <Route path="/register/admin" element={<RegisterAdminPage />} />
+                    <Route path="/" element={<RegisterAdminPage />} />
                 </Route>
                 <Route element={<RegularUserAuthGuard />}>
                     <Route path="/" element={<EstateOverviewPage />} />

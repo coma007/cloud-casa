@@ -16,3 +16,8 @@ export interface UserRegister {
     LastName: string
     File: File
 }
+
+export interface NewPassword {
+    OldPassword: string
+    NewPassword: string
+}

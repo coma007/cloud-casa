@@ -157,14 +157,14 @@ const RegisterForm = () => {
           </div>
 
 
-          <div className={RegisterFormCSS.button}>
-            <span className="alignRight">
-              <Button submit="submit" onClick={null} text="Get started" />
-            </span>
-          </div>
-        </Form>
-      )}
-    </Formik >
+            <div className={RegisterFormCSS.button}>
+              <span className="alignRight">
+                <Button submit="submit" onClick={null} text="Get started" />
+              </span>
+            </div>
+          </Form>
+        )}
+      </Formik >
   )
 }
 export default RegisterForm

@@ -8,6 +8,7 @@ import com.casa.app.estate.RealEstate;
 import com.casa.app.estate.RealEstateDTO;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.request.RealEstateRequestDTO;
+import com.casa.app.user.admin.Admin;
 import com.casa.app.user.regular_user.RegularUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,6 +84,27 @@ public class EmailService {
 
         content = content.replace("[[name]]", user.getFirstName());
         content = content.replace("[[URL]]", url);
+
+        Session session = getSession();
+        sendEmail(session, toAddress, subject, content);
+    }
+
+    public void sendPasswordEmail(Admin user, String username, String pwd) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
+        String toAddress = user.getUsername();
+        String fromAddress = getMailProperties().getProperty("mail.user");
+        String senderName = "Casa";
+
+
+        String subject = "Change your password";
+        String content = "Dear admin user,<br>"
+                + "These are your credentials, please change password after your login:<br>"
+                + "<br>Username: [[username]]"
+                + "<br>Password: [[password]]"
+                + "<br>Thank you,<br>"
+                + "Casa";
+
+        content = content.replace("[[username]]", username);
+        content = content.replace("[[password]]", pwd);
 
         Session session = getSession();
         sendEmail(session, toAddress, subject, content);

@@ -22,10 +22,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String username;
 
     private String password;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     private String jwt;

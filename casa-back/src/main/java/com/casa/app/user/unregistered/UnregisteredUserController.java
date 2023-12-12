@@ -132,7 +132,7 @@ public class UnregisteredUserController {
         SecurityContext sc = SecurityContextHolder.getContext();
         sc.setAuthentication(auth);
         long id = ((User) auth.getPrincipal()).getId();
-        String token = jwtUtil.generateToken(id, dto.getUsername(), auth.getAuthorities());
+        String token = jwtUtil.generateToken(dto.getUsername(), auth.getAuthorities());
         return ResponseEntity.ok(token);
     }
 }

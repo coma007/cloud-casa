@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
-public class NewUserDTO {
-    private String username;
-    private String password;
+public class NewPasswordDTO {
+    private String oldPassword;
+    private String newPassword;
 }
