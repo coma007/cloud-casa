@@ -3,12 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import * as yup from 'yup'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import ErrorMsg from '../../../../components/error/ErrorMsg';
-import Button from '../../../../components/forms/Button/Button';
-import InputField from '../../../../components/forms/InputField/InputField';
 import { AuthService } from '../../services/AuthService';
 import ChangePasswordModal from '../ChangePasswordModal/ChangePasswordModal';
 import { UserService } from '../../../UserService';
+import InputField from '../../../../../components/forms/InputField/InputField';
+import ErrorMsg from '../../../../../components/error/ErrorMsg';
+import Button from '../../../../../components/forms/Button/Button';
 
 const RegisterAdminForm = () => {
 
