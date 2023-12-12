@@ -1,0 +1,25 @@
+.button {
+    padding-bottom: 20%;
+    width: 100%;
+    height: 6.5vh;
+    background-color: transparent;
+    border: none;
+    z-index: 2;
+    position: inherit;
+}
+
+.button:hover {
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.button img {
+    padding: 3px;
+    width: 50%;
+    height: auto;
+}
+
+.button:hover img {
+    cursor: pointer;
+    transform: scale(1.1);
+}

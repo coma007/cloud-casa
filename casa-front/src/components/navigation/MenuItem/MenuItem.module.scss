@@ -1,0 +1,15 @@
+.item {
+    height: 35px;
+    width: auto;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.item:hover {
+    transform: scale(1.2);
+}
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}

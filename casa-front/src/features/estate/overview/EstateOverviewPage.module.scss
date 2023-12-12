@@ -1,0 +1,16 @@
+.table {
+    width: 90%;
+    margin: auto;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr;
+    align-items: center;
+}
+
+.alignRight {
+    display: flex;
+    justify-content: flex-end; 
+    margin-right: 24%;
+}

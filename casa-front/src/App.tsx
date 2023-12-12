@@ -3,7 +3,7 @@ import style from './App.module.scss'
 
 function App() {
   return (
-    <div className={style.App}>
+    <div className={style.main}>
       <Router></Router>
     </div>
   );

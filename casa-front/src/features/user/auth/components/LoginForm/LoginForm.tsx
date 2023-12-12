@@ -6,9 +6,9 @@ import ReactDOM, { render } from 'react-dom'
 import React from 'react'
 import { AuthService } from '../../services/AuthService';
 import LoginFormCSS from "./LoginForm.module.scss"
-import InputField from '../../../../components/forms/InputField/InputField';
-import ErrorMsg from '../../../../components/error/ErrorMsg';
-import Button from '../../../../components/forms/Button/Button';
+import InputField from '../../../../../components/forms/InputField/InputField';
+import ErrorMsg from '../../../../../components/error/ErrorMsg';
+import Button from '../../../../../components/forms/Button/Button';
 
 const LoginForm = () => {
 
