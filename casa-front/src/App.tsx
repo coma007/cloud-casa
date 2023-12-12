@@ -11,7 +11,7 @@ function App() {
         <link rel="icon" href="data:image/x-icon;," type="image/x-icon" /> 
         <meta name="description" content="My app description" />
       </Helmet>
-      <div className={style.App}>
+      <div className={style.main}>
         <Router></Router>
       </div>
     </>

@@ -8,7 +8,19 @@ export const AuthGuard = () => {
 
 export const NonAuthGuard = () => {
     const auth = localStorage.getItem("token");
-    return auth === null ? <Outlet /> : <Navigate to="/" />
+    if (auth === null) { 
+        return <Outlet />
+    }
+    
+    const role = getRole();
+    if (role === "super admin") {
+        return <Navigate to="/register/admin" />
+    } else if (role === "admin") {
+        return <Navigate to="/requests" />
+    }
+    else {
+        return <Navigate to="/real-estate-overview" />
+    }
 }
 
 export const AdminAuthGuard = () => {
@@ -23,7 +35,7 @@ export const RegularUserAuthGuard = () => {
     return getRole() === "regular user" ? <Outlet /> : <Navigate to="/login" />
 }
 
-const getRole = () => {
+const getRole : () => string = () => {
     const auth = localStorage.getItem("token");
     try {
         const decodedToken: any = jwtDecode(auth!);
