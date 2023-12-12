@@ -13,7 +13,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const LoginForm = () => {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +37,7 @@ const LoginForm = () => {
       try {
           const jwt = await AuthService.login({ Username: username, Password: password });
           localStorage.setItem("token", jwt);
-          console.log(getRole())
+          console.log(getRole());
       } catch (error: any) {
         if (error.response.status == 403) {
         } else {
@@ -56,17 +56,6 @@ const LoginForm = () => {
     .required(),
   })
 
-  const handleSubmit = async () => {
-    try {
-      const jwt = await AuthService.login({ Username: username, Password: password});
-      // TODO change flow bellow
-      localStorage.setItem("token", jwt)
-      navigate("/")
-  } catch (error: any) {
-    alert(error.response.data);
-}
-}
-
 
   return ( 
     <Formik
@@ -77,7 +66,7 @@ const LoginForm = () => {
        }}
        validationSchema={schema}
        validateOnChange
-       onSubmit={handleSubmit}
+       onSubmit={onClick}
      >
        {({ errors, touched, setFieldValue, validateForm, isValid, handleSubmit }) => (
 
@@ -95,7 +84,7 @@ const LoginForm = () => {
             <ErrorMsg val={errors["password"]} />
             <div className={LoginFormCSS.button}>
               <span className="alignRight">
-                <Button onClick={onClick} text="Sign in" submit={"submit"} />
+                <Button onClick={null} text="Sign in" submit={"submit"} />
               </span>
             </div>
           </Form >

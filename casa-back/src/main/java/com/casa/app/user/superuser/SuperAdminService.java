@@ -38,8 +38,9 @@ public class SuperAdminService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void createSuperUserPassword() throws NotFoundException {
+        Optional<User> userInitOptional = userRepository.findFirstByRoleName(Roles.superAdminInit);
         Optional<User> userOptional = userRepository.findFirstByRoleName(Roles.superAdmin);
-        if(userOptional.isEmpty()){
+        if(userOptional.isEmpty() && userInitOptional.isEmpty()){
             FileUtil.createIfNotExists(FileUtil.pwdDir);
             String password = Random.makeRandomString(64);
 
@@ -51,7 +52,7 @@ public class SuperAdminService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Optional<Role> superadminRoleO = roleRepository.getFirstByName(Roles.superAdmin);
+            Optional<Role> superadminRoleO = roleRepository.getFirstByName(Roles.superAdminInit);
             if(superadminRoleO.isEmpty()) throw new NotFoundException();
 
             SuperAdmin newSuperadmin = new SuperAdmin();
