@@ -44,6 +44,9 @@ public class UserService {
     @Autowired
     private SuperAdminRepository superAdminRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public UserDTO getById(Long id){
         return UserDTO.toDto(userRepository.getReferenceById(id));
     }
@@ -61,10 +64,15 @@ public class UserService {
             throw new InvalidCredentialsException();
         tokenUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(tokenUser);
-        if(Objects.equals(tokenUser.getRole().getName(), Roles.superAdmin)){
+        if(Objects.equals(tokenUser.getRole().getName(), Roles.superAdminInit)){
             Optional<SuperAdmin> superAdminO = superAdminRepository.findByUsername(tokenUser.getUsername());
             if(superAdminO.isEmpty()) throw new NotFoundException();
             superAdminO.get().setInit(false);
+
+            Optional<Role> superadminRoleO = roleRepository.getFirstByName(Roles.superAdmin);
+            if(superadminRoleO.isEmpty()) throw new NotFoundException();
+            superAdminO.get().setRole(superadminRoleO.get());
+
             superAdminRepository.save(superAdminO.get());
         }
     }

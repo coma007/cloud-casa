@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    @PreAuthorize("hasAnyAuthority('super admin', 'admin', 'regular user')")
+    @PreAuthorize("hasAnyAuthority('super admin', 'admin', 'regular user', 'super admin init')")
     public ResponseEntity<?> changePassword(@RequestBody NewPasswordDTO dto){
         try {
             userService.changePassword(dto);
