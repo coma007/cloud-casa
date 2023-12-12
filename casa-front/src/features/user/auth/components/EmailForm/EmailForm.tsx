@@ -3,9 +3,9 @@ import EmailFormCSS from "./EmailForm.module.scss"
 import * as yup from 'yup' 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useState } from 'react'
-import Button from '../../../../components/forms/Button/Button';
-import ErrorMsg from '../../../../components/error/ErrorMsg';
-import InputField from '../../../../components/forms/InputField/InputField';
+import Button from '../../../../../components/forms/Button/Button';
+import ErrorMsg from '../../../../../components/error/ErrorMsg';
+import InputField from '../../../../../components/forms/InputField/InputField';
 
 const EmailForm = (props: { onClick: any }) => {
     const [email, setEmail] = useState('');

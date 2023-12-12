@@ -1,43 +1,41 @@
-/* Centering the form on the page */
-.form-container {
+/* .form-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Adjust as needed */
+  height: 100vh;
 }
 
-/* Style for form inputs and labels */
 form {
   display: flex;
   flex-direction: column;
-  max-width: 400px; /* Adjust width as needed */
+  max-width: 400px;
 }
 
 label {
-  margin-bottom: 5px; /* Space between label and input */
+  margin-bottom: 5px;
 }
 
 input,
 select,
 textarea {
-  margin-bottom: 10px !important; /* Space between inputs */
-  padding: 8px; /* Adjust padding as needed */
-  border-radius: 4px; /* Rounded corners */
-  border: 1px solid #ccc; /* Border color */
-  width: 100%; /* Full width */
+  margin-bottom: 10px !important;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
 }
 
 button {
-  padding: 10px; /* Adjust padding as needed */
+  padding: 10px;
   border: none;
   border-radius: 4px;
   margin-bottom: 10px !important;
-  background-color: #007bff; /* Button color */
-  color: white; /* Text color */
+  background-color: #007bff;
+  color: white;
   cursor: pointer;
-  width: 100%; /* Full width */
+  width: 100%;
 }
 
 button:hover {
-  background-color: #0056b3; /* Hover color */
-}
+  background-color: #0056b3;
+} */

@@ -1,0 +1,64 @@
+.section {
+    margin: 2% 10%;
+    display: grid;
+    grid-template-columns: 45% 50%;
+    column-gap: 5%;
+    max-height: 30%;
+}
+
+.subsection {
+    text-align: center;
+}
+
+.subsection img {
+    height: 150px;
+}
+
+.subsection button {
+    margin-top: 3%;
+}
+
+.mainInfo {
+    height: 42%;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    // margin-bottom: 15px
+}
+
+.input {
+    margin: 15px 0;
+    width: 100%;
+}
+
+.warning {
+    padding: 3.5% 15%;
+    margin: 2.3% 0;
+    border-radius: 10px;
+    background-color: var(--card-background);
+    font-size: 15px;
+}
+
+.subsectionRight {
+    display: grid;
+    grid-template-rows: 1.7fr 0.7fr 0.7fr 0.65fr;
+    justify-content: center;
+    align-items: center;
+}
+
+.subsectionRight div, span {
+    align-self: flex-start;
+}
+
+.subsectionRight button {
+    margin-top: 0;
+}
+
+.subsectionRight span {
+    margin-top: 1px;
+}
+
+.subsectionRight input {
+    width: 100%;
+}
+
+

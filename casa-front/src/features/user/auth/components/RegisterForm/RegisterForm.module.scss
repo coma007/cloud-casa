@@ -1,11 +1,11 @@
 .inlineInput {
     width: 100%;
-    margin: 12px 0px;
+    margin: 7px 0px;
 }
 
 .input {
     width: 100%;
-    margin: 12px 0px;
+    margin: 7px 0px;
 }
 
 .button {
@@ -19,8 +19,17 @@
     column-gap: 20px;
 }
 
+.fullLineInput {
+    margin: 7px 0px;
+    display: block;
+    width: calc(200% + 20px);
+}
+
 .grid div{
     width: 100%;
 }
 
+.inline {
+    display: flex;
+}
 

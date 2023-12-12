@@ -1,0 +1,52 @@
+.menu {
+    height: 100%;
+    padding: 15px 0;
+    display: grid;
+    grid-template-columns: 3.5fr 6fr 6fr;
+    column-gap: 15px;
+    background-color: var(--primary-color-background);
+    text-align: center;
+}
+
+.menuGrid {
+    width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.menuRight {
+    margin-right: 5vw;
+    justify-items: end;
+}
+
+.rightMenu {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+.logo {
+    height: 32px;
+    width: auto;
+}
+
+.nonMainOption {
+    height: 22px;
+    width: auto;
+    opacity: 90%;
+}
+
+.logo:hover {
+    transform: none;
+}
+
+.separator {
+    width: 50%;
+    height: 0%;
+    border: 1px solid rgb(180, 180, 180);
+    margin: 0 auto;
+}
+
+.margin {
+    margin-left: 3px;
+}

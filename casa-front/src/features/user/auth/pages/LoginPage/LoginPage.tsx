@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom'
 import React from 'react'
 import LoginForm from '../../components/LoginForm/LoginForm'
 import { AuthService } from '../../services/AuthService'
+import Banner from '../../../../../components/navigation/Banner/Banner'
 
 const LoginPage = () => {
     let [isBasePage, setIsBasePage] = useState<boolean>(true);
@@ -18,6 +19,9 @@ const LoginPage = () => {
 
     return (
         <div className="page pageTwoCols">
+            <div>
+                <Banner />
+            </div>
             {isBasePage === true ? (
                 <div className="rightCol">
                     <div className="authTitle">
