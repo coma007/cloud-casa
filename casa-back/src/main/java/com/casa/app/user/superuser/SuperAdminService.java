@@ -1,7 +1,6 @@
 package com.casa.app.user.superuser;
 
 import com.casa.app.exceptions.NotFoundException;
-import com.casa.app.security.TokenBasedAuthentication;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
 import com.casa.app.user.roles.Role;
