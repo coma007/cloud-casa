@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-            filterChain.doFilter(request, response);
+
         }catch (ExpiredJwtException e){
             exceptionResolver.resolveException(request, response, null, e);
 //            String isRefreshToken = request.getHeader("isRefreshToken");
@@ -84,8 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //                allowForRefreshToken(e, request, jwt);
 //            }
         }
-
-
+        filterChain.doFilter(request, response);
     }
 
 }
