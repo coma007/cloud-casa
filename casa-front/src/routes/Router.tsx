@@ -31,7 +31,7 @@ const Router = () => {
                     <Route path="/" element={<RegisterAdminPage />} />
                 </Route>
                 <Route element={<SuperAdminInitAuthGuard />}>
-                    <Route path="/register/admin" element={<RegisterAdminPage />} />
+                    <Route path="init/register/admin" element={<RegisterAdminPage />} />
                     <Route path="/" element={<RegisterAdminPage />} />
                 </Route>
                 <Route element={<RegularUserAuthGuard />}>
