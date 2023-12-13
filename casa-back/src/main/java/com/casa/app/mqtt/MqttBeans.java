@@ -63,6 +63,8 @@ public class MqttBeans {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
                 if (topic.equals("ping")) {
                     deviceStatusService.pingHandler(message.getPayload().toString());
+                } else if (topic.equals("SolarPanelSystem")) {
+                    System.out.println(message.getPayload().toString());
                 }
             }
         };

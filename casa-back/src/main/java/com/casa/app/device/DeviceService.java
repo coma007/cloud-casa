@@ -26,7 +26,7 @@ public class DeviceService {
         List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             String type = getType(d);
-            devicesDTO.add(new DeviceSimulationDTO(d.getName(), type));
+            devicesDTO.add(new DeviceSimulationDTO(d.getId().toString(), type));
         }
         return devicesDTO;
     }
