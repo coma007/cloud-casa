@@ -16,6 +16,7 @@ public class RealEstateController {
     RealEstateService realEstateService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('regular user')")
     public ResponseEntity<RealEstateDTO> create(@RequestBody RealEstateCreateDTO estateDTO) {
         return new ResponseEntity<>(realEstateService.create(estateDTO), HttpStatus.OK);
     }

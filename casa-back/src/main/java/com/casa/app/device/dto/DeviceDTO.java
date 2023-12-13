@@ -1,4 +1,4 @@
-package com.casa.app.device;
+package com.casa.app.device.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

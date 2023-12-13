@@ -1,5 +1,6 @@
 package com.casa.app.device;
 
+import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.home.air_conditioning.AirConditioning;
 import com.casa.app.device.home.air_conditioning.AirConditioningDTO;
 import com.casa.app.device.home.air_conditioning.AirConditioningRepository;

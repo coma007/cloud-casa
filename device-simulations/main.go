@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"time"
 )
@@ -11,11 +14,49 @@ func messageHandler(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
 }
 
+type Device struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
 func main() {
+	url := "http://localhost:8080/api/device/public/simulation/getAll"
+
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("Response Status:", resp.Status)
+
+	// Read the response body
+	responseBody, err := ioutil.ReadAll(resp.Body)
+
+	var data []Device
+
+	// Unmarshal the JSON string into the slice
+	err = json.Unmarshal(responseBody, &data)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	// Print the parsed data (as a slice of maps)
+	fmt.Println("Parsed JSON:")
+
+	if err != nil {
+		panic(err)
+	}
+
 	devices := make(map[string]string)
-	devices["Klima1"] = "Klima1"
-	devices["Klima2"] = "Klima2"
-	devices["Klima3"] = "Klima3"
+	for _, item := range data {
+		devices[item.Name] = item.Name
+	}
+	//devices["Senzor1"] = "Senzor1"
+	//devices["Klima1"] = "Klima1"
+	//devices["Klima2"] = "Klima2"
+	//devices["Klima3"] = "Klima3"
 	for k, _ := range devices {
 		go startSimulation(k, "ping")
 	}
@@ -25,8 +66,8 @@ func main() {
 }
 
 func startSimulation(deviceName string, topic string) {
-	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883") // MQTT broker URL
-	opts.SetClientID(deviceName)                                      // Client ID
+	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883") // MQTT broker URL
+	opts.SetClientID(deviceName)                                        // Client ID
 	opts.SetUsername("admin")
 	opts.SetPassword("12345678")
 	client := mqtt.NewClient(opts)
