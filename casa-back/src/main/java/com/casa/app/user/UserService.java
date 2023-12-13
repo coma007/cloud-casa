@@ -18,14 +18,21 @@ import com.casa.app.util.email.EmailService;
 import com.casa.app.util.email.JWTUtil;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -58,12 +65,13 @@ public class UserService {
     }
 
 
-    public void changePassword(NewPasswordDTO dto) throws InvalidCredentialsException, NotFoundException {
+    public String changePassword(NewPasswordDTO dto) throws InvalidCredentialsException, NotFoundException {
         User tokenUser = getUserByToken();
         if(!passwordEncoder.matches(dto.getOldPassword(), tokenUser.getPassword()))
             throw new InvalidCredentialsException();
         tokenUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(tokenUser);
+
         if(Objects.equals(tokenUser.getRole().getName(), Roles.superAdminInit)){
             Optional<SuperAdmin> superAdminO = superAdminRepository.findByUsername(tokenUser.getUsername());
             if(superAdminO.isEmpty()) throw new NotFoundException();
@@ -73,7 +81,17 @@ public class UserService {
             if(superadminRoleO.isEmpty()) throw new NotFoundException();
             superAdminO.get().setRole(superadminRoleO.get());
 
+            String token = jwtUtil.generateToken(superAdminO.get().getUsername(), superAdminO.get().getAuthorities());
+            superAdminO.get().setJwt(token);
             superAdminRepository.save(superAdminO.get());
+
+            List<GrantedAuthority> actualAuthorities = new ArrayList<>();
+            actualAuthorities.add(new SimpleGrantedAuthority(superAdminO.get().getRole().getName()));
+            Authentication newAuth = new UsernamePasswordAuthenticationToken(superAdminO.get().getUsername(), superAdminO.get().getPassword(), actualAuthorities);
+
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            return token;
         }
+        return tokenUser.getJwt();
     }
 }

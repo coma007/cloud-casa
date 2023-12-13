@@ -32,10 +32,15 @@ export const AuthService = {
     return response.data;
   },
 
+  // COULD RETURN EMPTY STRING
   changePassword: async (newPassword: NewPassword): Promise<string> => {
     let url = CHANGE_PASSWORD();
     let response = await axios.put(url, newPassword);
-    return response.data;
+    let token = response.data;
+    if(token !== ''){
+      localStorage.setItem("token", token);
+    }
+    return token;
   },
 
   logout: () => {

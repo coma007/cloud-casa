@@ -35,8 +35,8 @@ public class UserController {
     @PreAuthorize("hasAnyAuthority('super admin', 'admin', 'regular user', 'super admin init')")
     public ResponseEntity<?> changePassword(@RequestBody NewPasswordDTO dto){
         try {
-            userService.changePassword(dto);
-            return ResponseEntity.ok().build();
+            String newToken = userService.changePassword(dto);
+            return ResponseEntity.ok().body(newToken);
         } catch (InvalidCredentialsException e) {
             return ResponseEntity.badRequest().body("Wrong credentials");
         } catch (NotFoundException e) {
@@ -45,10 +45,11 @@ public class UserController {
     }
 
     @GetMapping("/init")
-    @PreAuthorize("hasAnyAuthority('super admin')")
+    @PreAuthorize("hasAnyAuthority('super admin', 'super admin init')")
     public ResponseEntity<?> isInit(){
         try {
             boolean result = superAdminService.isInit();
+
             return ResponseEntity.ok().body(result);
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body("User not found");

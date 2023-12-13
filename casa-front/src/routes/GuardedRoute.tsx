@@ -15,12 +15,15 @@ export const NonAuthGuard = () => {
     const role = getRole();
     if (role === "super admin") {
         return <Navigate to="/register/admin" />
+    } else if (role === "super admin init") {
+        return <Navigate to="/init/register/admin" />
     } else if (role === "admin") {
         return <Navigate to="/requests" />
     }
     else {
         return <Navigate to="/real-estate-overview" />
-    }
+    } 
+
 }
 
 export const AdminAuthGuard = () => {
@@ -29,6 +32,10 @@ export const AdminAuthGuard = () => {
 
 export const SuperAdminAuthGuard = () => {
     return getRole() === "super admin" ? <Outlet /> : <Navigate to="/login" />
+}
+
+export const SuperAdminInitAuthGuard = () => {
+    return getRole() === "super admin init" ? <Outlet /> : <Navigate to="/login" />
 }
 
 export const RegularUserAuthGuard = () => {

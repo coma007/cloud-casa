@@ -36,6 +36,7 @@ const RegisterAdminForm = () => {
     (async function () {
         try {
             const init = await UserService.isSuperAndInit();
+            // localStorage.setItem("token", init.Token);
             setShowModal(init);
         } catch (error) {
             console.error(error);
