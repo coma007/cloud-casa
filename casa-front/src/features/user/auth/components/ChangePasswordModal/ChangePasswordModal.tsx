@@ -35,7 +35,7 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
       }
       const handleFormSubmit = async () => {
             try {
-                await AuthService.changePassword({ OldPassword: oldPassword, NewPassword: newPassword });
+                let token = await AuthService.changePassword({ OldPassword: oldPassword, NewPassword: newPassword });
                 props.setShow(false);
               } catch (error: any) {
                 alert(error.response.data);
@@ -49,8 +49,9 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
       height="70%"
       isOpen={props.show}
       closeWithdrawalModal={null}
-      okWithdrawalModal={null}
+      okWithdrawalModal={handleButtonSubmit}
       title="Change password"
+      formId='NULL VALUE'
       buttonText="Change" >
           <Formik
                 innerRef={formRef} 
@@ -88,9 +89,6 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
                 </Form>
                 )}
             </Formik>
-            <span className="alignRight">
-                <Button submit={"button"}    onClick={handleButtonSubmit} text="Change" />
-            </span>
   </ModalWindow>
     )
 }
