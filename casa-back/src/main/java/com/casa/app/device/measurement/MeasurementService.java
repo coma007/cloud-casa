@@ -46,14 +46,19 @@ public class MeasurementService {
                         (String) record.getValueByKey("id"),
                         (Double) record.getValueByKey("brightness"),
                         (Boolean) record.getValueByKey("is_on"),
-                        record.getTime());
+                        record.getTime()
+                );
             case (MeasurementType.sprinklerSystem):
                 return new SprinklerSystemMeasurement(
                         // add values from record
                 );
             case (MeasurementType.vehicleGate):
                 return new VehicleGateMeasurement(
-                        // add values from record
+                        (String) record.getValueByKey("id"),
+                        (Boolean) record.getValueByKey("is_leaving"),
+                        (Double) record.getValueByKey("distance"),
+                        (String) record.getValueByKey("licence_plates"),
+                        record.getTime()
                 );
             default:
                 throw new RuntimeException("Measurement not valid!");

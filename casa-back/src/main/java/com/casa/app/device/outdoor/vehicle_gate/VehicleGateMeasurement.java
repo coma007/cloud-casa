@@ -18,7 +18,14 @@ public class VehicleGateMeasurement extends AbstractMeasurement {
     @Column(tag = true)
     String id;
 
-    // add your custom columns
+    @Column
+    Boolean isLeaving;
+
+    @Column
+    Double distance;
+
+    @Column
+    String licence_plates;
 
     @Column(timestamp = true)
     Instant timestamp;
