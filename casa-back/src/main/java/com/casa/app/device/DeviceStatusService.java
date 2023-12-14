@@ -1,12 +1,16 @@
 package com.casa.app.device;
 
 
+import com.casa.app.device.large_electric.house_battery.HouseBattery;
+import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.mqtt.MqttGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static java.lang.Long.parseLong;
 
@@ -15,6 +19,8 @@ public class DeviceStatusService {
 
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private HouseBatteryService houseBatteryService;
 
     //message: name~PING
     public void pingHandler(String message) {
@@ -27,6 +33,10 @@ public class DeviceStatusService {
         device.setLastSeen(new Date());
         deviceRepository.save(device);
         System.out.println(message);
+        if (device.getRealEstate() == null) {
+            return;
+        }
+        houseBatteryService.manageEnergy(device, device.getEnergyConsumption(), false);
     }
 
     @Scheduled(fixedDelay = 1000*30)

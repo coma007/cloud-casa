@@ -1,6 +1,8 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
+import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -58,13 +60,20 @@ public class MqttBeans {
         return new MessageHandler() {
             @Autowired
             private DeviceStatusService deviceStatusService;
+            @Autowired
+            private SolarPanelSystemService solarPanelSystemService;
+            @Autowired
+            private HouseBatteryService houseBatteryService;
+
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
                 if (topic.equals("ping")) {
                     deviceStatusService.pingHandler(message.getPayload().toString());
-                } else if (topic.equals("SolarPanelSystem")) {
-                    System.out.println(message.getPayload().toString());
+                } else if (topic.equals("solar_panel_system")) {
+                    solarPanelSystemService.handleMessage(message.getPayload().toString());
+                } else if (topic.equals("house_battery")) {
+                    houseBatteryService.handleMessage(message.getPayload().toString());
                 }
             }
         };

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"device-simulations/solarPanels"
+	"device-simulations/house_battery"
+	"device-simulations/solar_panels"
 	"encoding/json"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
@@ -60,17 +61,15 @@ func main() {
 	//devices["Klima3"] = "Klima3"
 	for k, v := range devices {
 		if v == "SolarPanelSystem" {
-			go solarPanels.StartSimulation(k)
+			go solar_panels.StartSimulation(k)
+		} else if v == "HouseBattery" {
+			go house_battery.StartSimulation(k)
 		}
 	}
 	for {
 		time.Sleep(1 * time.Second)
 	}
 }
-
-//func main() {
-//	fmt.Println(solarPanels.CalculateOutput(15, 20))
-//}
 
 func startSimulation(deviceName string, topic string) {
 	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883") // MQTT broker URL

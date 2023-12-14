@@ -1,4 +1,4 @@
-package solarPanels
+package solar_panels
 
 import (
 	"device-simulations/utils"
@@ -10,7 +10,7 @@ import (
 )
 
 type SolarPanel struct {
-	Name          string
+	Id            string
 	Effectiveness float64
 	Size          float64
 	Working       bool
@@ -31,24 +31,30 @@ func calculateTimeOfDayEffectiveness() float64 {
 	}
 }
 
-func CalculateOutput(size float64, effectiveness float64) float64 {
+func calculateOutput(size float64, effectiveness float64) float64 {
 	output := size * 1000
 	output = (output * effectiveness) / 100
 	output *= 2.209
 	output /= 1000
 	output /= 24
 	output /= 60
-	return math.Round(output * calculateTimeOfDayEffectiveness())
+	timeEffectiveness := calculateTimeOfDayEffectiveness()
+	output *= timeEffectiveness
+	output = math.Floor(output*1000) / 1000
+	if output < 0.001 && timeEffectiveness > 0 {
+		output = 0.001
+	}
+	return output
 }
 
 func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "-")
 	if tokens[1] == "ON" {
-		fmt.Printf("Device %s is turning ON\n", panel.Name)
+		fmt.Printf("Device %s is turning ON\n", panel.Id)
 		panel.ToggleWorking(true)
 	} else {
-		fmt.Printf("Device %s is turning OFF\n", panel.Name)
+		fmt.Printf("Device %s is turning OFF\n", panel.Id)
 		panel.ToggleWorking(false)
 	}
 	//fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -56,20 +62,20 @@ func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 
 func StartSimulation(deviceId string) {
 	device := SolarPanel{
-		Name:          deviceId,
+		Id:            deviceId,
 		Effectiveness: 20,
 		Size:          15,
 		Working:       true,
 	}
-	client := utils.MqttSetup(device.Name, device.messageHandler)
+	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
 	counter := 1
 	for {
 		if counter%4 == 0 && device.Working {
-			value := fmt.Sprintf("%f", CalculateOutput(device.Size, device.Effectiveness))
+			value := fmt.Sprintf("%f", calculateOutput(device.Size, device.Effectiveness))
 			message := deviceId + "-" + value
 			fmt.Println(message)
-			utils.SendMessage(client, "SolarPanelSystem", message)
+			utils.SendMessage(client, "solar_panel_system", message)
 			counter = 0
 		}
 		if device.Working {

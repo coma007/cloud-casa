@@ -54,7 +54,7 @@ public class WebSecurityConfig  {
         return (web) -> web
                 .ignoring()
                 .requestMatchers(HttpMethod.POST, "/api/login", "/api/register",
-                        "/api/device/register", "/api/realEstate/create",
+                        "/api/device/register",
                         "/h2-console/**")
                 .requestMatchers(HttpMethod.GET,
                         "/webjars/**",
@@ -68,7 +68,7 @@ public class WebSecurityConfig  {
 //                      so add public to non auth enpoint somewhere
                         "/api/location/getAllCountries", "/api/location/getAllCities/{country}"
                         )
-                .requestMatchers(new RegexRequestMatcher(".*/api.*/public.*", "GET"))
+                .requestMatchers(new RegexRequestMatcher(".*/api.*/public.*", null))
                 .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage");
 
     }
