@@ -41,13 +41,10 @@ public class SolarPanelSystemService {
         return true;
     }
     
-    public void handleMessage(String message) {
-        System.out.println(message);
+    public void handleMessage(Long id, String message) {
         // TODO: Save to influx
-        String[] tokens = message.split("-");
-        Long deviceId = parseLong(tokens[0]);
-        Device device = deviceRepository.findById(deviceId).orElse(null);
-        double power = Double.parseDouble(tokens[1]);
+        Device device = deviceRepository.findById(id).orElse(null);
+        double power = Double.parseDouble(message);
         if (device == null || device.getRealEstate() == null) {
             return;
         }

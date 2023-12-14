@@ -1,8 +1,26 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+<<<<<<< HEAD
+import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
+import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
+import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
+import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
+import com.casa.app.device.large_electric.house_battery.HouseBatteryMeasurement;
+import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemMeasurement;
+import com.casa.app.device.measurement.MeasurementType;
+import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
+import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
+import com.casa.app.device.outdoor.lamp.LampService;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
+=======
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
+>>>>>>> develop
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +46,7 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
+        options.setServerURIs(new String[] {"tcp://localhost:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -61,6 +79,9 @@ public class MqttBeans {
             @Autowired
             private DeviceStatusService deviceStatusService;
             @Autowired
+            private LampService lampService;
+            @Autowired
+            private VehicleGateService vehicleGateService;
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
@@ -68,12 +89,48 @@ public class MqttBeans {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
-                if (topic.equals("ping")) {
-                    deviceStatusService.pingHandler(message.getPayload().toString());
-                } else if (topic.equals("solar_panel_system")) {
-                    solarPanelSystemService.handleMessage(message.getPayload().toString());
-                } else if (topic.equals("house_battery")) {
-                    houseBatteryService.handleMessage(message.getPayload().toString());
+                String content = message.getPayload().toString();
+                Long id = Long.parseLong(content.split("~")[0]);
+                content = content.split("~")[1];
+                switch (topic) {
+                    case ("ping"):
+                        deviceStatusService.pingHandler(content);
+                        break;
+                    case (MeasurementType.airConditioning):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.ambientSensor):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.washingMachine):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.electricVehicleCharger):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.houseBattery):
+                        houseBatteryService.handleMessage(id, content);
+                        break;
+                    case (MeasurementType.solarPanelSystem):
+                        solarPanelSystemService.handleMessage(id, content);
+                        break;
+                    case (MeasurementType.lampBrightness):
+                        lampService.brightnessHandler(id, content);
+                        break;
+                    case (MeasurementType.lampCommand):
+                        lampService.commandHandler(id, content, "SIMULATION");
+                        break;
+                    case (MeasurementType.sprinklerSystem):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.vehicleGateLicencePlates):
+                        vehicleGateService.licencePlatesHandler(id, content);
+                        break;
+                    case (MeasurementType.vehicleGateCommand):
+                        vehicleGateService.commandHandler(id, content);
+                        break;
+                    default:
+                        break;
                 }
             }
         };

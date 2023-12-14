@@ -17,7 +17,7 @@ public class HouseBatteryService {
     @Autowired
     private MqttGateway mqttGateway;
 
-    public void handleMessage(String message) {
+    public void handleMessage(Long id, String message) {
         System.out.println(message);
         // TODO: save in influx
     }

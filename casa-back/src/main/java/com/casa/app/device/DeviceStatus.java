@@ -1,3 +1,5 @@
-package com.casa.app.device;public enum DeviceStatus {
+package com.casa.app.device;
+
+public enum DeviceStatus {
     OFFLINE, ONLINE
 }
