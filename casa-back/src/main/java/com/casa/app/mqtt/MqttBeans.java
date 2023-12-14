@@ -1,6 +1,7 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+<<<<<<< HEAD
 import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
@@ -16,6 +17,10 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
+=======
+import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
+import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
+>>>>>>> develop
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -77,6 +82,9 @@ public class MqttBeans {
             private LampService lampService;
             @Autowired
             private VehicleGateService vehicleGateService;
+            private SolarPanelSystemService solarPanelSystemService;
+            @Autowired
+            private HouseBatteryService houseBatteryService;
 
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
@@ -101,10 +109,10 @@ public class MqttBeans {
                         // call service handler here
                         break;
                     case (MeasurementType.houseBattery):
-                        // call service handler here
+                        houseBatteryService.handleMessage(id, content);
                         break;
                     case (MeasurementType.solarPanelSystem):
-                        // call service handler here
+                        solarPanelSystemService.handleMessage(id, content);
                         break;
                     case (MeasurementType.lampBrightness):
                         lampService.brightnessHandler(id, content);

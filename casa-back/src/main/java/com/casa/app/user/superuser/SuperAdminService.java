@@ -8,15 +8,21 @@ import com.casa.app.user.UserRepository;
 import com.casa.app.user.roles.RoleRepository;
 import com.casa.app.user.roles.Roles;
 import com.casa.app.util.email.FileUtil;
+import com.casa.app.util.email.JWTUtil;
 import com.casa.app.util.email.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.NotDirectoryException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -35,6 +41,9 @@ public class SuperAdminService {
 
     @Autowired
     private SuperAdminRepository superAdminRepository;
+
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @EventListener(ApplicationReadyEvent.class)
     public void createSuperUserPassword() throws NotFoundException {
@@ -80,6 +89,12 @@ public class SuperAdminService {
         User tokenUser = userService.getUserByToken();
         Optional<SuperAdmin> userO = superAdminRepository.findByUsername(tokenUser.getUsername());
         if(userO.isEmpty()) throw new NotFoundException();
+
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtUtil.getEmailFromToken(authToken));
+//        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+//        authentication.setToken(authToken);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        String token = jwtUtil.generateToken(userO.get().getUsername(), new ArrayList<>(userO.get().getRole()))
         return userO.get().isInit();
     }
 }

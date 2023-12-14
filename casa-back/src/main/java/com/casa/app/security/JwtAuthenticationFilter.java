@@ -1,6 +1,7 @@
 package com.casa.app.security;
 
 import com.casa.app.util.email.JWTUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +31,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver exceptionResolver;
 
+//    TODO
+//    private void allowForRefreshToken(ExpiredJwtException ex, HttpServletRequest request, String authToken) {
+//
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(jwtUtil.getEmailFromToken(authToken));
+//        // create a UsernamePasswordAuthenticationToken with null values.
+//        TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
+//        authentication.setToken(authToken);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        // Set the claims so that in controller we will be using it to create
+//        // new JWT
+//        request.setAttribute("claims", ex.getClaims());
+//
+//    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -48,15 +63,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             exceptionResolver.resolveException(request, response, null, e);
         }
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+
+        }catch (ExpiredJwtException e){
+            exceptionResolver.resolveException(request, response, null, e);
+//            String isRefreshToken = request.getHeader("isRefreshToken");
+//            String requestURL = request.getRequestURL().toString();
+//            // allow for Refresh Token creation if following conditions are true.
+//            if (isRefreshToken != null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken")) {
+//                allowForRefreshToken(e, request, jwt);
+//            }
         }
         filterChain.doFilter(request, response);
     }

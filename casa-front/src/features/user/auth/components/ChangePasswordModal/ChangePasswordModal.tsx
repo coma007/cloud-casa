@@ -8,6 +8,7 @@ import { AuthService } from '../../services/AuthService';
 import InputField from '../../../../../components/forms/InputField/InputField';
 import ErrorMsg from '../../../../../components/error/ErrorMsg';
 import Button from '../../../../../components/forms/Button/Button';
+import ModalWindow from '../../../../../components/view/Modal/ModalWindow';
 
 const ChangePasswordModal = (props: { show: any, setShow: any }) => {
     const [oldPassword, setOldPassword] = useState('');
@@ -34,7 +35,7 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
       }
       const handleFormSubmit = async () => {
             try {
-                await AuthService.changePassword({ OldPassword: oldPassword, NewPassword: newPassword });
+                let token = await AuthService.changePassword({ OldPassword: oldPassword, NewPassword: newPassword });
                 props.setShow(false);
               } catch (error: any) {
                 alert(error.response.data);
@@ -44,17 +45,15 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
 
 
     return (
-        <div
-        className="modal show"
-        style={{ display: 'block', position: 'initial' }}
-      >
-        <Modal show={props.show}>
-          <Modal.Header>
-            <Modal.Title>Change password</Modal.Title>
-          </Modal.Header>
-  
-          <Modal.Body>
-            <Formik
+      <ModalWindow
+      height="70%"
+      isOpen={props.show}
+      closeWithdrawalModal={null}
+      okWithdrawalModal={handleButtonSubmit}
+      title="Change password"
+      formId='NULL VALUE'
+      buttonText="Change" >
+          <Formik
                 innerRef={formRef} 
                 initialValues={{
                     "old password": "",
@@ -90,16 +89,7 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
                 </Form>
                 )}
             </Formik>
-          </Modal.Body>
-  
-          <Modal.Footer>
-            <span className="alignRight">
-                <Button submit={"button"}    onClick={handleButtonSubmit} text="Change" />
-            </span>
-          </Modal.Footer>
-        </Modal>
-      </div>
-
+  </ModalWindow>
     )
 }
 

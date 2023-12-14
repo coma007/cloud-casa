@@ -1,6 +1,6 @@
 package com.casa.app.device.outdoor.sprinkler_system;
 
-import com.casa.app.device.DeviceDTO;
+import com.casa.app.device.dto.DeviceDTO;
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.PowerSupplyType;
 import lombok.AllArgsConstructor;

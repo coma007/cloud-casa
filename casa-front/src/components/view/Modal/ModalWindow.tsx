@@ -27,7 +27,7 @@ const ModalWindow = (props: { height: string, isOpen: any, okWithdrawalModal: an
                 <div className={ModalWindowCSS.buttons}>
                     <button className={ModalWindowCSS.accentButton}
                         onClick={props.okWithdrawalModal} type={props.formId ? "submit" : undefined} form={props.formId}>{props.buttonText}</button>
-                    <button className={ModalWindowCSS.cancelButton} onClick={props.closeWithdrawalModal}>Discard</button>
+                    {props.closeWithdrawalModal !== null && <button className={ModalWindowCSS.cancelButton} onClick={props.closeWithdrawalModal}>Discard</button>}
                 </div>
             </div>
         </Modal>
