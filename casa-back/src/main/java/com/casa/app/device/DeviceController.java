@@ -1,7 +1,6 @@
 package com.casa.app.device;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
-import com.casa.app.device.outdoor.lamp.LampMeasurement;
 import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.influxdb.InfluxDBConfig;
 import com.casa.app.influxdb.InfluxDBService;

@@ -80,7 +80,7 @@ public class InfluxDBService {
                 config.bucket,
                 fromString, toString,
                 measurement, device.getId(),
-                user != null ? String.format(" and r[\"user_id\"] == \"%s\"", user.getId()) : "");
+                user != null ? String.format(" and r[\"user_id\"] == \"%s\"", user.getUsername()) : "");
         return flux;
     }
 

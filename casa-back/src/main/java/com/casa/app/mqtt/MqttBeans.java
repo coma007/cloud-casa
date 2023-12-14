@@ -1,6 +1,21 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
+import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
+import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
+import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
+import com.casa.app.device.large_electric.house_battery.HouseBatteryMeasurement;
+import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemMeasurement;
+import com.casa.app.device.measurement.MeasurementType;
+import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
+import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
+import com.casa.app.device.outdoor.lamp.LampService;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -58,12 +73,61 @@ public class MqttBeans {
         return new MessageHandler() {
             @Autowired
             private DeviceStatusService deviceStatusService;
+            @Autowired
+            private LampService lampService;
+            @Autowired
+            private VehicleGateService vehicleGateService;
+
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
-                if (topic.equals("ping")) {
-                    deviceStatusService.pingHandler(message.getPayload().toString());
+                String content = message.getPayload().toString();
+                switch (topic) {
+                    case ("ping"):
+                        deviceStatusService.pingHandler(content);
+                        break;
+                    case (MeasurementType.airConditioning):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.ambientSensor):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.washingMachine):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.electricVehicleCharger):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.houseBattery):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.solarPanelSystem):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.lampBrightness):
+                        lampService.brightnessHandler(content);
+                        break;
+                    case (MeasurementType.lampCommand):
+                        lampService.commandHandler(content);
+                        break;
+                    case (MeasurementType.sprinklerSystem):
+                        // call service handler here
+                        break;
+                    case (MeasurementType.vehicleGateLicencePlates):
+                        vehicleGateService.licencePlatesHandler(content);
+                        break;
+                    case (MeasurementType.vehicleGateCommand):
+                        vehicleGateService.commandHandler(content);
+                        break;
+                    case (MeasurementType.vehicleGateMode):
+                        vehicleGateService.modeHandler(content);
+                        break;
+                    default:
+                        break;
                 }
+
+                }
+
             }
         };
     }

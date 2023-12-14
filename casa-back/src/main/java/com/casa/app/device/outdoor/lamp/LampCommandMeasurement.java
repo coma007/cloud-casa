@@ -1,4 +1,4 @@
-package com.casa.app.device.outdoor.vehicle_gate;
+package com.casa.app.device.outdoor.lamp;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,22 +10,20 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.sprinklerSystem)
+@Measurement(name = MeasurementType.lampCommand)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class VehicleGateMeasurement extends AbstractMeasurement {
+public class LampCommandMeasurement extends AbstractMeasurement {
+
     @Column(tag = true)
     String id;
 
     @Column
-    Boolean isLeaving;
+    Boolean is_on;
 
     @Column
-    Double distance;
-
-    @Column
-    String licence_plates;
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;
