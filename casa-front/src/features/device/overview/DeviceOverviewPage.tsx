@@ -8,6 +8,9 @@ import Button from "../../../components/forms/Button/Button";
 import { RealEstate } from "../../estate/RealEstate";
 import { DeviceService } from "../DeviceService";
 import { WebSocketService } from "../../../api/websocket/WebSocketService";
+// import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import SockJS from "sockjs-client";
 
 const DeviceOverviewPage = () => {
 
@@ -27,19 +30,19 @@ const DeviceOverviewPage = () => {
         })()
     }, []);
 
-    const [socket, setSocket] = useState<WebSocket | null>(null);
+    // const [socket, setSocket] = useState<WebSocket | null>(null);
 
-    useEffect(() => {
-        WebSocketService.createSocket(setSocket);
-    }, []);
+    // useEffect(() => {
+    //     WebSocketService.createSocket(setSocket);
+    // }, []);
 
-    const processValue = (message: any) => {
-        console.log(message);
-    }
+    // const processValue = (message: any) => {
+    //     console.log(message);
+    // }
 
-    useEffect(() => {
-        WebSocketService.defineSocket(socket, "myTopic", processValue);
-    }, [socket]);
+    // useEffect(() => {
+    //     WebSocketService.defineSocket(socket, "myTopic", processValue);
+    // }, [socket]);
     
 
     const headers: TableRow = { 
@@ -73,6 +76,28 @@ const DeviceOverviewPage = () => {
         }
         setTableData(data);
     }
+    let isLoaded = false;
+
+    let socket = new SockJS("http://localhost:8080/socket");
+    let stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () =>{
+      isLoaded = true;
+      openSocket();
+    });
+    
+    function handleMessage(message: {body: string}){
+        let activeDriversLocations: [{latitude: number, longitude: number}] = JSON.parse(message.body);
+        // refreshActiveDrivers(activeDriversLocations);
+    }
+    function openSocket() {
+        if(isLoaded){
+          stompClient!.subscribe('/active/vehicle/location', (message: {body: string}) =>{
+          handleMessage(message);
+          });
+        }
+      }
+    
 
 
     return (
@@ -88,6 +113,7 @@ const DeviceOverviewPage = () => {
                 <div className={DeviceOverviewPageCSS.table} >
                     <Table headers={headers} rows={tableData} />
                 </div>
+                
                 {/* <ModalWindow
                     height="75%"
                     isOpen={withdrawIsOpen}

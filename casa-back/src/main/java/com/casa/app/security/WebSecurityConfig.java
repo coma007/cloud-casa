@@ -63,13 +63,15 @@ public class WebSecurityConfig  {
                         "/h2-console/**",
                         "/api/realEstateRequest/getAll",
                         "/api/verify",
+                        "/socket",
 //                      CAREFUL
 //                      "/api/user/{id}" conflicts with for example "/api/user/init where auth is required,
 //                      so add public to non auth enpoint somewhere
                         "/api/location/getAllCountries", "/api/location/getAllCities/{country}"
                         )
                 .requestMatchers(new RegexRequestMatcher(".*/api.*/public.*", null))
-                .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage");
+                .requestMatchers(HttpMethod.PATCH, "/api/realEstateRequest/manage")
+                .requestMatchers(new RegexRequestMatcher(".*socket.*", null));
 
     }
 }
