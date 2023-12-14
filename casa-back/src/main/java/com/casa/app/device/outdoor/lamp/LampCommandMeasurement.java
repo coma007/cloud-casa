@@ -17,7 +17,7 @@ import java.time.Instant;
 public class LampCommandMeasurement extends AbstractMeasurement {
 
     @Column(tag = true)
-    String id;
+    Long id;
 
     @Column
     Boolean is_on;

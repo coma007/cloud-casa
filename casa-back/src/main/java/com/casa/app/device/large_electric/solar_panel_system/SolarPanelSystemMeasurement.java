@@ -17,7 +17,7 @@ import java.time.Instant;
 public class SolarPanelSystemMeasurement extends AbstractMeasurement {
 
     @Column(tag = true)
-    String id;
+    Long id;
 
     // add your custom columns
 

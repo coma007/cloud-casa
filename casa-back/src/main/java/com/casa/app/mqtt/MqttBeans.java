@@ -82,6 +82,8 @@ public class MqttBeans {
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
                 String content = message.getPayload().toString();
+                Long id = Long.parseLong(content.split("~")[0]);
+                content = content.split("~")[1];
                 switch (topic) {
                     case ("ping"):
                         deviceStatusService.pingHandler(content);
@@ -105,29 +107,23 @@ public class MqttBeans {
                         // call service handler here
                         break;
                     case (MeasurementType.lampBrightness):
-                        lampService.brightnessHandler(content);
+                        lampService.brightnessHandler(id, content);
                         break;
                     case (MeasurementType.lampCommand):
-                        lampService.commandHandler(content);
+                        lampService.commandHandler(id, content, "SIMULATION");
                         break;
                     case (MeasurementType.sprinklerSystem):
                         // call service handler here
                         break;
                     case (MeasurementType.vehicleGateLicencePlates):
-                        vehicleGateService.licencePlatesHandler(content);
+                        vehicleGateService.licencePlatesHandler(id, content);
                         break;
                     case (MeasurementType.vehicleGateCommand):
-                        vehicleGateService.commandHandler(content);
-                        break;
-                    case (MeasurementType.vehicleGateMode):
-                        vehicleGateService.modeHandler(content);
+                        vehicleGateService.commandHandler(id, content);
                         break;
                     default:
                         break;
                 }
-
-                }
-
             }
         };
     }

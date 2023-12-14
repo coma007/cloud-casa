@@ -16,7 +16,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class VehicleGateLicencePlatesMeasurement extends AbstractMeasurement {
     @Column(tag = true)
-    String id;
+    Long id;
 
     @Column
     String licence_plates;

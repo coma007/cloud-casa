@@ -17,7 +17,7 @@ import java.time.Instant;
 public class LampBrightnessMeasurement extends AbstractMeasurement {
 
     @Column(tag = true)
-    String id;
+    Long id;
 
     @Column
     Double brightness;

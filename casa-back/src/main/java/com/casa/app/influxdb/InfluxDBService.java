@@ -9,6 +9,7 @@ import com.influxdb.exceptions.InfluxException;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 import io.reactivex.BackpressureOverflowStrategy;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class InfluxDBService {
 
 
     public void write(AbstractMeasurement measurement) {
+        measurement.setTimestamp(Instant.now());
         try {
             writeApi.writeMeasurement(WritePrecision.MS, measurement);
         } catch (InfluxException e) {

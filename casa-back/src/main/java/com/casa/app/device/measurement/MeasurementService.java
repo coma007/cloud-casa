@@ -46,13 +46,13 @@ public class MeasurementService {
                 );
             case (MeasurementType.lampBrightness):
                 return new LampBrightnessMeasurement(
-                        (String) record.getValueByKey("id"),
+                        (Long) record.getValueByKey("id"),
                         (Double) record.getValueByKey("brightness"),
                         record.getTime()
                 );
             case (MeasurementType.lampCommand):
                 return new LampCommandMeasurement(
-                        (String) record.getValueByKey("id"),
+                        (Long) record.getValueByKey("id"),
                         (Boolean) record.getValueByKey("is_on"),
                         (String) record.getValueByKey("user"),
                         record.getTime()
@@ -63,19 +63,19 @@ public class MeasurementService {
                 );
             case (MeasurementType.vehicleGateLicencePlates):
                 return new VehicleGateLicencePlatesMeasurement(
-                        (String) record.getValueByKey("id"),
+                        (Long) record.getValueByKey("id"),
                         (String) record.getValueByKey("licence_plates"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateCommand):
                 return new VehicleGateCommandMeasurement(
-                        (String) record.getValueByKey("id"),
+                        (Long) record.getValueByKey("id"),
                         (Boolean) record.getValueByKey("is_open"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateMode):
                 return new VehicleGateModeMeasurement(
-                        (String) record.getValueByKey("id"),
+                        (Long) record.getValueByKey("id"),
                         (Boolean) record.getValueByKey("is_private"),
                         (String) record.getValueByKey("user"),
                         record.getTime()

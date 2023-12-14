@@ -16,7 +16,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class VehicleGateModeMeasurement extends AbstractMeasurement {
     @Column(tag = true)
-    String id;
+    Long id;
 
     @Column
     Boolean is_private;
