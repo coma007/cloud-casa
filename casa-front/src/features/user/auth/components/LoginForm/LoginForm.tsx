@@ -13,7 +13,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const LoginForm = () => {
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -38,6 +38,7 @@ const LoginForm = () => {
           const jwt = await AuthService.login({ Username: username, Password: password });
           localStorage.setItem("token", jwt);
           console.log(getRole());
+          navigate("/")
       } catch (error: any) {
         if (error.response.status == 403) {
         } else {

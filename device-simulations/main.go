@@ -1,6 +1,8 @@
 package main
 
 import (
+	"device-simulations/house_battery"
+	"device-simulations/solar_panels"
 	"encoding/json"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
@@ -15,12 +17,12 @@ func messageHandler(client mqtt.Client, msg mqtt.Message) {
 }
 
 type Device struct {
-	Name string `json:"name"`
+	Id   string `json:"name"`
 	Type string `json:"type"`
 }
 
 func main() {
-	url := "http://localhost:8080/api/device/public/simulation/getAll"
+	url := "http://casa-back:8080/api/device/public/simulation/getAll"
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -51,14 +53,18 @@ func main() {
 
 	devices := make(map[string]string)
 	for _, item := range data {
-		devices[item.Name] = item.Name
+		devices[item.Id] = item.Type
 	}
 	//devices["Senzor1"] = "Senzor1"
 	//devices["Klima1"] = "Klima1"
 	//devices["Klima2"] = "Klima2"
 	//devices["Klima3"] = "Klima3"
-	for k, _ := range devices {
-		go startSimulation(k, "ping")
+	for k, v := range devices {
+		if v == "SolarPanelSystem" {
+			go solar_panels.StartSimulation(k)
+		} else if v == "HouseBattery" {
+			go house_battery.StartSimulation(k)
+		}
 	}
 	for {
 		time.Sleep(1 * time.Second)

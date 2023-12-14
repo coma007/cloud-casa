@@ -1,0 +1,56 @@
+package com.casa.app.device.large_electric.solar_panel_system;
+
+import com.casa.app.device.Device;
+import com.casa.app.device.DeviceRepository;
+import com.casa.app.device.DeviceStatus;
+import com.casa.app.device.large_electric.house_battery.HouseBattery;
+import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
+import com.casa.app.mqtt.MqttGateway;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static java.lang.Long.parseLong;
+
+@Service
+public class SolarPanelSystemService {
+
+    @Autowired
+    private DeviceRepository deviceRepository;
+    @Autowired
+    private MqttGateway mqttGateway;
+    @Autowired
+    private HouseBatteryService houseBatteryService;
+
+    public boolean toggleStatus(Long id) {
+        Device device = deviceRepository.findById(id).orElse(null);
+        if (device == null) {
+            return false;
+        }
+        if (device.getStatus() == DeviceStatus.OFFLINE) {
+            device.setStatus(DeviceStatus.ONLINE);
+            mqttGateway.sendToMqtt(device.getId()+"-ON", device.getId().toString());
+        } else {
+            device.setStatus(DeviceStatus.OFFLINE);
+            mqttGateway.sendToMqtt(device.getId()+"-OFF", device.getId().toString());
+        }
+        deviceRepository.save(device);
+        return true;
+    }
+    
+    public void handleMessage(String message) {
+        System.out.println(message);
+        // TODO: Save to influx
+        String[] tokens = message.split("-");
+        Long deviceId = parseLong(tokens[0]);
+        Device device = deviceRepository.findById(deviceId).orElse(null);
+        double power = Double.parseDouble(tokens[1]);
+        if (device == null || device.getRealEstate() == null) {
+            return;
+        }
+        houseBatteryService.manageEnergy(device, power, true);
+    }
+}
