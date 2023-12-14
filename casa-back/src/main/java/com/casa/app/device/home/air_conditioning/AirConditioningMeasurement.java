@@ -16,7 +16,7 @@ import java.time.Instant;
 @AllArgsConstructor
 public class AirConditioningMeasurement extends AbstractMeasurement {
     @Column(tag = true)
-    String id;
+    Long id;
 
     // add your custom columns
 
