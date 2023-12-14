@@ -7,6 +7,7 @@ import Table, { TableRow } from "../../../components/tables/Table/Table";
 import Button from "../../../components/forms/Button/Button";
 import { RealEstate } from "../../estate/RealEstate";
 import { DeviceService } from "../DeviceService";
+import { WebSocketService } from "../../../api/websocket/WebSocketService";
 
 const DeviceOverviewPage = () => {
 
@@ -25,6 +26,21 @@ const DeviceOverviewPage = () => {
             }
         })()
     }, []);
+
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+
+    useEffect(() => {
+        WebSocketService.createSocket(setSocket);
+    }, []);
+
+    const processValue = (message: any) => {
+        console.log(message);
+    }
+
+    useEffect(() => {
+        WebSocketService.defineSocket(socket, "myTopic", processValue);
+    }, [socket]);
+    
 
     const headers: TableRow = { 
         rowData: [
