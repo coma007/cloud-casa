@@ -4,19 +4,18 @@ import InputField from '../../../../../components/forms/InputField/InputField'
 import Button from '../../../../../components/forms/Button/Button';
 
 
-const FilterUser = (props: { deviceType: string; device: any }) => {
+const FilterUser = (props: { username: string, onInputChange: any, handleSubmit: any }) => {
 
-    const handleFilterClick = () => {
-
-    }
     return (
         <div className={FilterCSS.row}>
             <span className={FilterCSS.left}>
                 <label htmlFor="fromDate">Insert username:</label>
-                <InputField usage={'Username'} className={FilterCSS.input} />
+                <InputField usage={'Username'} value={props.username} className={FilterCSS.input} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    props.onInputChange(e.target.value);
+                }} />
             </span>
             <span>
-                <Button text={'Filter'} onClick={handleFilterClick} submit={undefined} />
+                <Button text={'Filter'} onClick={props.handleSubmit} submit={undefined} />
             </span>
         </div>
     )

@@ -8,6 +8,7 @@ import Graph from './inspect/graph/Graph'
 import FilterUser from './inspect/filter/FilterUser'
 import FilterDate from './inspect/filter/FilterDate'
 import Button from '../../../components/forms/Button/Button'
+import { DeviceService } from '../DeviceService'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -22,7 +23,6 @@ const DeviceDetails = () => {
         }
         setFilterVisible(!isFilterVisible);
     };
-
 
     const exampleDevice = {
         Id: 123,
@@ -90,6 +90,46 @@ const DeviceDetails = () => {
 
     let dev = exampleWashingMachine;
 
+
+
+    let [username, setUsername] = useState('');
+
+    const handleUsernameFilterClick = () => {
+        console.log(username);
+        // DeviceService.filter(dev.Id, dev.deviceType, fromDate, toDate, username);
+    }
+
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+    const [toDateMin, setToDateMin] = useState('');
+
+    const handleFromDateChange = (e) => {
+        const selectedFromDate = e.target.value;
+        setFromDate(selectedFromDate);
+
+        const nextDay = new Date(selectedFromDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        setToDateMin(nextDay.toISOString().split('T')[0]);
+        setToDate(nextDay.toISOString().split('T')[0]);
+    };
+
+    const handleDateFilterClick = (from: string, to: string) => {
+        setFromDate(from);
+        setToDate(to);
+
+        // DeviceService.filter(dev.Id, dev.deviceType, from, to, username);
+        console.log(from);
+        console.log(to);
+    };
+
+    const resetFilters = () => {
+        setFromDate('');
+        setToDate('');
+        setUsername('');
+    }
+
+
+
     return (
         <div>
             <Menu admin={false} />
@@ -107,16 +147,16 @@ const DeviceDetails = () => {
                 <div>
                     <div className={DeviceDetailsCSS.row}>
                         <Button text={filterText} onClick={handleFilterToggle} submit={undefined}></Button>
-                        <Button text={"Reset filters"} onClick={undefined} submit={undefined} ></Button>
+                        <Button text={"Reset filters"} onClick={resetFilters} submit={undefined} ></Button>
                     </div>
                     {isFilterVisible && (<div>
                         <hr></hr>
-                        <FilterDate deviceType={dev.deviceType} device={dev}></FilterDate>
+                        <FilterDate fromDate={fromDate} toDate={toDate} handleSubmit={handleDateFilterClick} handleFromDateChange={handleFromDateChange} toDateMin={toDateMin} setToDate={setToDate}></FilterDate>
                         <hr></hr>
                         {
                             (!["ambient_sensor", "lamp"].includes(dev.deviceType)) &&
                             <>
-                                <FilterUser deviceType={dev.deviceType} device={dev}></FilterUser>
+                                <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleUsernameFilterClick}></FilterUser>
                                 <hr></hr>
                             </>
                         }
