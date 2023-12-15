@@ -10,10 +10,10 @@ import (
 )
 
 type SolarPanel struct {
-	Id            string
-	Effectiveness float64
-	Size          float64
-	Working       bool
+	Id         int64   `json:"id"`
+	Efficiency float64 `json:"efficiency"`
+	Size       float64 `json:"size"`
+	Working    bool
 }
 
 func (panel *SolarPanel) ToggleWorking(working bool) {
@@ -38,10 +38,10 @@ func calculateOutput(size float64, effectiveness float64) float64 {
 	output /= 1000
 	output /= 24
 	output /= 60
-	timeEffectiveness := calculateTimeOfDayEffectiveness()
-	output *= timeEffectiveness
+	timeEfficiency := calculateTimeOfDayEffectiveness()
+	output *= timeEfficiency
 	output = math.Floor(output*1000) / 1000
-	if output < 0.001 && timeEffectiveness > 0 {
+	if output < 0.001 && timeEfficiency > 0 {
 		output = 0.001
 	}
 	return output
@@ -60,26 +60,19 @@ func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	//fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
 }
 
-func StartSimulation(deviceId string) {
-	device := SolarPanel{
-		Id:            deviceId,
-		Effectiveness: 20,
-		Size:          15,
-		Working:       true,
-	}
+func StartSimulation(device SolarPanel) {
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
 	counter := 1
 	for {
 		if counter%4 == 0 && device.Working {
-			value := fmt.Sprintf("%f", calculateOutput(device.Size, device.Effectiveness))
-			message := deviceId + "-" + value
-			fmt.Println(message)
-			utils.SendMessage(client, "solar_panel_system", message)
+			value := fmt.Sprintf("%f", calculateOutput(device.Size, device.Efficiency))
+			//fmt.Println(value)
+			utils.SendMessage(client, "solar_panel_system", device.Id, value)
 			counter = 0
 		}
 		if device.Working {
-			utils.Ping(deviceId, client)
+			utils.Ping(device.Id, client)
 		}
 		if counter < 4 {
 			counter++

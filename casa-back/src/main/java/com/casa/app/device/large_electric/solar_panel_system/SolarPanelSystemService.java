@@ -21,6 +21,9 @@ public class SolarPanelSystemService {
     @Autowired
     private DeviceRepository deviceRepository;
     @Autowired
+    private SolarPanelSystemRepository solarPanelSystemRepository;
+
+    @Autowired
     private MqttGateway mqttGateway;
     @Autowired
     private HouseBatteryService houseBatteryService;
@@ -49,5 +52,14 @@ public class SolarPanelSystemService {
             return;
         }
         houseBatteryService.manageEnergy(device, power, true);
+    }
+
+    public List<SolarPanelSystemSimulationDTO> getAllSimulation() {
+        List<SolarPanelSystem> solarPanelSystems = solarPanelSystemRepository.findAll();
+        List<SolarPanelSystemSimulationDTO> solarPanelSystemDTOS = new ArrayList<>();
+        for (SolarPanelSystem s : solarPanelSystems) {
+            solarPanelSystemDTOS.add(new SolarPanelSystemSimulationDTO(s.getId(), s.getSize(), s.getEfficiency()));
+        }
+        return solarPanelSystemDTOS;
     }
 }

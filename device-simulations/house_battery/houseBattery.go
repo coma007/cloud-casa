@@ -11,9 +11,9 @@ import (
 )
 
 type HouseBattery struct {
-	Id           string
-	Size         float64
-	CurrentState float64
+	Id           int64   `json:"id"`
+	Size         float64 `json:"size"`
+	CurrentState float64 `json:"currentState"`
 	Exported     float64
 	Imported     float64
 }
@@ -68,24 +68,18 @@ func (battery *HouseBattery) calculateImportExport() float64 {
 	}
 }
 
-func StartSimulation(deviceId string) {
-	device := HouseBattery{
-		Id:           deviceId,
-		Size:         15,
-		CurrentState: 0.9 * 15,
-	}
+func StartSimulation(device HouseBattery) {
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
 	counter := 1
 	for {
 		if counter%4 == 0 {
 			value := fmt.Sprintf("%f", device.calculateImportExport())
-			message := deviceId + "-" + value
-			fmt.Println(message)
-			utils.SendMessage(client, "house_battery", message)
+			//fmt.Println(value)
+			utils.SendMessage(client, "house_battery", device.Id, value)
 			counter = 0
 		}
-		utils.Ping(deviceId, client)
+		utils.Ping(device.Id, client)
 
 		if counter < 4 {
 			counter++
