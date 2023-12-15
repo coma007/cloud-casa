@@ -16,6 +16,7 @@ type HouseBattery struct {
 	CurrentState float64 `json:"currentState"`
 	Exported     float64
 	Imported     float64
+	PowerUsage   float64
 }
 
 func (battery *HouseBattery) increasePower(power float64) {
@@ -28,6 +29,7 @@ func (battery *HouseBattery) increasePower(power float64) {
 
 func (battery *HouseBattery) reducePower(power float64) {
 	battery.CurrentState -= power
+	battery.PowerUsage += power
 	if battery.CurrentState < 0 {
 		battery.Imported += math.Abs(battery.CurrentState)
 		battery.CurrentState = 0
@@ -68,6 +70,10 @@ func (battery *HouseBattery) calculateImportExport() float64 {
 	}
 }
 
+func (battery *HouseBattery) getCurrentState() float64 {
+	return math.Floor((battery.CurrentState/battery.Size)*100) / 100
+}
+
 func StartSimulation(device HouseBattery) {
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
@@ -76,7 +82,10 @@ func StartSimulation(device HouseBattery) {
 		if counter%4 == 0 {
 			value := fmt.Sprintf("%f", device.calculateImportExport())
 			//fmt.Println(value)
-			utils.SendMessage(client, "house_battery", device.Id, value)
+			utils.SendMessage(client, "house_battery_import_export", device.Id, value)
+			utils.SendMessage(client, "house_battery_power_usage", device.Id, fmt.Sprintf("%f", device.PowerUsage))
+			device.PowerUsage = 0
+			utils.SendMessage(client, "house_battery_status", device.Id, fmt.Sprintf("%f", device.getCurrentState()))
 			counter = 0
 		}
 		utils.Ping(device.Id, client)
