@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FilterCSS from './Filter.module.scss'
 import Button from '../../../../../components/forms/Button/Button';
 
-const FilterTime = () => {
+const FilterDate = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [toDateMin, setToDateMin] = useState('');
@@ -50,26 +50,26 @@ const FilterTime = () => {
 
   return (
     <div>
-      <span>
-        <label htmlFor="fromDate">Select from date:</label>
-        <input className={FilterCSS.input}
-          type="date"
-          id="fromDate"
-          value={fromDate}
-          onChange={handleFromDateChange}
-        />
-      </span>
-      <span>
-        <label htmlFor="toDate">Select to date:</label>
-        <input className={FilterCSS.input}
-          type="date"
-          id="toDate"
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-          min={toDateMin}
-        />
-      </span>
-      <Button text={'Filter'} onClick={handleFilterClick} submit={undefined} />
+      <div className={FilterCSS.row}>
+        <span className={FilterCSS.left}>
+          <label htmlFor="fromDate">Select from date:</label>
+          <input className={FilterCSS.input}
+            type="date"
+            id="fromDate"
+            value={fromDate}
+            onChange={handleFromDateChange}
+          />
+          <label htmlFor="toDate">Select to date:</label>
+          <input className={FilterCSS.input}
+            type="date"
+            id="toDate"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            min={toDateMin}
+          />
+        </span>
+        <Button text={'Filter'} onClick={handleFilterClick} submit={undefined} />
+      </div>
       <div>
         <small><i>or select a quick filter:</i></small>
         <button className={FilterCSS.smallButton} onClick={handleLastHourClick}>last hour</button>
@@ -81,4 +81,4 @@ const FilterTime = () => {
   );
 };
 
-export default FilterTime;
+export default FilterDate;

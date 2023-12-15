@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Menu from '../../../components/navigation/Menu/Menu'
 import DeviceDetailsCSS from './DeviceDetails.module.scss'
 import PageTitle from '../../../components/view/PageTitle/PageTitle'
 import DeviceInfo from './info/DeviceInfo'
 import DeviceManager from './manager/DeviceManager'
-import Filter from './inspect/filter/FilterTime'
 import Graph from './inspect/graph/Graph'
-import WashingMachineStep from '../register/WashingMachineStep'
 import FilterUser from './inspect/filter/FilterUser'
-import FilterTime from './inspect/filter/FilterTime'
+import FilterDate from './inspect/filter/FilterDate'
+import Button from '../../../components/forms/Button/Button'
 
 const DeviceDetails = () => {
+    const [isFilterVisible, setFilterVisible] = useState(false);
+
+    const handleFilterToggle = () => {
+        setFilterVisible(!isFilterVisible);
+    };
+
+
     const exampleDevice = {
         Name: 'Example Device',
         RealEstateName: 'Example Estate',
@@ -91,8 +97,22 @@ const DeviceDetails = () => {
                     }
                 </div>
                 <div>
-                    <FilterTime></FilterTime>
-                    <FilterUser></FilterUser>
+                    <div className={DeviceDetailsCSS.row}>
+                        <Button text={"Show filters"} onClick={handleFilterToggle} submit={undefined}></Button>
+                        <Button text={"Reset filters"} onClick={undefined} submit={undefined} ></Button>
+                    </div>
+                    {isFilterVisible && (<div>
+                        <hr></hr>
+                        <FilterDate></FilterDate>
+                        <hr></hr>
+                        {
+                            (!["AmbientSensor", "Lamp"].includes(dev.deviceType)) &&
+                            <>
+                                <FilterUser></FilterUser>
+                                <hr></hr>
+                            </>
+                        }
+                    </div>)}
                     <Graph></Graph>
                 </div>
             </div>
