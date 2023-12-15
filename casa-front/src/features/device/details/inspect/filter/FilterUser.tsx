@@ -4,7 +4,7 @@ import InputField from '../../../../../components/forms/InputField/InputField'
 import Button from '../../../../../components/forms/Button/Button';
 
 
-const FilterUser = () => {
+const FilterUser = (props: { deviceType: string; device: any }) => {
 
     const handleFilterClick = () => {
 

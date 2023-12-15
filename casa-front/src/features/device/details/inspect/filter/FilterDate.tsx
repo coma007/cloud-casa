@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import FilterCSS from './Filter.module.scss'
 import Button from '../../../../../components/forms/Button/Button';
+import { DeviceService } from '../../../DeviceService';
 
-const FilterDate = () => {
+const FilterDate = (props: { deviceType: string; device: any }) => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [toDateMin, setToDateMin] = useState('');
@@ -24,28 +25,23 @@ const FilterDate = () => {
   };
 
   const handleFilterClick = () => {
-    // Handle filter logic using fromDate and toDate
-    console.log('Filter clicked:', { fromDate, toDate });
+    DeviceService.filter(props.device.id, props.deviceType, fromDate, toDate, "");
   };
 
   const handleLastHourClick = () => {
-    // Handle last hour logic
-    console.log('Last hour clicked');
+    DeviceService.filter(props.device.id, props.deviceType, (new Date(new Date().getTime() - 60 * 60 * 1000)).toISOString(), (new Date()).toISOString(), "");
   };
 
   const handleLast12HoursClick = () => {
-    // Handle last 12 hours logic
-    console.log('Last 12 hours clicked');
+    DeviceService.filter(props.device.id, props.deviceType, (new Date(new Date().getTime() - 12 * 60 * 1000)).toISOString(), (new Date()).toISOString(), "");
   };
 
   const handleLastDayClick = () => {
-    // Handle last day logic
-    console.log('Last day clicked');
+    DeviceService.filter(props.device.id, props.deviceType, (new Date(new Date().getTime() - 24 * 60 * 1000)).toISOString(), (new Date()).toISOString(), "");
   };
 
   const handleLastMonthClick = () => {
-    // Handle last month logic
-    console.log('Last month clicked');
+    DeviceService.filter(props.device.id, props.deviceType, (new Date(new Date().getTime() - 30 * 24 * 60 * 1000)).toISOString(), (new Date()).toISOString(), "");
   };
 
   return (

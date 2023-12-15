@@ -11,13 +11,21 @@ import Button from '../../../components/forms/Button/Button'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
+    const [filterText, setFilterText] = useState("Show filters");
 
     const handleFilterToggle = () => {
+        if (isFilterVisible) {
+            setFilterText("Show filters");
+        }
+        else {
+            setFilterText("Hide filters")
+        }
         setFilterVisible(!isFilterVisible);
     };
 
 
     const exampleDevice = {
+        Id: 123,
         Name: 'Example Device',
         RealEstateName: 'Example Estate',
         PowerSupplyType: 'Example Power Supply',
@@ -29,55 +37,55 @@ const DeviceDetails = () => {
         MinTemperature: 30,
         MaxTemperature: 95,
         SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
-        deviceType: 'AirConditioning',
+        deviceType: 'air_conditioning',
     };
 
 
     const exampleWashingMachine = {
         ...exampleDevice,
         SupportedModes: ['Mode1', 'Mode2', 'Mode3'],
-        deviceType: 'WashingMachine',
+        deviceType: 'washing_machine',
     };
 
     const exampleElectricVehicleCharger = {
         ...exampleDevice,
         ChargePower: 'Example Charge Power',
         NumOfSlots: 2,
-        deviceType: 'ElectricVehicleCharger',
+        deviceType: 'electric_vehicle_charger',
     };
 
     const exampleHouseBattery = {
         ...exampleDevice,
         Size: 'Example Size',
-        deviceType: 'HouseBattery',
+        deviceType: 'house_battery',
     };
 
     const exampleSolarPanelSystem = {
         ...exampleDevice,
         Size: 'Example Size',
         Efficiency: 'Example Efficiency',
-        deviceType: 'SolarPanelSystem',
+        deviceType: 'solar_panel_system',
     };
 
     const exampleVehicleGate = {
         ...exampleDevice,
         AllowedVehicles: ['ModeA', 'ModeB'],
-        deviceType: 'VehicleGate',
+        deviceType: 'vehicle_gate',
     };
 
     const exampleAmbientSensor = {
         ...exampleDevice,
-        deviceType: 'AmbientSensor',
+        deviceType: 'ambient_sensor',
     };
 
     const exampleLamp = {
         ...exampleDevice,
-        deviceType: 'Lamp',
+        deviceType: 'lamp',
     };
 
     const exampleSprinklerSystem = {
         ...exampleDevice,
-        deviceType: 'SprinklerSystem',
+        deviceType: 'sprinkler_system',
     };
 
     let dev = exampleWashingMachine;
@@ -92,23 +100,23 @@ const DeviceDetails = () => {
                     <DeviceInfo deviceType={dev.deviceType} device={dev}></DeviceInfo>
                     <br></br>
                     {
-                        (!["AmbientSensor", "HouseBattery", "ElectricVehicleCharger"].includes(dev.deviceType)) &&
+                        (!["ambient_sensor", "house_battery", "electric_vehicle_charger"].includes(dev.deviceType)) &&
                         <DeviceManager deviceType={dev.deviceType} device={dev}></DeviceManager>
                     }
                 </div>
                 <div>
                     <div className={DeviceDetailsCSS.row}>
-                        <Button text={"Show filters"} onClick={handleFilterToggle} submit={undefined}></Button>
+                        <Button text={filterText} onClick={handleFilterToggle} submit={undefined}></Button>
                         <Button text={"Reset filters"} onClick={undefined} submit={undefined} ></Button>
                     </div>
                     {isFilterVisible && (<div>
                         <hr></hr>
-                        <FilterDate></FilterDate>
+                        <FilterDate deviceType={dev.deviceType} device={dev}></FilterDate>
                         <hr></hr>
                         {
-                            (!["AmbientSensor", "Lamp"].includes(dev.deviceType)) &&
+                            (!["ambient_sensor", "lamp"].includes(dev.deviceType)) &&
                             <>
-                                <FilterUser></FilterUser>
+                                <FilterUser deviceType={dev.deviceType} device={dev}></FilterUser>
                                 <hr></hr>
                             </>
                         }
