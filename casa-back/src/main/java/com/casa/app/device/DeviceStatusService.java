@@ -22,21 +22,22 @@ public class DeviceStatusService {
     @Autowired
     private HouseBatteryService houseBatteryService;
 
-    //message: name~PING
-    public void pingHandler(String message) {
-        String[] tokens = message.split("-");
-        Device device = deviceRepository.findById(parseLong(tokens[0])).orElse(null);
+    //message: id~PING
+    public void pingHandler(Long id) {
+        Device device = deviceRepository.findById(id).orElse(null);
         if (device == null) {
             return;
         }
         device.setStatus(DeviceStatus.ONLINE);
         device.setLastSeen(new Date());
         deviceRepository.save(device);
-        System.out.println(message);
+        System.out.println(id + " PING");
         if (device.getRealEstate() == null) {
             return;
         }
-        houseBatteryService.manageEnergy(device, device.getEnergyConsumption(), false);
+        if (device.getPowerSupplyType() == PowerSupplyType.HOME) {
+            houseBatteryService.manageEnergy(device, device.getEnergyConsumption(), false);
+        }
     }
 
     @Scheduled(fixedDelay = 1000*30)

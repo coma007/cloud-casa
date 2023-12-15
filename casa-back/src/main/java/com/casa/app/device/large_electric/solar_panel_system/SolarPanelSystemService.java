@@ -21,6 +21,9 @@ public class SolarPanelSystemService {
     @Autowired
     private DeviceRepository deviceRepository;
     @Autowired
+    private SolarPanelSystemRepository solarPanelSystemRepository;
+
+    @Autowired
     private MqttGateway mqttGateway;
     @Autowired
     private HouseBatteryService houseBatteryService;
@@ -32,10 +35,10 @@ public class SolarPanelSystemService {
         }
         if (device.getStatus() == DeviceStatus.OFFLINE) {
             device.setStatus(DeviceStatus.ONLINE);
-            mqttGateway.sendToMqtt(device.getId()+"-ON", device.getId().toString());
+            mqttGateway.sendToMqtt(device.getId()+"~ON", device.getId().toString());
         } else {
             device.setStatus(DeviceStatus.OFFLINE);
-            mqttGateway.sendToMqtt(device.getId()+"-OFF", device.getId().toString());
+            mqttGateway.sendToMqtt(device.getId()+"~OFF", device.getId().toString());
         }
         deviceRepository.save(device);
         return true;
@@ -49,5 +52,14 @@ public class SolarPanelSystemService {
             return;
         }
         houseBatteryService.manageEnergy(device, power, true);
+    }
+
+    public List<SolarPanelSystemSimulationDTO> getAllSimulation() {
+        List<SolarPanelSystem> solarPanelSystems = solarPanelSystemRepository.findAll();
+        List<SolarPanelSystemSimulationDTO> solarPanelSystemDTOS = new ArrayList<>();
+        for (SolarPanelSystem s : solarPanelSystems) {
+            solarPanelSystemDTOS.add(new SolarPanelSystemSimulationDTO(s.getId(), s.getSize(), s.getEfficiency()));
+        }
+        return solarPanelSystemDTOS;
     }
 }

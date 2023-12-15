@@ -91,7 +91,7 @@ public class MqttBeans {
                 content = content.split("~")[1];
                 switch (topic) {
                     case ("ping"):
-                        deviceStatusService.pingHandler(content);
+                        deviceStatusService.pingHandler(id);
                         break;
                     case (MeasurementType.airConditioning):
                         // call service handler here

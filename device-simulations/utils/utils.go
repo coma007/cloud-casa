@@ -4,11 +4,12 @@ import (
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"os"
+	"strconv"
 )
 
-func MqttSetup(deviceId string, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
-	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883") // MQTT broker URL
-	opts.SetClientID(deviceId)                                          // Client ID
+func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
+	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	opts.SetClientID(strconv.FormatInt(deviceId, 10))
 	opts.SetUsername("admin")
 	opts.SetPassword("12345678")
 	client := mqtt.NewClient(opts)
@@ -17,26 +18,22 @@ func MqttSetup(deviceId string, messageHandler func(client mqtt.Client, msg mqtt
 		os.Exit(1)
 	}
 
-	//topic = "serverMessages" // Specify the topic you want to subscribe to
-
-	if token := client.Subscribe(deviceId, 0, messageHandler); token.Wait() && token.Error() != nil {
+	if token := client.Subscribe(strconv.FormatInt(deviceId, 10), 0, messageHandler); token.Wait() && token.Error() != nil {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
 
-	fmt.Printf("Subscribed to topic: %s\n", deviceId)
+	fmt.Printf("Subscribed to topic: %d\n", deviceId)
 	return client
 }
 
-func Ping(deviceId string, client mqtt.Client) {
-	message := deviceId + "-PING"
-
-	SendMessage(client, "ping", message)
+func Ping(deviceId int64, client mqtt.Client) {
+	SendMessage(client, "ping", deviceId, "PING")
 
 	//fmt.Printf("Published message: %s to topic: %s\n", message, "ping")
 }
 
-func SendMessage(client mqtt.Client, topic string, message string) {
-	token := client.Publish(topic, 0, false, message)
+func SendMessage(client mqtt.Client, topic string, deviceId int64, message string) {
+	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+message)
 	token.Wait()
 }
