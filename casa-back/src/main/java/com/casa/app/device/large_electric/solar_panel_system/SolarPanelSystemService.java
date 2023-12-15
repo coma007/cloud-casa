@@ -6,6 +6,7 @@ import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemCommand;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemPowerMeasurement;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.user.regular_user.RegularUser;
@@ -34,7 +35,7 @@ public class SolarPanelSystemService {
     @Autowired
     private InfluxDBService influxDBService;
 
-    public boolean toggleStatus(Long id) {
+    public boolean toggleStatus(Long id) throws UserNotFoundException {
         Device device = deviceRepository.findById(id).orElse(null);
         RegularUser currentUser = regularUserService.getUserByToken();
         if (device == null) {

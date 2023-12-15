@@ -1,5 +1,6 @@
 package com.casa.app.device.large_electric.solar_panel_system;
 
+import com.casa.app.exceptions.UserNotFoundException;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class SolarPanelSystemController {
 
     @PermitAll
     @PostMapping("/toggleStatus/{id}")
-    public ResponseEntity<?> toggleStatus(@PathVariable Long id) {
+    public ResponseEntity<?> toggleStatus(@PathVariable Long id) throws UserNotFoundException {
         if (solarPanelSystemService.toggleStatus(id)) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         } else {

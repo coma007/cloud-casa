@@ -32,4 +32,9 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleInvalidCredentialsException(Exception ex, WebRequest request) {
         return ResponseEntity.badRequest().body("Wrong credentials");
     }
+
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<Object> handleUserNotFoundException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
 }
