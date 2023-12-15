@@ -14,49 +14,51 @@ const DeviceDetails = () => {
         RealEstateName: 'Example Estate',
         PowerSupplyType: 'Example Power Supply',
         EnergyConsumption: 'Example Energy Consumption',
-      };
-      
-      const exampleAirConditioning = {
+    };
+
+    const exampleAirConditioning = {
         ...exampleDevice,
         MinTemperature: 'Example Min Temperature',
         MaxTemperature: 'Example Max Temperature',
+        SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
         deviceType: 'AirConditioning',
-      };
-      
-      const exampleWashingMachine = {
+    };
+
+
+    const exampleWashingMachine = {
         ...exampleDevice,
         SupportedModes: ['Mode1', 'Mode2', 'Mode3'],
         deviceType: 'WashingMachine',
-      };
-      
-      const exampleElectricVehicleCharger = {
+    };
+
+    const exampleElectricVehicleCharger = {
         ...exampleDevice,
         ChargePower: 'Example Charge Power',
         NumOfSlots: 2,
         deviceType: 'ElectricVehicleCharger',
-      };
-      
-      const exampleHouseBattery = {
+    };
+
+    const exampleHouseBattery = {
         ...exampleDevice,
         Size: 'Example Size',
         deviceType: 'HouseBattery',
-      };
-      
-      const exampleSolarPanelSystem = {
+    };
+
+    const exampleSolarPanelSystem = {
         ...exampleDevice,
         Size: 'Example Size',
         Efficiency: 'Example Efficiency',
         deviceType: 'SolarPanelSystem',
-      };
-      
-      const exampleVehicleGate = {
+    };
+
+    const exampleVehicleGate = {
         ...exampleDevice,
         AllowedVehicles: ['ModeA', 'ModeB'],
         deviceType: 'VehicleGate',
-      };
+    };
 
-    let dev = exampleVehicleGate;
-      
+    let dev = exampleWashingMachine;
+
     return (
         <div>
             <Menu admin={false} />
@@ -66,7 +68,7 @@ const DeviceDetails = () => {
                 <div>
                     <DeviceInfo deviceType={dev.deviceType} device={dev}></DeviceInfo>
                     <br></br>
-                    <DeviceManager></DeviceManager>
+                    <DeviceManager deviceType={dev.deviceType} device={dev}></DeviceManager>
                 </div>
                 <div>
                     <Filter></Filter>

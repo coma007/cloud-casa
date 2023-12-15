@@ -15,6 +15,17 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                         <p className={DeviceInfoCSS.row}>
                             <b>MAX TEMPERATURE:</b> {props.device.MaxTemperature}
                         </p>
+                        <p className={DeviceInfoCSS.row}>
+                            <b>SUPPORTED MODES:</b>
+                        </p>
+                        <div className={DeviceInfoCSS.scrollableListContainer}>
+
+                            <ul className={DeviceInfoCSS.scrollableList}>
+                                {props.device.SupportedModes.map((mode, index) => (
+                                    <li key={index}>{mode}</li>
+                                ))}
+                            </ul>
+                        </div>
                     </>
                 );
 
