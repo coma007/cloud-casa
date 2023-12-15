@@ -2,6 +2,7 @@ package main
 
 import (
 	"device-simulations/air_conditioning"
+	"device-simulations/ambient_sensor"
 	"device-simulations/house_battery"
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
@@ -14,7 +15,7 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.VehicleGate |
-		air_conditioning.AirConditioning
+		air_conditioning.AirConditioning | ambient_sensor.AmbientSensor
 }
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 	lamps := fetchDevices[lamp.Lamp]("lamp/")
 	gates := fetchDevices[vehicle_gate.VehicleGate]("vehicleGate/")
 	airConditioners := fetchDevices[air_conditioning.AirConditioning]("airConditioning/")
+	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
 
 	for _, item := range solarPanels {
 		go solar_panels.StartSimulation(item)
@@ -39,6 +41,9 @@ func main() {
 	}
 	for _, item := range airConditioners {
 		go air_conditioning.StartSimulation(item)
+	}
+	for _, item := range sensors {
+		go ambient_sensor.StartSimulation(item)
 	}
 	for {
 		time.Sleep(1 * time.Second)
