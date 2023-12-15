@@ -8,8 +8,8 @@ import (
 )
 
 func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
-	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883") // MQTT broker URL
-	opts.SetClientID(strconv.FormatInt(deviceId, 10))                 // Client ID
+	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	opts.SetClientID(strconv.FormatInt(deviceId, 10))
 	opts.SetUsername("admin")
 	opts.SetPassword("12345678")
 	client := mqtt.NewClient(opts)
@@ -23,7 +23,7 @@ func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.
 		os.Exit(1)
 	}
 
-	fmt.Printf("Subscribed to topic: %s\n", deviceId)
+	fmt.Printf("Subscribed to topic: %d\n", deviceId)
 	return client
 }
 

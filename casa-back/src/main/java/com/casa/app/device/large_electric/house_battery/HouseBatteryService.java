@@ -46,11 +46,11 @@ public class HouseBatteryService {
     }
 
     private void increaseEnergy(double powerPerBattery, HouseBattery b) {
-        mqttGateway.sendToMqtt(b.getId() + "~INCREASE-" + powerPerBattery, b.getId().toString());
+        mqttGateway.sendToMqtt(b.getId() + "~INCREASE~" + powerPerBattery, b.getId().toString());
     }
 
     private void reduceEnergy(double powerPerBattery, HouseBattery b) {
-        mqttGateway.sendToMqtt(b.getId() + "~REDUCE-" + powerPerBattery, b.getId().toString());
+        mqttGateway.sendToMqtt(b.getId() + "~REDUCE~" + powerPerBattery, b.getId().toString());
     }
 
     public List<HouseBatterySimulationDTO> getAllSimulation() {

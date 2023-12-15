@@ -7,6 +7,35 @@ import (
 	"time"
 )
 
+type AuxVehicleGateMode string
+
+const (
+	PUBLIC_STRING  AuxVehicleGateMode = "PUBLIC"
+	PRIVATE_STRING AuxVehicleGateMode = "PRIVATE"
+)
+
+type AuxVehicleGate struct {
+	Id              int64              `json:"id"`
+	AllowedVehicles []string           `json:"allowedVehicles"`
+	CurrentMode     AuxVehicleGateMode `json:"currentMode"`
+}
+
+func (gate *AuxVehicleGate) ToModel() VehicleGate {
+	var currentMode VehicleGateMode
+
+	if gate.CurrentMode == PUBLIC_STRING {
+		currentMode = PUBLIC
+	} else {
+		currentMode = PRIVATE
+	}
+
+	return VehicleGate{
+		Id:              gate.Id,
+		AllowedVehicles: gate.AllowedVehicles,
+		CurrentMode:     currentMode,
+	}
+}
+
 type VehicleGateMode int64
 
 const (
@@ -15,9 +44,9 @@ const (
 )
 
 type VehicleGate struct {
-	Id              int64           `json:"id"`
-	AllowedVehicles []string        `json:"allowedVehicles"`
-	CurrentMode     VehicleGateMode `json:"currentMode"`
+	Id              int64
+	AllowedVehicles []string
+	CurrentMode     VehicleGateMode
 }
 
 func (gate *VehicleGate) messageHandler(client mqtt.Client, msg mqtt.Message) {
