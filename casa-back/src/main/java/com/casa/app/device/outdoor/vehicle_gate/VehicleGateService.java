@@ -6,9 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class VehicleGateService {
+
+    @Autowired
+    private VehicleGateRepository vehicleGateRepository;
 
     @Autowired
     InfluxDBService influxDBService;
@@ -29,5 +34,14 @@ public class VehicleGateService {
         Boolean isPrivate = Boolean.parseBoolean(message);
         VehicleGateModeMeasurement vehicleGate = new VehicleGateModeMeasurement( id, isPrivate, user, Instant.now());
         influxDBService.write(vehicleGate);
+    }
+
+    public List<VehicleGateSimulationDTO> getAllSimulation() {
+        List<VehicleGate> solarPanelSystems = vehicleGateRepository.findAll();
+        List<VehicleGateSimulationDTO> solarPanelSystemDTOS = new ArrayList<>();
+        for (VehicleGate g : solarPanelSystems) {
+            solarPanelSystemDTOS.add(new VehicleGateSimulationDTO(g.getId(), g.getAllowedVehicles(), g.getCurrentMode()));
+        }
+        return solarPanelSystemDTOS;
     }
 }

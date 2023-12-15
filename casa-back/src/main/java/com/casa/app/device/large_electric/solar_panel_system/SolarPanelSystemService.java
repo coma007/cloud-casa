@@ -35,10 +35,10 @@ public class SolarPanelSystemService {
         }
         if (device.getStatus() == DeviceStatus.OFFLINE) {
             device.setStatus(DeviceStatus.ONLINE);
-            mqttGateway.sendToMqtt(device.getId()+"-ON", device.getId().toString());
+            mqttGateway.sendToMqtt(device.getId()+"~ON", device.getId().toString());
         } else {
             device.setStatus(DeviceStatus.OFFLINE);
-            mqttGateway.sendToMqtt(device.getId()+"-OFF", device.getId().toString());
+            mqttGateway.sendToMqtt(device.getId()+"~OFF", device.getId().toString());
         }
         deviceRepository.save(device);
         return true;

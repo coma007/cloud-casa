@@ -46,18 +46,18 @@ public class HouseBatteryService {
     }
 
     private void increaseEnergy(double powerPerBattery, HouseBattery b) {
-        mqttGateway.sendToMqtt(b.getId() + "-INCREASE-" + powerPerBattery, b.getId().toString());
+        mqttGateway.sendToMqtt(b.getId() + "~INCREASE-" + powerPerBattery, b.getId().toString());
     }
 
     private void reduceEnergy(double powerPerBattery, HouseBattery b) {
-        mqttGateway.sendToMqtt(b.getId() + "-REDUCE-" + powerPerBattery, b.getId().toString());
+        mqttGateway.sendToMqtt(b.getId() + "~REDUCE-" + powerPerBattery, b.getId().toString());
     }
 
     public List<HouseBatterySimulationDTO> getAllSimulation() {
         List<HouseBattery> HouseBatteries = houseBatteryRepository.findAll();
         List<HouseBatterySimulationDTO> HouseBatteryDTOS = new ArrayList<>();
-        for (HouseBattery s : HouseBatteries) {
-            HouseBatteryDTOS.add(new HouseBatterySimulationDTO(s.getId(), s.getSize(), s.getSize()*0.9));
+        for (HouseBattery b : HouseBatteries) {
+            HouseBatteryDTOS.add(new HouseBatterySimulationDTO(b.getId(), b.getSize(), b.getSize()*0.9));
         }
         return HouseBatteryDTOS;
     }

@@ -34,11 +34,11 @@ public class LampService {
     }
 
     public List<LampSimulationDTO> getAllSimulation() {
-        List<Lamp> solarPanelSystems = lampRepository.findAll();
-        List<LampSimulationDTO> solarPanelSystemDTOS = new ArrayList<>();
-        for (Lamp l : solarPanelSystems) {
-            solarPanelSystemDTOS.add(new LampSimulationDTO(l.getId(), l.getStatus() == DeviceStatus.ONLINE));
+        List<Lamp> lamps = lampRepository.findAll();
+        List<LampSimulationDTO> lampDTOS = new ArrayList<>();
+        for (Lamp l : lamps) {
+            lampDTOS.add(new LampSimulationDTO(l.getId(), l.getStatus() == DeviceStatus.ONLINE));
         }
-        return solarPanelSystemDTOS;
+        return lampDTOS;
     }
 }
