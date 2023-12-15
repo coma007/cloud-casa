@@ -1,6 +1,7 @@
 package com.casa.app.user.regular_user;
 
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.User;
 import com.casa.app.user.UserRepository;
 import com.casa.app.user.roles.Role;
@@ -29,9 +30,9 @@ public class RegularUserService {
     @Autowired
     private RegularUserRepository regularUserRepository;
 
-    public RegularUser getUserByToken(){
+    public RegularUser getUserByToken() throws UserNotFoundException {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = (User) context.getAuthentication().getPrincipal();
-        return regularUserRepository.findById(user.getId()).orElse(null);
+        return regularUserRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
     }
 }
