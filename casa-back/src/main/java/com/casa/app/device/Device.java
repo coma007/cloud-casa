@@ -1,6 +1,7 @@
 package com.casa.app.device;
 
 import com.casa.app.estate.RealEstate;
+import com.casa.app.user.regular_user.RegularUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Device {
     private Long id;
 
     private String name;
+    private RegularUser owner;
     private PowerSupplyType powerSupplyType;
     private double energyConsumption;
     private DeviceStatus status;

@@ -1,4 +1,4 @@
-package com.casa.app.device.large_electric.solar_panel_system;
+package com.casa.app.device.large_electric.solar_panel_system.measurement;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,20 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.solarPanelSystem)
+@Measurement(name = MeasurementType.solarPanelSystemCommand)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SolarPanelSystemMeasurement extends AbstractMeasurement {
+public class SolarPanelSystemCommand extends AbstractMeasurement {
 
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+    @Column
+    String command;
+
+    @Column
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;
