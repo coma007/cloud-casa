@@ -5,7 +5,9 @@ public class MeasurementType {
     public final static String ambientSensor = "ambient_sensor";
     public final static String washingMachine = "washing_machine";
     public final static String electricVehicleCharger = "electric_vehicle_charger";
-    public final static String houseBattery = "house_battery";
+    public final static String houseBatteryImportExport = "house_battery_import_export";
+    public final static String houseBatteryStatus = "house_battery_status";
+    public final static String houseBatteryPowerUsage = "house_battery_power_usage";
     public final  static String solarPanelSystem = "solar_panel_system";
     public final  static String solarPanelSystemCommand = "solar_panel_system_command";
     public final  static String lampBrightness = "lamp_brightness";

@@ -1,4 +1,4 @@
-package com.casa.app.device.large_electric.house_battery;
+package com.casa.app.device.large_electric.house_battery.measurement;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,21 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.houseBattery)
+@Measurement(name = MeasurementType.houseBatteryImportExport)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HouseBatteryMeasurement extends AbstractMeasurement {
+public class HouseBatteryImportExportMeasurement extends AbstractMeasurement {
 
     @Column(tag = true)
     Long id;
 
     // add your custom columns
+    @Column
+    String type;
+
+    @Column
+    double value;
 
     @Column(timestamp = true)
     Instant timestamp;

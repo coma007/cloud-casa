@@ -4,7 +4,8 @@ import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
-import com.casa.app.device.large_electric.house_battery.HouseBatteryMeasurement;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
+import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemCommand;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemPowerMeasurement;
 import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
@@ -36,13 +37,33 @@ public class MeasurementService {
                 return new ElectricVehicleChargerMeasurement(
                         // add values from record
                 );
-            case (MeasurementType.houseBattery):
-                return new HouseBatteryMeasurement(
+            case (MeasurementType.houseBatteryPowerUsage):
+                return new HouseBatteryImportExportMeasurement(
+                        // add values from record
+                );
+            case (MeasurementType.houseBatteryImportExport):
+                return new HouseBatteryImportExportMeasurement(
+                        (Long) record.getValueByKey("id"),
+                        (String) record.getValueByKey("type"),
+                        (Double) record.getValueByKey("value"),
+                        record.getTime()
+                );
+            case (MeasurementType.houseBatteryStatus):
+                return new HouseBatteryImportExportMeasurement(
                         // add values from record
                 );
             case (MeasurementType.solarPanelSystem):
                 return new SolarPanelSystemPowerMeasurement(
-                        // add values from record
+                        (Long) record.getValueByKey("id"),
+                        (Double) record.getValueByKey("power"),
+                        record.getTime()
+                );
+            case (MeasurementType.solarPanelSystemCommand):
+                return new SolarPanelSystemCommand(
+                        (Long) record.getValueByKey("id"),
+                        (String) record.getValueByKey("command"),
+                        (String) record.getValueByKey("user"),
+                        record.getTime()
                 );
             case (MeasurementType.lampBrightness):
                 return new LampBrightnessMeasurement(
