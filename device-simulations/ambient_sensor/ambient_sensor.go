@@ -89,7 +89,7 @@ func StartSimulation(device AmbientSensor) {
 	temperature := generateTemperature(previousSeason)
 
 	shifts := make([]float64, 0)
-	shifts = append(shifts, 0.0001, -0.0001)
+	shifts = append(shifts, 0.01, -0.01)
 	for {
 		season := determineSeason()
 		if season != previousSeason {

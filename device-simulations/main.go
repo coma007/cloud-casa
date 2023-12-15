@@ -63,6 +63,7 @@ func fetchDevices[D Device](devicesUrl string) []D {
 }
 
 func fetchData(deviceTypeUrl string) []byte {
+	//TODO
 	//url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	url := "http://localhost:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	var resp *http.Response
