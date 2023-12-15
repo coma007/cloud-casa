@@ -1,5 +1,22 @@
 .row {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 5px;
+}
+
+
+.customSelect {
+    margin-left: 15px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.input {
+    width: 150px;
+    margin-left: 15px;
 }

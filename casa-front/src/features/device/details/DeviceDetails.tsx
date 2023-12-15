@@ -18,8 +18,8 @@ const DeviceDetails = () => {
 
     const exampleAirConditioning = {
         ...exampleDevice,
-        MinTemperature: 'Example Min Temperature',
-        MaxTemperature: 'Example Max Temperature',
+        MinTemperature: 30,
+        MaxTemperature: 95,
         SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
         deviceType: 'AirConditioning',
     };
@@ -57,6 +57,21 @@ const DeviceDetails = () => {
         deviceType: 'VehicleGate',
     };
 
+    const exampleAmbientSensor = {
+        ...exampleDevice,
+        deviceType: 'AmbientSensor',
+    };
+
+    const exampleLamp = {
+        ...exampleDevice,
+        deviceType: 'Lamp',
+    };
+
+    const exampleSprinklerSystem = {
+        ...exampleDevice,
+        deviceType: 'SprinklerSystem',
+    };
+
     let dev = exampleWashingMachine;
 
     return (
@@ -68,7 +83,10 @@ const DeviceDetails = () => {
                 <div>
                     <DeviceInfo deviceType={dev.deviceType} device={dev}></DeviceInfo>
                     <br></br>
-                    <DeviceManager deviceType={dev.deviceType} device={dev}></DeviceManager>
+                    {
+                        (!["AmbientSensor", "HouseBattery", "ElectricVehicleCharger"].includes(dev.deviceType)) &&
+                        <DeviceManager deviceType={dev.deviceType} device={dev}></DeviceManager>
+                    }
                 </div>
                 <div>
                     <Filter></Filter>

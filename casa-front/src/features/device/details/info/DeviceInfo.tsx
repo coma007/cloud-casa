@@ -10,13 +10,10 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>MIN TEMPERATURE:</b> {props.device.MinTemperature}
+                            <b>MIN / MAX TEMPERATURE:</b> {props.device.MinTemperature} / {props.device.MaxTemperature}
                         </p>
                         <p className={DeviceInfoCSS.row}>
-                            <b>MAX TEMPERATURE:</b> {props.device.MaxTemperature}
-                        </p>
-                        <p className={DeviceInfoCSS.row}>
-                            <b>SUPPORTED MODES:</b>
+                            <b>SUPPORTED MODES:</b> <small><i>use scroll to view all modes bellow</i></small>
                         </p>
                         <div className={DeviceInfoCSS.scrollableListContainer}>
 
@@ -34,7 +31,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SUPPORTED MODES:</b>
+                            <b>SUPPORTED MODES:</b> <small><i>use scroll to view all modes bellow</i></small>
                         </p>
                         <div className={DeviceInfoCSS.scrollableListContainer}>
 
@@ -88,7 +85,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>ALLOWED VEHICLES:</b>
+                            <b>ALLOWED VEHICLES:</b> <small><i>use scroll to view all vehicles bellow</i></small>
                         </p>
                         <div className={DeviceInfoCSS.scrollableListContainer}>
                             <ul className={DeviceInfoCSS.scrollableList}>

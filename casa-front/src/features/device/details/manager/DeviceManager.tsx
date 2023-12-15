@@ -2,80 +2,110 @@ import React, { useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import Button from '../../../../components/forms/Button/Button';
 import DeviceManagerCSS from './DeviceManager.module.scss'
+import InputField from '../../../../components/forms/InputField/InputField';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [isToggleOn, setToggleOn] = useState(false);
+    const [toggleIsOn, setToggleIsOn] = useState(false);
+    const [toggleIsOpen, setToggleIsOpen] = useState(false);
+    const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 
-    const handleToggleClick = () => {
-        setToggleOn(!isToggleOn);
+    const handleIsOnClick = () => {
+        setToggleIsOn(!toggleIsOn);
     };
+
+    const handleIsOpenClick = () => {
+        setToggleIsOpen(!toggleIsOpen);
+    };
+
+
+    const handleIsPrivateClick = () => {
+        setToggleIsPrivate(!toggleIsPrivate);
+    };
+
 
     const renderDeviceSpecificUI = () => {
         switch (props.deviceType) {
             case 'AirConditioning':
                 return (
                     <div>
-                        <p>
-                            <Button text={isToggleOn ? 'Turn OFF' : 'Turn ON'} onClick={handleToggleClick} submit={undefined} />
-                        </p>
-                        <p>
-                            Choose Regime:
-                            <select>
-                                {props.device.SupportedModes.map((mode, index) => (
-                                    <option key={index}>{mode}</option>
-                                ))}
-                            </select>
+                        <div className={DeviceManagerCSS.row}>
+                            <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
+                            <Button text="Custom Mode" onClick={undefined} submit={undefined} />
+                        </div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div>
+                                Select Mode:
+                                <select className={DeviceManagerCSS.customSelect}>
+                                    {props.device.SupportedModes.map((mode, index) => (
+                                        <option key={index}>{mode}</option>
+                                    ))}
+                                </select>
+                            </div>
                             <Button text="Set" onClick={undefined} submit={undefined} />
-                        </p>
-                        <p>
-                            Set Temperature:
-                            <input type="text" />
-                            <Button text="Set" onClick={undefined} submit={undefined} />
-                        </p>
-                        <p>
-                            <button>Create Custom Mode</button>
-                        </p>
+                        </div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div className={DeviceManagerCSS.row}>
+                                Set Temperature:
+                                <div className={DeviceManagerCSS.input}>
+                                    <InputField usage={'Temperature'} className={''} />
+                                </div>
+                            </div>
+                            <div>
+                                <Button text="Set" onClick={undefined} submit={undefined} />
+                            </div>
+                        </div>
                     </div>
                 );
 
             case 'WashingMachine':
                 return (
                     <div>
-                        <p>
-                            Select Mode:
-                            <select>
-                                {props.device.SupportedModes.map((mode, index) => (
-                                    <option key={index}>{mode}</option>
-                                ))}
-                            </select>
-                        </p>
-                        <p>
-                            <Button text={isToggleOn ? 'STOP' : 'START'} onClick={handleToggleClick} submit={undefined} />
+                        <div className={DeviceManagerCSS.row}>
+                            <div>
+                                Select Mode:
+                                <select className={DeviceManagerCSS.customSelect}>
+                                    {props.device.SupportedModes.map((mode, index) => (
+                                        <option key={index}>{mode}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <Button text={toggleIsOn ? 'STOP' : 'START'} onClick={handleIsOnClick} submit={undefined} />
+                        </div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div></div>
                             <Button text="Schedule Washing" onClick={undefined} submit={undefined} />
-                        </p>
+                        </div>
                     </div>
                 );
 
             case 'SolarPanelSystem':
                 return (
                     <div>
-                        <Button text={isToggleOn ? 'Turn OFF' : 'Turn ON'} onClick={handleToggleClick} submit={undefined} />
+                        <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
                     </div>
                 );
 
             case 'VehicleGate':
                 return (
                     <div className={DeviceManagerCSS.row}>
-                        <Button text={isToggleOn ? 'CLOSE' : 'OPEN'} onClick={handleToggleClick} submit={undefined} />
-                        <Button text={isToggleOn ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleToggleClick} submit={undefined} />
+                        <Button text={toggleIsOn ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
+                        <Button text={toggleIsOn ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleIsPrivateClick} submit={undefined} />
                     </div>
                 );
 
             case 'SprinklerSystem':
                 return (
+                    <div className={DeviceManagerCSS.row}>
+                        <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
+                        <Button text="Custom Mode" onClick={undefined} submit={undefined} />
+                    </div>
+                );
+
+            case 'Lamp':
+                return (
                     <div>
                         <p>
-                            <Button text={isToggleOn ? 'Turn OFF' : 'Turn ON'} onClick={handleToggleClick} submit={undefined} />
+                            <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
                         </p>
                     </div>
                 );
@@ -87,7 +117,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
     return (
         <Card>
-            <h5><b>Device Manager</b></h5> <br/>
+            <h5><b>Device Manager</b></h5> <br />
             {renderDeviceSpecificUI()}
         </Card>
     );
