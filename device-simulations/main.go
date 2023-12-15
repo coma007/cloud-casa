@@ -1,6 +1,7 @@
 package main
 
 import (
+	"device-simulations/ambiental"
 	"device-simulations/house_battery"
 	"device-simulations/solar_panels"
 	"encoding/json"
@@ -22,7 +23,8 @@ type Device struct {
 }
 
 func main() {
-	url := "http://casa-back:8080/api/device/public/simulation/getAll"
+	//url := "http://casa-back:8080/api/device/public/simulation/getAll"
+	url := "http://localhost:8080/api/device/public/simulation/getAll"
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -59,11 +61,14 @@ func main() {
 	//devices["Klima1"] = "Klima1"
 	//devices["Klima2"] = "Klima2"
 	//devices["Klima3"] = "Klima3"
+	devices["SolarPanelSystem"] = "SolarPanelSystem"
 	for k, v := range devices {
 		if v == "SolarPanelSystem" {
 			go solar_panels.StartSimulation(k)
 		} else if v == "HouseBattery" {
 			go house_battery.StartSimulation(k)
+		} else if v == "Ambiental" {
+			go ambiental.StartSimulation(k)
 		}
 	}
 	for {
