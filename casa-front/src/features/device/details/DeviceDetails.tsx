@@ -4,9 +4,11 @@ import DeviceDetailsCSS from './DeviceDetails.module.scss'
 import PageTitle from '../../../components/view/PageTitle/PageTitle'
 import DeviceInfo from './info/DeviceInfo'
 import DeviceManager from './manager/DeviceManager'
-import Filter from './inspect/filter/Filter'
+import Filter from './inspect/filter/FilterTime'
 import Graph from './inspect/graph/Graph'
 import WashingMachineStep from '../register/WashingMachineStep'
+import FilterUser from './inspect/filter/FilterUser'
+import FilterTime from './inspect/filter/FilterTime'
 
 const DeviceDetails = () => {
     const exampleDevice = {
@@ -89,7 +91,8 @@ const DeviceDetails = () => {
                     }
                 </div>
                 <div>
-                    <Filter></Filter>
+                    <FilterTime></FilterTime>
+                    <FilterUser></FilterUser>
                     <Graph></Graph>
                 </div>
             </div>
