@@ -20,6 +20,12 @@ const (
 	Spring        = "spring"
 )
 
+const minTemp = -5
+const maxTemp = 40
+
+const minHumidity = 0
+const maxHumidity = 100
+
 func (sensor *AmbientSensor) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	//tokens := strings.Split(message, "~")
@@ -74,6 +80,34 @@ func generateTemperature(season string) float64 {
 	return min + rand.Float64()*(max-min)
 }
 
+func generateHumidity(season string) float64 {
+	rand.Seed(time.Now().UnixNano())
+	var min, max float64
+	switch season {
+	case Winter:
+		{
+			min = 5
+			max = 70
+		}
+	case Summer:
+		{
+			min = 0
+			max = 40
+		}
+	case Autumn:
+		{
+			min = 30
+			max = 100
+		}
+	default:
+		{
+			min = 0
+			max = 100
+		}
+	}
+	return min + rand.Float64()*(max-min)
+}
+
 func TimeIsBetween(t, min, max time.Time) bool {
 	if min.After(max) {
 		min, max = max, min
@@ -87,18 +121,38 @@ func StartSimulation(device AmbientSensor) {
 	defer client.Disconnect(250)
 	previousSeason := determineSeason()
 	temperature := generateTemperature(previousSeason)
+	//humidity := generateHumidity(previousSeason)
+	humidity := 0.0
 
-	shifts := make([]float64, 0)
-	shifts = append(shifts, 0.01, -0.01)
+	temperatureShifts := make([]float64, 0)
+	temperatureShifts = append(temperatureShifts, 0.01, -0.01)
+
+	humidityShifts := make([]float64, 0)
+	humidityShifts = append(humidityShifts, 0.3, 0.2, 0.1, -0.1, -0.2, -0.3)
 	for {
 		season := determineSeason()
 		if season != previousSeason {
 			temperature = generateTemperature(season)
+			humidity = generateHumidity(season)
 		} else {
-			shift := shifts[rand.Intn(2)]
-			temperature += shift
+			temperatureShift := temperatureShifts[rand.Intn(len(temperatureShifts))]
+			if temperature+temperatureShift > minTemp && temperature+temperatureShift < maxTemp {
+				temperature += temperatureShift
+			}
+
+			humidityShift := humidityShifts[rand.Intn(len(humidityShifts))]
+			if humidity+humidityShift > minHumidity && humidity+humidityShift < maxHumidity {
+				humidity += humidityShift
+			}
+
 		}
-		fmt.Printf("%f", temperature)
+
+		data := make([]string, 0)
+		temperatureS := fmt.Sprintf("%f", temperature)
+		humidityS := fmt.Sprintf("%f", humidity)
+		data = append(data, temperatureS, humidityS)
+
+		utils.SendComplexMessage(client, "house_battery", device.Id, data)
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)
 		previousSeason = season

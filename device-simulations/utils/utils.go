@@ -39,3 +39,17 @@ func SendMessage(client mqtt.Client, topic string, deviceId int64, message strin
 	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+message)
 	token.Wait()
 }
+
+func SendComplexMessage(client mqtt.Client, topic string, deviceId int64, messages []string) {
+	messagesSeparated := ""
+	for i, message := range messages {
+		if i == 0 {
+			messagesSeparated += message
+		} else {
+			messagesSeparated += "|" + message
+		}
+
+	}
+	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+messagesSeparated)
+	token.Wait()
+}
