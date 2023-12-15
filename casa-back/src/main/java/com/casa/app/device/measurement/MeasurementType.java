@@ -7,6 +7,7 @@ public class MeasurementType {
     public final static String electricVehicleCharger = "electric_vehicle_charger";
     public final static String houseBattery = "house_battery";
     public final  static String solarPanelSystem = "solar_panel_system";
+    public final  static String solarPanelSystemCommand = "solar_panel_system_command";
     public final  static String lampBrightness = "lamp_brightness";
     public final  static String lampCommand = "lamp_command";
     public final static String sprinklerSystem = "sprinkler_system";

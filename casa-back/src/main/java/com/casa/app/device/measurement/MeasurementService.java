@@ -5,7 +5,7 @@ import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryMeasurement;
-import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemMeasurement;
+import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemPowerMeasurement;
 import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemMeasurement;
@@ -41,7 +41,7 @@ public class MeasurementService {
                         // add values from record
                 );
             case (MeasurementType.solarPanelSystem):
-                return new SolarPanelSystemMeasurement(
+                return new SolarPanelSystemPowerMeasurement(
                         // add values from record
                 );
             case (MeasurementType.lampBrightness):
