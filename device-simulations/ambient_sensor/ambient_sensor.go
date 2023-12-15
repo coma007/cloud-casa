@@ -121,8 +121,7 @@ func StartSimulation(device AmbientSensor) {
 	defer client.Disconnect(250)
 	previousSeason := determineSeason()
 	temperature := generateTemperature(previousSeason)
-	//humidity := generateHumidity(previousSeason)
-	humidity := 0.0
+	humidity := generateHumidity(previousSeason)
 
 	temperatureShifts := make([]float64, 0)
 	temperatureShifts = append(temperatureShifts, 0.01, -0.01)
