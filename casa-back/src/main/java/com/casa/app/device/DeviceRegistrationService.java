@@ -32,6 +32,7 @@ import com.casa.app.estate.RealEstateService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +66,7 @@ public class DeviceRegistrationService {
     @Autowired
     private SolarPanelSystemRepository solarPanelSystemRepository;
 
+    @Transactional
     public void registerDevice(DeviceRegistrationDTO deviceDTO) {
         String type = deviceDTO.getType();
         Object device = deviceDTO.getDevice();

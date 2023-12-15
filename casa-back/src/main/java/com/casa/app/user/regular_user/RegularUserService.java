@@ -32,6 +32,6 @@ public class RegularUserService {
     public RegularUser getUserByToken(){
         SecurityContext context = SecurityContextHolder.getContext();
         User user = (User) context.getAuthentication().getPrincipal();
-        return regularUserRepository.getReferenceById(user.getId());
+        return regularUserRepository.findById(user.getId()).orElse(null);
     }
 }

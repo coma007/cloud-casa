@@ -151,7 +151,7 @@ func StartSimulation(device AmbientSensor) {
 		humidityS := fmt.Sprintf("%f", humidity)
 		data = append(data, temperatureS, humidityS)
 
-		utils.SendComplexMessage(client, "house_battery", device.Id, data)
+		utils.SendComplexMessage(client, "ambient_sensor", device.Id, data)
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)
 		previousSeason = season
