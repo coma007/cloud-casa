@@ -9,6 +9,7 @@ import ProfilePage from "../features/user/auth/pages/ProfilePage/ProfilePage";
 import EstateOverviewPage from "../features/estate/overview/EstateOverviewPage";
 import RequestOverviewPage from "../features/request/overview/RequestOverviewPage";
 import DeviceOverviewPage from "../features/device/overview/DeviceOverviewPage";
+import DeviceDetails from "../features/device/details/DeviceDetails";
 
 const Router = () => {
 
@@ -16,6 +17,7 @@ const Router = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/register-device" element={<StepperForm />} />
+                <Route path="/device-details" element={<DeviceDetails />} />
 
                 <Route element={<NonAuthGuard />}>
                     <Route path="/login" element={<LoginPage />} />
