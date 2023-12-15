@@ -7,9 +7,20 @@ import (
 	"time"
 )
 
+type AirConditioningMode int64
+
+const (
+	COOLING AirConditioningMode = iota
+	HEATING
+	AUTO
+	VENTILATION
+)
+
 type AirConditioning struct {
-	Id     int64 `json:"id"`
-	LampOn bool  `json:"lampOn"`
+	Id             int64               `json:"id"`
+	MinTemperature int64               `json:"minTemperature"`
+	MaxTemperature int64               `json:"MaxTemperature"`
+	SupportedModes AirConditioningMode `json:"supportedModes"`
 }
 
 func (airConditioning *AirConditioning) messageHandler(client mqtt.Client, msg mqtt.Message) {
