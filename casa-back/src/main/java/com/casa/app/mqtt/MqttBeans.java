@@ -43,7 +43,7 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        options.setServerURIs(new String[] {"tcp://localhost:1883"});
+        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -91,7 +91,7 @@ public class MqttBeans {
                 content = content.split("~")[1];
                 switch (topic) {
                     case ("ping"):
-                        deviceStatusService.pingHandler(content);
+                        deviceStatusService.pingHandler(id);
                         break;
                     case (MeasurementType.airConditioning):
                         // call service handler here

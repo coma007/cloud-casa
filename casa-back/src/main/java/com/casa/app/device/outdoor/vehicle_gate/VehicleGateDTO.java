@@ -23,6 +23,7 @@ public class VehicleGateDTO extends DeviceDTO {
         device.setEnergyConsumption(this.getEnergyConsumption());
         device.setPowerSupplyType(PowerSupplyType.valueOf(this.getPowerSupplyType()));
         device.setAllowedVehicles(new ArrayList<>());
+        device.setCurrentMode(VehicleGateMode.PUBLIC);
         for (String vehicle : this.allowedVehicles) {
             device.getAllowedVehicles().add(vehicle);
         }

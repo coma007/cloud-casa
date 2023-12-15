@@ -1,107 +1,84 @@
 package main
 
 import (
+	"device-simulations/air_conditioning"
+	"device-simulations/ambient_sensor"
 	"device-simulations/house_battery"
+	"device-simulations/lamp"
 	"device-simulations/solar_panels"
+	"device-simulations/vehicle_gate"
 	"encoding/json"
-	"fmt"
-	"github.com/eclipse/paho.mqtt.golang"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"time"
 )
 
-func messageHandler(client mqtt.Client, msg mqtt.Message) {
-	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
-}
-
-type Device struct {
-	Id   string `json:"name"`
-	Type string `json:"type"`
+type Device interface {
+	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
+	air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor
 }
 
 func main() {
-	url := "http://casa-back:8080/api/device/public/simulation/getAll"
 
-	resp, err := http.Get(url)
-	if err != nil {
-		panic(err)
+	solarPanels := fetchDevices[solar_panels.SolarPanel]("solarPanelSystem/")
+	houseBatteries := fetchDevices[house_battery.HouseBattery]("houseBattery/")
+	lamps := fetchDevices[lamp.Lamp]("lamp/")
+	gates := fetchDevices[vehicle_gate.AuxVehicleGate]("vehicleGate/")
+	airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
+	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
+
+	for _, item := range solarPanels {
+		go solar_panels.StartSimulation(item)
 	}
-	defer resp.Body.Close()
-
-	fmt.Println("Response Status:", resp.Status)
-
-	// Read the response body
-	responseBody, err := ioutil.ReadAll(resp.Body)
-
-	var data []Device
-
-	// Unmarshal the JSON string into the slice
-	err = json.Unmarshal(responseBody, &data)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
+	for _, item := range houseBatteries {
+		go house_battery.StartSimulation(item)
 	}
-
-	// Print the parsed data (as a slice of maps)
-	fmt.Println("Parsed JSON:")
-
-	if err != nil {
-		panic(err)
+	for _, item := range lamps {
+		go lamp.StartSimulation(item)
 	}
-
-	devices := make(map[string]string)
-	for _, item := range data {
-		devices[item.Id] = item.Type
+	for _, item := range gates {
+		go vehicle_gate.StartSimulation(item.ToModel())
 	}
-	//devices["Senzor1"] = "Senzor1"
-	//devices["Klima1"] = "Klima1"
-	//devices["Klima2"] = "Klima2"
-	//devices["Klima3"] = "Klima3"
-	for k, v := range devices {
-		if v == "SolarPanelSystem" {
-			go solar_panels.StartSimulation(k)
-		} else if v == "HouseBattery" {
-			go house_battery.StartSimulation(k)
-		}
+	for _, item := range airConditioners {
+		go air_conditioning.StartSimulation(item.ToModel())
+	}
+	for _, item := range sensors {
+		go ambient_sensor.StartSimulation(item)
 	}
 	for {
 		time.Sleep(1 * time.Second)
 	}
 }
 
-func startSimulation(deviceName string, topic string) {
-	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883") // MQTT broker URL
-	opts.SetClientID(deviceName)                                        // Client ID
-	opts.SetUsername("admin")
-	opts.SetPassword("12345678")
-	client := mqtt.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	}
-	defer client.Disconnect(250)
+func fetchDevices[D Device](devicesUrl string) []D {
+	responseBody := fetchData(devicesUrl)
 
-	//topic = "serverMessages" // Specify the topic you want to subscribe to
+	var devices []D
 
-	if token := client.Subscribe(deviceName, 0, messageHandler); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
+	err := json.Unmarshal(responseBody, &devices)
+	if err != nil {
+		panic(err)
 	}
 
-	fmt.Printf("Subscribed to topic: %s\n", deviceName)
+	return devices
+}
 
-	// Keep the program running to receive messages
-	// For demonstration purposes, you can add a sleep or use a blocking mechanism
-	// You might use a channel, select statement, or other mechanisms in an actual application
+func fetchData(deviceTypeUrl string) []byte {
+	url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	var resp *http.Response
+	var err error
+
 	for {
-		message := deviceName + "~PING"
-
-		token := client.Publish(topic, 0, false, message)
-		token.Wait()
-
-		fmt.Printf("Published message: %s to topic: %s\n", message, topic)
-		time.Sleep(15 * time.Second)
+		resp, err = http.Get(url)
+		if err == nil {
+			break
+		}
+		time.Sleep(5 * time.Second)
 	}
+	defer resp.Body.Close()
+	responseBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	return responseBody
 }
