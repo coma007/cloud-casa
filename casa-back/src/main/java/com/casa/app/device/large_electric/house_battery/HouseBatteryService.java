@@ -2,12 +2,17 @@ package com.casa.app.device.large_electric.house_battery;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryPowerUsageMeasurement;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystem;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemSimulationDTO;
+import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +25,56 @@ public class HouseBatteryService {
     private HouseBatteryRepository houseBatteryRepository;
     @Autowired
     private MqttGateway mqttGateway;
+    @Autowired
+    private InfluxDBService influxDBService;
 
-    public void handleMessage(Long id, String message) {
+    public void handleExportImport(Long id, String message) {
         System.out.println(message);
-        // TODO: save in influx
+        HouseBattery battery = houseBatteryRepository.findById(id).orElse(null);
+        if (battery == null) {
+            return;
+        }
+        double value;
+        String type;
+        try {
+            value = Double.parseDouble(message);
+        } catch (NumberFormatException e) {
+            return;
+        }
+        if (value < 0) {
+            type = "Import";
+        } else {
+            type = "Export";
+        }
+        influxDBService.write(new HouseBatteryImportExportMeasurement(battery.getId(), type, value, Instant.now()));
+    }
+
+    public void handlePowerUsage(Long id, String message) {
+        HouseBattery battery = houseBatteryRepository.findById(id).orElse(null);
+        if (battery == null) {
+            return;
+        }
+        double value;
+        try {
+            value = Double.parseDouble(message);
+        } catch (NumberFormatException e) {
+            return;
+        }
+        influxDBService.write(new HouseBatteryPowerUsageMeasurement(battery.getId(), value, Instant.now()));
+    }
+
+    public void handleBatteryState(Long id, String message) {
+        HouseBattery battery = houseBatteryRepository.findById(id).orElse(null);
+        if (battery == null) {
+            return;
+        }
+        double value;
+        try {
+            value = Double.parseDouble(message);
+        } catch (NumberFormatException e) {
+            return;
+        }
+        influxDBService.write(new HouseBatteryCurrentStateMeasurement(battery.getId(), value, Instant.now()));
     }
 
     public void manageEnergy(Device device, double power, boolean increase) {
@@ -40,6 +91,7 @@ public class HouseBatteryService {
                 increaseEnergy(powerPerBattery, b);
             }
             else {
+//                double reducedPower = powerPerBattery / 60;
                 reduceEnergy(powerPerBattery, b);
             }
         }
