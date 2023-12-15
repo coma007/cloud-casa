@@ -37,11 +37,11 @@ public class VehicleGateService {
     }
 
     public List<VehicleGateSimulationDTO> getAllSimulation() {
-        List<VehicleGate> solarPanelSystems = vehicleGateRepository.findAll();
-        List<VehicleGateSimulationDTO> solarPanelSystemDTOS = new ArrayList<>();
-        for (VehicleGate g : solarPanelSystems) {
-            solarPanelSystemDTOS.add(new VehicleGateSimulationDTO(g.getId(), g.getAllowedVehicles(), g.getCurrentMode()));
+        List<VehicleGate> vehicleGates = vehicleGateRepository.findAll();
+        List<VehicleGateSimulationDTO> vehicleGateDTOS = new ArrayList<>();
+        for (VehicleGate g : vehicleGates) {
+            vehicleGateDTOS.add(new VehicleGateSimulationDTO(g.getId(), g.getAllowedVehicles(), g.getCurrentMode()));
         }
-        return solarPanelSystemDTOS;
+        return vehicleGateDTOS;
     }
 }

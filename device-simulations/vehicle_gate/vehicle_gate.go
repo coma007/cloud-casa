@@ -24,6 +24,7 @@ func (gate *VehicleGate) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	//tokens := strings.Split(message, "~")
 	fmt.Println(message)
+	// TODO: Message handler
 }
 
 func StartSimulation(device VehicleGate) {
@@ -32,7 +33,7 @@ func StartSimulation(device VehicleGate) {
 
 	for {
 
-		// Simulation
+		// TODO: Simulation
 
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)

@@ -49,7 +49,7 @@ func calculateOutput(size float64, effectiveness float64) float64 {
 
 func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
-	tokens := strings.Split(message, "-")
+	tokens := strings.Split(message, "~")
 	if tokens[1] == "ON" {
 		fmt.Printf("Device %s is turning ON\n", panel.Id)
 		panel.ToggleWorking(true)
@@ -61,6 +61,7 @@ func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 }
 
 func StartSimulation(device SolarPanel) {
+	device.Working = true
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
 	counter := 1

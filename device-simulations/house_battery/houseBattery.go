@@ -37,7 +37,7 @@ func (battery *HouseBattery) reducePower(power float64) {
 // ID-(REDUCE/INCREASE)-VALUE
 func (battery *HouseBattery) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
-	tokens := strings.Split(message, "-")
+	tokens := strings.Split(message, "~")
 	if tokens[1] == "REDUCE" {
 		fmt.Printf("Device %s is reducing power by %s\n", battery.Id, tokens[2])
 		power, err := strconv.ParseFloat(tokens[2], 64)
