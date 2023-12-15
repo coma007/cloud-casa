@@ -1,20 +1,8 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
-import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
-import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
-import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
-import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
-import com.casa.app.device.large_electric.house_battery.HouseBatteryMeasurement;
-import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
-import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
-import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
 import com.casa.app.device.outdoor.lamp.LampService;
-import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemMeasurement;
-import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
-import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
-import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
@@ -79,6 +67,7 @@ public class MqttBeans {
             private LampService lampService;
             @Autowired
             private VehicleGateService vehicleGateService;
+            @Autowired
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
@@ -105,8 +94,14 @@ public class MqttBeans {
                     case (MeasurementType.electricVehicleCharger):
                         // call service handler here
                         break;
-                    case (MeasurementType.houseBattery):
-                        houseBatteryService.handleMessage(id, content);
+                    case (MeasurementType.houseBatteryState):
+                        houseBatteryService.handleBatteryState(id, content);
+                        break;
+                    case (MeasurementType.houseBatteryImportExport):
+                        houseBatteryService.handleExportImport(id, content);
+                        break;
+                    case (MeasurementType.houseBatteryPowerUsage):
+                        houseBatteryService.handlePowerUsage(id, content);
                         break;
                     case (MeasurementType.solarPanelSystem):
                         solarPanelSystemService.handleMessage(id, content);

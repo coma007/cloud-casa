@@ -54,7 +54,6 @@ public class WebSecurityConfig  {
         return (web) -> web
                 .ignoring()
                 .requestMatchers(HttpMethod.POST, "/api/login", "/api/register",
-                        "/api/device/register",
                         "/h2-console/**")
                 .requestMatchers(HttpMethod.GET,
                         "/webjars/**",

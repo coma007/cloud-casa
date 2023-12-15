@@ -29,6 +29,8 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateDTO;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateRepository;
 import com.casa.app.estate.RealEstateService;
+import com.casa.app.user.regular_user.RegularUser;
+import com.casa.app.user.regular_user.RegularUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class DeviceRegistrationService {
 
     @Autowired
     private RealEstateService realEstateService;
+    @Autowired
+    private RegularUserService regularUserService;
 
     @Autowired
     private DeviceRepository deviceRepository;
@@ -101,6 +105,8 @@ public class DeviceRegistrationService {
         ElectricVehicleCharger newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         electricVehicleChargerRepository.save(newDevice);
     }
 
@@ -108,6 +114,8 @@ public class DeviceRegistrationService {
         HouseBattery newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         houseBatteryRepository.save(newDevice);
     }
 
@@ -115,6 +123,8 @@ public class DeviceRegistrationService {
         SolarPanelSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         solarPanelSystemRepository.save(newDevice);
     }
 
@@ -122,6 +132,8 @@ public class DeviceRegistrationService {
         VehicleGate newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         vehicleGateRepository.save(newDevice);
     }
 
@@ -129,6 +141,8 @@ public class DeviceRegistrationService {
         SprinklerSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         sprinklerSystemRepository.save(newDevice);
     }
 
@@ -136,6 +150,8 @@ public class DeviceRegistrationService {
         Lamp newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         lampRepository.save(newDevice);
     }
 
@@ -143,6 +159,8 @@ public class DeviceRegistrationService {
         WashingMachine newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         washingMachineRepository.save(newDevice);
     }
 
@@ -150,6 +168,8 @@ public class DeviceRegistrationService {
         AirConditioning newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         airConditioningRepository.save(newDevice);
     }
 
@@ -157,6 +177,8 @@ public class DeviceRegistrationService {
         AmbientSensor newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
+        RegularUser currentUser = regularUserService.getUserByToken();
+        newDevice.setOwner(currentUser);
         ambientSensorRepository.save(newDevice);
     }
 }
