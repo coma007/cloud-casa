@@ -18,7 +18,11 @@ public class AmbientSensorMeasurement extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+    @Column
+    double temperature;
+
+    @Column
+    double humidity;
 
     @Column(timestamp = true)
     Instant timestamp;

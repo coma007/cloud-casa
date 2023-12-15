@@ -15,11 +15,10 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
-	air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor
+		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor
 }
 
 func main() {
-
 	solarPanels := fetchDevices[solar_panels.SolarPanel]("solarPanelSystem/")
 	houseBatteries := fetchDevices[house_battery.HouseBattery]("houseBattery/")
 	lamps := fetchDevices[lamp.Lamp]("lamp/")
@@ -64,7 +63,9 @@ func fetchDevices[D Device](devicesUrl string) []D {
 }
 
 func fetchData(deviceTypeUrl string) []byte {
-	url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	//TODO
+	//url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	url := "http://localhost:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	var resp *http.Response
 	var err error
 

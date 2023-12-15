@@ -8,7 +8,9 @@ import (
 )
 
 func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
-	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	//TODO
+	//opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883")
 	opts.SetClientID(strconv.FormatInt(deviceId, 10))
 	opts.SetUsername("admin")
 	opts.SetPassword("12345678")
@@ -35,5 +37,19 @@ func Ping(deviceId int64, client mqtt.Client) {
 
 func SendMessage(client mqtt.Client, topic string, deviceId int64, message string) {
 	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+message)
+	token.Wait()
+}
+
+func SendComplexMessage(client mqtt.Client, topic string, deviceId int64, messages []string) {
+	messagesSeparated := ""
+	for i, message := range messages {
+		if i == 0 {
+			messagesSeparated += message
+		} else {
+			messagesSeparated += "|" + message
+		}
+
+	}
+	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+messagesSeparated)
 	token.Wait()
 }

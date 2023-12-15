@@ -1,6 +1,7 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
@@ -31,7 +32,7 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
+        options.setServerURIs(new String[] {"tcp://localhost:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -71,6 +72,8 @@ public class MqttBeans {
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
+            @Autowired
+            private AmbientSensorService ambientSensorService;
 
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
@@ -86,7 +89,7 @@ public class MqttBeans {
                         // call service handler here
                         break;
                     case (MeasurementType.ambientSensor):
-                        // call service handler here
+                        ambientSensorService.handleMessage(id, content);
                         break;
                     case (MeasurementType.washingMachine):
                         // call service handler here
