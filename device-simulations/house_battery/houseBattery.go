@@ -85,7 +85,7 @@ func StartSimulation(device HouseBattery) {
 			utils.SendMessage(client, "house_battery_import_export", device.Id, value)
 			utils.SendMessage(client, "house_battery_power_usage", device.Id, fmt.Sprintf("%f", device.PowerUsage))
 			device.PowerUsage = 0
-			utils.SendMessage(client, "house_battery_status", device.Id, fmt.Sprintf("%f", device.getCurrentState()))
+			utils.SendMessage(client, "house_battery_state", device.Id, fmt.Sprintf("%f", device.getCurrentState()))
 			counter = 0
 		}
 		utils.Ping(device.Id, client)

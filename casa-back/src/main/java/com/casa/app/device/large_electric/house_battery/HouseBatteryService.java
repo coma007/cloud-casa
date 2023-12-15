@@ -2,6 +2,7 @@ package com.casa.app.device.large_electric.house_battery;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryPowerUsageMeasurement;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystem;
@@ -63,7 +64,17 @@ public class HouseBatteryService {
     }
 
     public void handleBatteryState(Long id, String message) {
-
+        HouseBattery battery = houseBatteryRepository.findById(id).orElse(null);
+        if (battery == null) {
+            return;
+        }
+        double value;
+        try {
+            value = Double.parseDouble(message);
+        } catch (NumberFormatException e) {
+            return;
+        }
+        influxDBService.write(new HouseBatteryCurrentStateMeasurement(battery.getId(), value, Instant.now()));
     }
 
     public void manageEnergy(Device device, double power, boolean increase) {

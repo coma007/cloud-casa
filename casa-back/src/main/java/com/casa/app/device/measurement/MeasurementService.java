@@ -4,6 +4,7 @@ import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
+import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryPowerUsageMeasurement;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemCommand;
@@ -51,9 +52,11 @@ public class MeasurementService {
                         (Double) record.getValueByKey("value"),
                         record.getTime()
                 );
-            case (MeasurementType.houseBatteryStatus):
-                return new HouseBatteryImportExportMeasurement(
-                        // add values from record
+            case (MeasurementType.houseBatteryState):
+                return new HouseBatteryCurrentStateMeasurement(
+                        (Long) record.getValueByKey("id"),
+                        (Double) record.getValueByKey("currentState"),
+                        record.getTime()
                 );
             case (MeasurementType.solarPanelSystem):
                 return new SolarPanelSystemPowerMeasurement(

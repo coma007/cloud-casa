@@ -94,7 +94,7 @@ public class MqttBeans {
                     case (MeasurementType.electricVehicleCharger):
                         // call service handler here
                         break;
-                    case (MeasurementType.houseBatteryStatus):
+                    case (MeasurementType.houseBatteryState):
                         houseBatteryService.handleBatteryState(id, content);
                         break;
                     case (MeasurementType.houseBatteryImportExport):
