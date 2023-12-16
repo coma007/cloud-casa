@@ -95,6 +95,9 @@ const DeviceOverviewPage = () => {
         }
       }
     
+    const newDevice = () => {
+        navigate("/register-device")
+    }
 
 
     return (
@@ -104,7 +107,7 @@ const DeviceOverviewPage = () => {
                 <div className={DeviceOverviewPageCSS.header}>
                     <PageTitle title="Devices overview" description="Take a detailed view of your devices." />
                     <div className={DeviceOverviewPageCSS.alignRight}>
-                        <Button text={"New device"} onClick={undefined} submit={undefined} />
+                        <Button text={"New device"} onClick={newDevice} submit={undefined} />
                     </div>
                 </div>
                 <div className={DeviceOverviewPageCSS.table} >
