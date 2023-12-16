@@ -219,13 +219,30 @@ func (conditioner *AirConditioning) redirectCommand(client mqtt.Client, msg mqtt
 	fmt.Printf("WORKING: %b\n", conditioner.Working)
 }
 
+func (conditioner *AirConditioning) findIncrement() float64 {
+	increment := 0.0
+	if conditioner.CurrentMode == COOLING_STRING && conditioner.CurrentTemperature > conditioner.TargetTemperature {
+		increment = -0.1
+	} else if conditioner.CurrentMode == HEATING_STRING && conditioner.CurrentTemperature < conditioner.TargetTemperature {
+		increment = 0.1
+	} else if conditioner.CurrentMode == AUTO_STRING {
+		if conditioner.CurrentTemperature > conditioner.TargetTemperature {
+			increment = -0.1
+		} else if conditioner.CurrentTemperature < conditioner.TargetTemperature {
+			increment = 0.1
+		}
+	}
+	return increment
+}
+
 func StartSimulation(device AirConditioning) {
 	client := utils.MqttSetup(device.Id, device.redirectCommand)
 	defer client.Disconnect(250)
 
 	for {
-
-		// TODO: Simulation
+		fmt.Println(device.CurrentTemperature)
+		increment := device.findIncrement()
+		device.CurrentTemperature += increment
 
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)
