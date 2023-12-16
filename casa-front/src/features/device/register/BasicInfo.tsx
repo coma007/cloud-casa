@@ -1,4 +1,6 @@
-import './Step1.css'
+import Button from '../../../components/forms/Button/Button';
+import UploadImage from '../../../components/forms/UploadImage/UploadImage';
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
 
 const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
     // Render form inputs for the first step
@@ -16,42 +18,38 @@ const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
     return (
     <div className='form-container'>
         <form className='custom-form' onSubmit={handleNext}>
-            <label htmlFor="deviceName">Device name:</label>
+            <label htmlFor="deviceName" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Device name:</label>
             <input
                 type="text"
                 name="deviceName"
                 value={formData.deviceName}
                 onChange={handleNameChange}
             />
-            <label htmlFor="fileInput">Upload Picture:</label>
-            <input
-                type="file"
-                id="fileInput"
-                name="picture"
-                ref={formData.picture}
-                onChange={handleChange}
-            />
-            <label htmlFor="energyConsumption">Energy consumption:</label>
+            <label htmlFor="fileInput" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Upload Picture:</label>
+            <UploadImage fileRef={formData.picture} className={''} />
+            <label htmlFor="energyConsumption" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Energy consumption:</label>
             <input
                 type="number"
                 name="energyConsumption"
                 value={formData.energyConsumption}
                 onChange={handleChange}
             />
-            <label htmlFor="powerSupplyType">Power Supply Type:</label>
+            <label htmlFor="powerSupplyType" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Power Supply Type:</label>
             <select
                 name="powerSupplyType"
                 value={formData.powerSupplyType}
                 onChange={handleChange}
+                className={DeviceRegistrationStepperCSS.input}
             >
                 <option value="AUTONOMOUS">Autonomous</option>
                 <option value="HOME">Home</option>
             </select>
-            <label htmlFor="deviceType">Device Type:</label>
+            <label htmlFor="deviceType" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Device Type:</label>
             <select
                 name="deviceType"
                 value={formData.deviceType}
                 onChange={handleChange}
+                className={`${DeviceRegistrationStepperCSS.input}`}
             >
                 <option value="AmbientSensor">Ambient Sensor</option>
                 <option value="AirConditioning">Air Conditioning</option>
@@ -63,7 +61,9 @@ const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
                 <option value="HouseBattery">House Battery</option>
                 <option value="ElectricVehicleCharger">Electric Vehicle Charger</option>
             </select>
-            <button type="submit">Next</button>
+            <div className={`${DeviceRegistrationStepperCSS.button} ${DeviceRegistrationStepperCSS.marginTop}`}>
+                <Button text={'Next'} onClick={nextStep} submit={undefined} />
+            </div>
         </form>
     </div>
     );

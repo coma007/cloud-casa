@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
-import Step1 from './Step1';
+import Step1 from './BasicInfo';
 import AirConditioningStep from './AirConditioningStep';
 import WashingMachineStep from './WashingMachineStep';
 import ElectricVehicleChargerStep from './ElectricVehicleChargerStep';
 import HouseBatteryStep from './HouseBatteryStep';
-import SolarPanelSystem from './SolarPanelSystemStep';
 import SolarPanelSystemStep from './SolarPanelSystemStep';
 import VehicleGateStep from './VehicleGateStep';
 import { DeviceService } from '../DeviceService';

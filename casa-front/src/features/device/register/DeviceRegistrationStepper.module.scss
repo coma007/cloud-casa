@@ -1,4 +1,34 @@
 .form {
-    width: 90%;
+    width: 70%;
     margin: auto;
+}
+
+.input {
+    height: 40px;
+    width: 100%;
+    padding: 3px 10px;
+    border: 1px solid var(--primary-color-transparent);
+    border-radius: 10px;
+}
+
+.multipleSelect {
+    height: 90px;
+}
+
+.textArea {
+    height: 110px;
+}
+
+.marginTop {
+    margin-top: 1.5vh;
+}
+
+.marginLeft {
+    margin-left: 1vw;
+}
+
+.button {
+    margin-top: 3vh;
+    display: flex;
+    justify-content: end;
 }
