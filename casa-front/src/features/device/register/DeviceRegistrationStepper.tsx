@@ -10,11 +10,8 @@ import SolarPanelSystemStep from './SolarPanelSystemStep';
 import VehicleGateStep from './VehicleGateStep';
 import { DeviceService } from '../DeviceService';
 import { DeviceCreate } from '../Device';
-<<<<<<< Updated upstream
-=======
 import Menu from '../../../components/navigation/Menu/Menu';
 import PageTitle from '../../../components/view/PageTitle/PageTitle';
->>>>>>> Stashed changes
 
 const StepperForm = () => {
   const [step, setStep] = useState(1);
