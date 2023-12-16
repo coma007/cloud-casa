@@ -1,7 +1,10 @@
 package com.casa.app.device.outdoor.lamp;
 
 import com.casa.app.device.DeviceStatus;
+import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.influxdb.InfluxDBService;
+import com.casa.app.websocket.SocketMessage;
+import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,15 +24,20 @@ public class LampService {
     @Autowired
     InfluxDBService influxDBService;
 
+    @Autowired
+    private WebSocketController webSocketController;
+
     public void brightnessHandler(Long id, String message) {
         Double brightness = Double.parseDouble(message);
         LampBrightnessMeasurement lamp = new LampBrightnessMeasurement( id, brightness, Instant.now());
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampBrightness, message, id.toString(), id.toString(), null));
         influxDBService.write(lamp);
     }
 
     public void commandHandler(Long id, String message, String user) {
         Boolean isOn = Boolean.parseBoolean(message);
         LampCommandMeasurement lamp = new LampCommandMeasurement( id, isOn, user, Instant.now());
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampCommand, message, id.toString(), id.toString(), null));
         influxDBService.write(lamp);
     }
 
