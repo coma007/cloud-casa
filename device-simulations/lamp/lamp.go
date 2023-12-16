@@ -20,7 +20,7 @@ func (lamp *Lamp) ToggleWorking(working bool) {
 	lamp.LampOn = working
 }
 
-func calculateBrightness() float64 {
+func (lamp *Lamp) calculateBrightness() float64 {
 
 	currentTime := time.Now().Hour()
 	startTime := 3
@@ -56,7 +56,7 @@ func StartSimulation(device Lamp) {
 	counter := 1
 	for {
 		if counter%4 == 0 {
-			brightness := calculateBrightness()
+			brightness := device.calculateBrightness()
 			value := fmt.Sprintf("%f", brightness)
 			utils.SendMessage(client, "lamp_brightness", device.Id, value)
 			if brightness < 0.3 && device.LampOn == false {
@@ -66,9 +66,8 @@ func StartSimulation(device Lamp) {
 				device.ToggleWorking(false)
 				utils.SendMessage(client, "lamp_command", device.Id, "false")
 			}
-		} else {
-			utils.Ping(device.Id, client)
 		}
+		utils.Ping(device.Id, client)
 		counter++
 		time.Sleep(15 * time.Second)
 	}
