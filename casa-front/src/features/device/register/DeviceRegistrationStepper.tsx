@@ -8,7 +8,7 @@ import SolarPanelSystem from './SolarPanelSystemStep';
 import SolarPanelSystemStep from './SolarPanelSystemStep';
 import VehicleGateStep from './VehicleGateStep';
 import { DeviceService } from '../DeviceService';
-import { DeviceCreate } from '../DeviceCreate';
+import { DeviceCreate } from '../Device';
 
 const StepperForm = () => {
   const [step, setStep] = useState(1);
