@@ -68,6 +68,12 @@ func (gate *VehicleGate) ToggleMode(mode VehicleGateMode) {
 
 func (gate *VehicleGate) AddVehicleInside(vehicle string) {
 	gate.VehiclesInside = append(gate.VehiclesInside, vehicle)
+	for i, v := range gate.AllowedVehicles {
+		if v == vehicle {
+			gate.AllowedVehicles = append(gate.AllowedVehicles[:i], gate.AllowedVehicles[i+1:]...)
+			return
+		}
+	}
 }
 
 func (gate *VehicleGate) RemoveVehicleInside(vehicle string) {
@@ -77,6 +83,7 @@ func (gate *VehicleGate) RemoveVehicleInside(vehicle string) {
 			return
 		}
 	}
+	gate.AllowedVehicles = append(gate.AllowedVehicles, vehicle)
 }
 
 func (gate *VehicleGate) GetRandomVehicleInside() string {
@@ -94,7 +101,7 @@ func (gate *VehicleGate) CanPass(licencePlates string) bool {
 func (gate *VehicleGate) DetectObject() bool {
 	seed := rand.NewSource(time.Now().UnixNano())
 	distance := rand.New(seed)
-	return distance.Float64() < 0.2
+	return distance.Float64() < 0.3
 }
 
 func (gate *VehicleGate) ReadLicencePlates() string {
