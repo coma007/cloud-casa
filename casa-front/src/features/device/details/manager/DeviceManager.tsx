@@ -5,7 +5,7 @@ import DeviceManagerCSS from './DeviceManager.module.scss'
 import InputField from '../../../../components/forms/InputField/InputField';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [toggleIsOn, setToggleIsOn] = useState(false);
+    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 

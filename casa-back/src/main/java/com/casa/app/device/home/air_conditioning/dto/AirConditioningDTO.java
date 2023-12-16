@@ -1,8 +1,10 @@
-package com.casa.app.device.home.air_conditioning;
+package com.casa.app.device.home.air_conditioning.dto;
 
 import com.casa.app.device.dto.DeviceDTO;
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.PowerSupplyType;
+import com.casa.app.device.home.air_conditioning.AirConditioning;
+import com.casa.app.device.home.air_conditioning.AirConditioningMode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

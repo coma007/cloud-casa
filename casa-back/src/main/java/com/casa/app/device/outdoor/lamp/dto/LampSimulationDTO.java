@@ -1,4 +1,4 @@
-package com.casa.app.device.large_electric.house_battery;
+package com.casa.app.device.outdoor.lamp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HouseBatterySimulationDTO {
+public class LampSimulationDTO {
     private Long id;
-    private double size;
-    private double currentState;
+    private boolean lampOn;
 }

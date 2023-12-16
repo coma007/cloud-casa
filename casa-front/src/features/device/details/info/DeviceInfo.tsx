@@ -107,6 +107,9 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
     return (
         <Card>
             <p className={DeviceInfoCSS.row}>
+                <b>STATUS:</b> {props.device.Status}
+            </p>
+            <p className={DeviceInfoCSS.row}>
                 <b>NAME:</b> {props.device.Name}
             </p>
             <p className={DeviceInfoCSS.row}>

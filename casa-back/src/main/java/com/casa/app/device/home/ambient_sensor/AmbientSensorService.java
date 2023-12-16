@@ -1,7 +1,6 @@
 package com.casa.app.device.home.ambient_sensor;
 
-import com.casa.app.device.large_electric.house_battery.HouseBattery;
-import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
+import com.casa.app.device.home.ambient_sensor.dto.AmbientSensorSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

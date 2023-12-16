@@ -1,5 +1,6 @@
 package com.casa.app.device.large_electric.solar_panel_system;
 
+import com.casa.app.device.large_electric.solar_panel_system.dto.SolarPanelSystemSimulationDTO;
 import com.casa.app.exceptions.UserNotFoundException;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
