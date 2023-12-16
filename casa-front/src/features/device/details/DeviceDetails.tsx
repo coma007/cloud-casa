@@ -118,8 +118,6 @@ const DeviceDetails = () => {
         setToDate(to);
 
         DeviceService.filter(dev.Id, dev.deviceType, new Date(from).toISOString(), new Date(to).toISOString(), username);
-        console.log(from);
-        console.log(to);
     };
 
     const resetFilters = () => {
