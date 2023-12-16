@@ -33,8 +33,8 @@ const (
 
 type AuxAirConditioning struct {
 	Id             int64                    `json:"id"`
-	MinTemperature int64                    `json:"minTemperature"`
-	MaxTemperature int64                    `json:"maxTemperature"`
+	MinTemperature float64                  `json:"minTemperature"`
+	MaxTemperature float64                  `json:"maxTemperature"`
 	SupportedModes []AuxAirConditioningMode `json:"supportedModes"`
 }
 
@@ -76,8 +76,8 @@ const (
 
 type AirConditioning struct {
 	Id             int64
-	MinTemperature int64
-	MaxTemperature int64
+	MinTemperature float64
+	MaxTemperature float64
 	SupportedModes []AirConditioningMode
 
 	Working            bool
@@ -134,6 +134,9 @@ func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client,
 	if err != nil {
 		result = FAILURE
 	}
+	if targetTemperature < conditioner.MinTemperature || targetTemperature > conditioner.MaxTemperature {
+		result = FAILURE
+	}
 	if result == SUCCESS {
 		conditioner.TargetTemperature = targetTemperature
 	} else {
@@ -158,6 +161,10 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 		wr.Choice{Item: FAILURE, Weight: 2},
 	)
 	result := chooser.Pick().(string)
+	if contentTokens[1] != "COOLING" && contentTokens[1] != "HEATING" &&
+		contentTokens[1] != "VENTILATION" && contentTokens[1] != "AUTO" {
+		result = FAILURE
+	}
 
 	if result == SUCCESS {
 		switch contentTokens[1] {
