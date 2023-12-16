@@ -1,7 +1,11 @@
 package com.casa.app.influxdb;
 
 import com.casa.app.device.Device;
+import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
+import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.measurement.*;
+import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
+import com.casa.app.user.User;
 import com.casa.app.user.regular_user.RegularUser;
 import com.influxdb.client.*;
 import com.influxdb.client.domain.WritePrecision;
@@ -46,7 +50,7 @@ public class InfluxDBService {
     }
 
 
-    public MeasurementList query(String measurement, Device device, Instant from, Instant to, RegularUser user) {
+    public MeasurementList query(String measurement, Device device, Instant from, Instant to, User user) {
 
         if (from == null || to == null) {
             to = Instant.now();
@@ -72,7 +76,7 @@ public class InfluxDBService {
         return measurements;
     }
 
-    private String buildFluxQuery(String measurement, Device device, RegularUser user, String fromString, String toString) {
+    private String buildFluxQuery(String measurement, Device device, User user, String fromString, String toString) {
         String flux = String.format(
                 "from(bucket:\"%s\") " +
                         "|> range(start: %s, stop: %s)" +

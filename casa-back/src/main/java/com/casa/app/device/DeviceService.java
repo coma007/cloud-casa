@@ -6,12 +6,19 @@ import com.casa.app.device.home.ambient_sensor.AmbientSensor;
 import com.casa.app.device.home.washing_machine.WashingMachine;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleCharger;
 import com.casa.app.device.large_electric.house_battery.HouseBattery;
+import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystem;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
+import com.casa.app.influxdb.InfluxDBService;
+import com.casa.app.user.User;
+import com.casa.app.user.UserService;
+import com.casa.app.user.regular_user.RegularUser;
+import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +27,12 @@ public class DeviceService {
 
     @Autowired
     private DeviceRepository deviceRepository;
+
+    @Autowired
+    private InfluxDBService influxDBService;
+
+    @Autowired
+    private UserService userService;
 
     public List<DeviceSimulationDTO> getAllSimulation() {
         List<Device> devices = deviceRepository.findAll();
@@ -51,5 +64,13 @@ public class DeviceService {
             type = "HouseBattery";
         }
         return type;
+    }
+
+    public MeasurementList queryMeasurements(Long id, String measurement, String from, String to, String username) {
+        Device device = deviceRepository.getReferenceById(id);
+        Instant fromDate = Instant.parse(from);
+        Instant toDate = Instant.parse(to);
+        User user = userService.getByUsername(username);
+        return influxDBService.query(measurement, device, fromDate, toDate, user);
     }
 }

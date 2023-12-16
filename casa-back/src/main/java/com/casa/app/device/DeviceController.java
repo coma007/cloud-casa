@@ -2,6 +2,7 @@ package com.casa.app.device;
 
 import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
+import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
@@ -33,6 +34,17 @@ public class DeviceController {
     public ResponseEntity<List<DeviceSimulationDTO>> getAllDevicesForSimulation() {
         List<DeviceSimulationDTO> devices = service.getAllSimulation();
         return new ResponseEntity<>(devices, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/filter")
+    public ResponseEntity<MeasurementList> queryMeasurements(@RequestParam Long id,
+                                                             @RequestParam String measurement,
+                                                             @RequestParam String from,
+                                                             @RequestParam String to,
+                                                             @RequestParam String username) {
+        MeasurementList measurements = service.queryMeasurements(id, measurement, from, to, username);
+        return new ResponseEntity<>(measurements, HttpStatus.OK);
     }
 
 
