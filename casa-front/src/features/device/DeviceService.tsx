@@ -11,8 +11,8 @@ export const DeviceService = {
         return response.data;
     },
 
-    filter: async function (id: number, deviceType: string, from: string, to: string, username: string): Promise<DeviceMeasurementList> {
-        let response: ServiceResponse<DeviceMeasurementList> = await axios.get(DEVICE_FILTER(id, deviceType, from, to, username));
+    filter: async function (id: number, measurement: string, from: string, to: string, username: string): Promise<DeviceMeasurementList> {
+        let response: ServiceResponse<DeviceMeasurementList> = await axios.get(DEVICE_FILTER(id, measurement, from, to, username));
 
         return response.data;
     },

@@ -80,7 +80,7 @@ const DeviceDetails = () => {
 
     const exampleLamp = {
         ...exampleDevice,
-        deviceType: 'lamp',
+        deviceType: 'lamp_brightness',
     };
 
     const exampleSprinklerSystem = {
@@ -88,7 +88,7 @@ const DeviceDetails = () => {
         deviceType: 'sprinkler_system',
     };
 
-    let dev = exampleWashingMachine;
+    let dev = exampleLamp;
 
 
 
@@ -96,7 +96,7 @@ const DeviceDetails = () => {
 
     const handleUsernameFilterClick = () => {
         console.log(username);
-        // DeviceService.filter(dev.Id, dev.deviceType, fromDate, toDate, username);
+        DeviceService.filter(dev.Id, dev.deviceType, fromDate, toDate, username);
     }
 
     const [fromDate, setFromDate] = useState('');
@@ -117,7 +117,7 @@ const DeviceDetails = () => {
         setFromDate(from);
         setToDate(to);
 
-        // DeviceService.filter(dev.Id, dev.deviceType, from, to, username);
+        DeviceService.filter(dev.Id, dev.deviceType, new Date(from).toISOString(), new Date(to).toISOString(), username);
         console.log(from);
         console.log(to);
     };

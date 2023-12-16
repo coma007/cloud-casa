@@ -13,7 +13,7 @@ export const REQUEST_MANAGE = () => url + "/realEstateRequest/manage";
 export const REQUEST_GET_ALL = () => url + "/realEstateRequest/getAll";
 
 export const DEVICE_REGISTER = () => url + "/device/register"
-export const DEVICE_FILTER = (id: number, deviceType: string, from: string, to: string, username: string) => url + "/device/filter?" + + `id=${id}&` + `deviceType=${deviceType}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
+export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
 
 export const LOCATION_CITIES = (country) => url + "/location/getAllCities/" + country;
 export const LOCATION_COUNTRIES = () => url + "/location/getAllCountries";
