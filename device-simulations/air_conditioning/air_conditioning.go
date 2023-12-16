@@ -6,11 +6,17 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	wr "github.com/mroth/weightedrand"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type AuxAirConditioningMode string
+
+const (
+	FAILURE = "FAILURE"
+	SUCCESS = "SUCCESS"
+)
 
 const (
 	COOLING_STRING     AuxAirConditioningMode = "COOLING"
@@ -55,6 +61,7 @@ func (conditioner *AuxAirConditioning) ToModel() AirConditioning {
 		MinTemperature: conditioner.MinTemperature,
 		MaxTemperature: conditioner.MaxTemperature,
 		SupportedModes: supportedModes,
+		Working:        true,
 	}
 }
 
@@ -72,9 +79,45 @@ type AirConditioning struct {
 	MinTemperature int64
 	MaxTemperature int64
 	SupportedModes []AirConditioningMode
+
+	Working            bool
+	CurrentTemperature float64
+	TargetTemperature  float64
+	CurrentMode        AuxAirConditioningMode
 }
 
-func (conditioner *AirConditioning) handleCommand(client mqtt.Client, msg mqtt.Message) []string {
+func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg mqtt.Message) {
+
+	message := string(msg.Payload())
+	tokens := strings.Split(message, "~")
+	content := tokens[1]
+	contentTokens := strings.Split(content, "|")
+
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	chooser, _ := wr.NewChooser(
+		wr.Choice{Item: SUCCESS, Weight: 8},
+		wr.Choice{Item: FAILURE, Weight: 2},
+	)
+	result := chooser.Pick().(string)
+
+	if result == SUCCESS {
+		if contentTokens[1] == "TURN ON" {
+			conditioner.Working = true
+		} else {
+			conditioner.Working = false
+		}
+	} else {
+		conditioner.Working = false
+	}
+
+	data := append(contentTokens, result)
+	fmt.Println("HANDLING COMMAND, CONTENT: " + content + ", RESULT: " + result)
+	fmt.Println("HANDLING Working COMMAND")
+	utils.SendComplexMessage(client, "air_conditioning_working_ack", conditioner.Id, data)
+}
+
+func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	content := tokens[1]
@@ -87,26 +130,59 @@ func (conditioner *AirConditioning) handleCommand(client mqtt.Client, msg mqtt.M
 		wr.Choice{Item: "FAILURE", Weight: 2},
 	)
 	result := chooser.Pick().(string)
+	targetTemperature, err := strconv.ParseFloat(contentTokens[1], 64)
+	if err != nil {
+		result = FAILURE
+	}
+	if result == SUCCESS {
+		conditioner.TargetTemperature = targetTemperature
+	} else {
+
+	}
 
 	data := append(contentTokens, result)
-	fmt.Println("HANDLING COMMAND, CONTENT: " + content + ", RESULT: " + result)
-	return data
-}
-
-func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg mqtt.Message) {
-	data := conditioner.handleCommand(client, msg)
-	fmt.Println("HANDLING Working COMMAND")
-	utils.SendComplexMessage(client, "air_conditioning_working_ack", conditioner.Id, data)
-}
-
-func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client, msg mqtt.Message) {
-	data := conditioner.handleCommand(client, msg)
 	fmt.Println("HANDLING Temperature COMMAND")
 	utils.SendComplexMessage(client, "air_conditioning_temperature_ack", conditioner.Id, data)
 }
 
 func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mqtt.Message) {
-	data := conditioner.handleCommand(client, msg)
+	message := string(msg.Payload())
+	tokens := strings.Split(message, "~")
+	content := tokens[1]
+	contentTokens := strings.Split(content, "|")
+
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	chooser, _ := wr.NewChooser(
+		wr.Choice{Item: SUCCESS, Weight: 8},
+		wr.Choice{Item: FAILURE, Weight: 2},
+	)
+	result := chooser.Pick().(string)
+
+	if result == SUCCESS {
+		switch contentTokens[1] {
+		case "COOLING":
+			{
+				conditioner.CurrentMode = COOLING_STRING
+			}
+		case "HEATING":
+			{
+				conditioner.CurrentMode = HEATING_STRING
+			}
+		case "VENTILATION":
+			{
+				conditioner.CurrentMode = VENTILATION_STRING
+			}
+		default:
+			{
+				conditioner.CurrentMode = AUTO_STRING
+			}
+		}
+	} else {
+
+	}
+
+	data := append(contentTokens, result)
 	fmt.Println("HANDLING Mode COMMAND")
 	utils.SendComplexMessage(client, "air_conditioning_mode_ack", conditioner.Id, data)
 }
@@ -131,6 +207,9 @@ func (conditioner *AirConditioning) redirectCommand(client mqtt.Client, msg mqtt
 			conditioner.handleWorkingCommand(client, msg)
 		}
 	}
+	fmt.Printf("MODE: %s\n", conditioner.CurrentMode)
+	fmt.Printf("TARGET TEMP: %f\n", conditioner.TargetTemperature)
+	fmt.Printf("WORKING: %b\n", conditioner.Working)
 }
 
 func StartSimulation(device AirConditioning) {
