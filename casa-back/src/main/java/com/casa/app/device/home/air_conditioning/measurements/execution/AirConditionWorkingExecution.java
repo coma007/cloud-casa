@@ -1,4 +1,4 @@
-package com.casa.app.device.home.air_conditioning;
+package com.casa.app.device.home.air_conditioning.measurements.execution;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,26 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.airConditioning)
+
+@Measurement(name = MeasurementType.airConditioningWorkingAck)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AirConditioningMeasurement extends AbstractMeasurement {
+public class AirConditionWorkingExecution extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+    @Column
+    String working;
+
+    @Column
+    String executed;
+
+    @Column
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;
+
+
 }

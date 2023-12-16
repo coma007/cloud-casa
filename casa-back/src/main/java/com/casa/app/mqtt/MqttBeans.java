@@ -1,6 +1,7 @@
 package com.casa.app.mqtt;
 
 import com.casa.app.device.DeviceStatusService;
+import com.casa.app.device.home.air_conditioning.AirConditioningService;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
@@ -74,10 +75,13 @@ public class MqttBeans {
             private HouseBatteryService houseBatteryService;
             @Autowired
             private AmbientSensorService ambientSensorService;
+            @Autowired
+            private AirConditioningService airConditioningService;
 
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC).toString();
+                System.out.println(topic);
                 String content = message.getPayload().toString();
                 Long id = Long.parseLong(content.split("~")[0]);
                 content = content.split("~")[1];
@@ -85,8 +89,14 @@ public class MqttBeans {
                     case ("ping"):
                         deviceStatusService.pingHandler(id);
                         break;
-                    case (MeasurementType.airConditioning):
-                        // call service handler here
+                    case (MeasurementType.airConditioningWorkingAck):
+                        airConditioningService.handleWorkingAckMessage(id, content);
+                        break;
+                    case (MeasurementType.airConditioningModeAck):
+                        airConditioningService.handleModeAckMessage(id, content);
+                        break;
+                    case (MeasurementType.airConditioningTemperatureAck):
+                        airConditioningService.handleTemperatureAckMessage(id, content);
                         break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
