@@ -3,6 +3,7 @@ package com.casa.app.device;
 import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
@@ -24,7 +25,7 @@ public class DeviceController {
 
     @PermitAll
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody DeviceRegistrationDTO newDevice){
+    public ResponseEntity<?> register(@RequestBody DeviceRegistrationDTO newDevice) throws UserNotFoundException {
         registrationService.registerDevice(newDevice);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }

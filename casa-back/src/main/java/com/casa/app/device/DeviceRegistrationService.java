@@ -29,9 +29,11 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateDTO;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateRepository;
 import com.casa.app.estate.RealEstateService;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +67,8 @@ public class DeviceRegistrationService {
     @Autowired
     private SolarPanelSystemRepository solarPanelSystemRepository;
 
-    public void registerDevice(DeviceRegistrationDTO deviceDTO) {
+    @Transactional
+    public void registerDevice(DeviceRegistrationDTO deviceDTO) throws UserNotFoundException {
         String type = deviceDTO.getType();
         Object device = deviceDTO.getDevice();
         ObjectMapper mapper = new ObjectMapper();
@@ -101,7 +104,7 @@ public class DeviceRegistrationService {
         }
     }
 
-    private void registerElectricVehicleCharger(ElectricVehicleChargerDTO device) {
+    private void registerElectricVehicleCharger(ElectricVehicleChargerDTO device) throws UserNotFoundException {
         ElectricVehicleCharger newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -110,7 +113,7 @@ public class DeviceRegistrationService {
         electricVehicleChargerRepository.save(newDevice);
     }
 
-    private void registerHouseBattery(HouseBatteryDTO device) {
+    private void registerHouseBattery(HouseBatteryDTO device) throws UserNotFoundException {
         HouseBattery newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -119,7 +122,7 @@ public class DeviceRegistrationService {
         houseBatteryRepository.save(newDevice);
     }
 
-    private void registerSolarPanelSystem(SolarPanelSystemDTO device) {
+    private void registerSolarPanelSystem(SolarPanelSystemDTO device) throws UserNotFoundException {
         SolarPanelSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -128,7 +131,7 @@ public class DeviceRegistrationService {
         solarPanelSystemRepository.save(newDevice);
     }
 
-    private void registerVehicleGate(VehicleGateDTO device) {
+    private void registerVehicleGate(VehicleGateDTO device) throws UserNotFoundException {
         VehicleGate newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -137,7 +140,7 @@ public class DeviceRegistrationService {
         vehicleGateRepository.save(newDevice);
     }
 
-    private void registerSprinklerSystem(SprinklerSystemDTO device) {
+    private void registerSprinklerSystem(SprinklerSystemDTO device) throws UserNotFoundException {
         SprinklerSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -146,7 +149,7 @@ public class DeviceRegistrationService {
         sprinklerSystemRepository.save(newDevice);
     }
 
-    private void registerLamp(LampDTO device) {
+    private void registerLamp(LampDTO device) throws UserNotFoundException {
         Lamp newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -155,7 +158,7 @@ public class DeviceRegistrationService {
         lampRepository.save(newDevice);
     }
 
-    private void registerWashingMachine(WashingMachineDTO device) {
+    private void registerWashingMachine(WashingMachineDTO device) throws UserNotFoundException {
         WashingMachine newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -164,7 +167,7 @@ public class DeviceRegistrationService {
         washingMachineRepository.save(newDevice);
     }
 
-    private void registerAirConditioning(AirConditioningDTO device) {
+    private void registerAirConditioning(AirConditioningDTO device) throws UserNotFoundException {
         AirConditioning newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());
@@ -173,7 +176,7 @@ public class DeviceRegistrationService {
         airConditioningRepository.save(newDevice);
     }
 
-    private void registerAmbientSensor(AmbientSensorDTO device) {
+    private void registerAmbientSensor(AmbientSensorDTO device) throws UserNotFoundException {
         AmbientSensor newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getByName(device.getRealEstateName()));
         newDevice.setCredentials(new ConnectionCredentials());

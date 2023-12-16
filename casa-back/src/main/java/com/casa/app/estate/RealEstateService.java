@@ -1,5 +1,6 @@
 package com.casa.app.estate;
 
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.location.City;
 import com.casa.app.location.LocationService;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
@@ -30,7 +31,7 @@ public class RealEstateService {
     @Autowired
     RealEstatePermissionService realEstatePermissionService;
 
-    public RealEstateDTO create(RealEstateCreateDTO estateDTO) {
+    public RealEstateDTO create(RealEstateCreateDTO estateDTO) throws UserNotFoundException {
 
         RegularUser currentUser = regularUserService.getUserByToken();
 
@@ -45,7 +46,7 @@ public class RealEstateService {
         return new RealEstateDTO(estate);
     }
 
-    public List<RealEstateDTO> getAllByOwner() {
+    public List<RealEstateDTO> getAllByOwner() throws UserNotFoundException {
 
         RegularUser currentUser = regularUserService.getUserByToken();
 
