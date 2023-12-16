@@ -1,0 +1,28 @@
+.input {
+    width: 25%;
+    margin: 0 20px;
+}
+
+.smallButton {
+    background-color: var(--primary-color-background-transparent);
+    border: none;
+    margin: 10px 20px;
+    border-radius: 10px;
+    width: 10%;
+    height: 2em;
+}
+
+.smallButton:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.left {
+    width: 80%;
+}
