@@ -9,7 +9,7 @@ import ModalWindow from '../../../../components/view/Modal/ModalWindow';
 import CreateScheduleModal from './createSchedule/CreateScheduleModal';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
+    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status == 'ONLINE');
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 
@@ -18,9 +18,24 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     const [temperature, setTemperature] = useState<number>(0.0);
     const [mode, setMode] = useState<string>("");
 
+    useEffect(() => {
+        setToggleIsOn(props.device.Status === 'ONLINE');
+    }, [props.device.Status]);
 
     const handleIsOnClick = () => {
-        setToggleIsOn(!toggleIsOn);
+        if (props.deviceType === "solar_panel_system") {
+            (async function () {
+                try {
+                    await DeviceService.toggleSolarPanelSystem(props.device.Id);
+                    setToggleIsOn(!toggleIsOn);
+                    // const fetchedDevices = [{} as RealEstate]
+                } catch (error) {
+                    console.error(error);
+                }
+            })()
+        } else {
+            setToggleIsOn(!toggleIsOn);
+        }
     };
 
     const handleIsOpenClick = () => {

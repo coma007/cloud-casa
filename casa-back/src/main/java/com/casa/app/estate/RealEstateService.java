@@ -57,4 +57,8 @@ public class RealEstateService {
     public RealEstate getByName(String name) {
         return realEstateRepository.getByName(name);
     }
+
+    public RealEstate getById(Long id) {
+        return realEstateRepository.findById(id).orElse(null);
+    }
 }

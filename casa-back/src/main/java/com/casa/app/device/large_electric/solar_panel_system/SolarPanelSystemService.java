@@ -36,11 +36,11 @@ public class SolarPanelSystemService {
     @Autowired
     private InfluxDBService influxDBService;
 
-    public boolean toggleStatus(Long id) throws UserNotFoundException {
+    public DeviceStatus toggleStatus(Long id) throws UserNotFoundException {
         Device device = deviceRepository.findById(id).orElse(null);
         RegularUser currentUser = regularUserService.getUserByToken();
         if (device == null) {
-            return false;
+            return null;
         }
         if (device.getStatus() == DeviceStatus.OFFLINE) {
             device.setStatus(DeviceStatus.ONLINE);
@@ -54,7 +54,7 @@ public class SolarPanelSystemService {
             mqttGateway.sendToMqtt(device.getId()+"~OFF", device.getId().toString());
         }
         deviceRepository.save(device);
-        return true;
+        return device.getStatus();
     }
     
     public void handleMessage(Long id, String powerString) {

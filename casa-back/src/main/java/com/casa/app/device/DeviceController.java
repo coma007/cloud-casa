@@ -46,15 +46,33 @@ public class DeviceController {
                                                              @RequestParam String measurement,
                                                              @RequestParam String from,
                                                              @RequestParam String to,
-                                                             @RequestParam String username) {
-        MeasurementList measurements = service.queryMeasurements(id, measurement, from, to, username);
+                                                             @RequestParam String username,
+                                                             @RequestParam int page) {
+        MeasurementList measurements = service.queryMeasurements(id, measurement, from, to, username, page);
         return new ResponseEntity<>(measurements, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/filterPages")
+    public ResponseEntity<Integer> queryPages(@RequestParam Long id,
+                                              @RequestParam String measurement,
+                                              @RequestParam String from,
+                                              @RequestParam String to,
+                                              @RequestParam String username) {
+        int numOfPages = service.queryNumOfPages(id, measurement, from, to, username);
+        return new ResponseEntity<>(numOfPages, HttpStatus.OK);
     }
 
     @GetMapping("/getAllByOwner")
     @PreAuthorize("hasAnyAuthority('regular user')")
     public ResponseEntity<List<DeviceDetailsDTO>> getAllByOwner() throws UserNotFoundException {
         return new ResponseEntity<>(service.getAllByOwner(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllByRealEstate/{id}")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) {
+        return new ResponseEntity<>(service.getAllByRealEstate(id), HttpStatus.OK);
     }
 
     @GetMapping("/getDeviceDetails/{id}")

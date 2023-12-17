@@ -10,6 +10,9 @@ import FilterDate from './inspect/filter/FilterDate'
 import Button from '../../../components/forms/Button/Button'
 import { DeviceService } from '../DeviceService'
 import { useLocation } from 'react-router-dom'
+import DetailsTable from './inspect/table/DetailsTable'
+import Pagination from '../../../components/tables/Pagination/Pagination'
+import { WebSocketService } from '../../../api/websocket/WebSocketService'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -17,11 +20,15 @@ const DeviceDetails = () => {
     const [deviceId, setDeviceId] = useState(-1);
     const [deviceType, setDeviceType] = useState("");
     const [dev, setDev] = useState<any>({});
+    const [measurements, setMeasurements] = useState<any>({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numberOfPages, setNumberOfPages] = useState(1);
+    const [socket, setSocket] = useState(null);
     const location = useLocation();
 
     useEffect(() => {
         const receivedProps : {id : number, type : string} = location.state;
-        console.log(receivedProps);
+        // console.log(receivedProps);
         setDeviceType(receivedProps.type);
         setDeviceId(receivedProps.id);
     }, [location.state]);
@@ -29,13 +36,58 @@ const DeviceDetails = () => {
     useEffect(() => {
         (async function () {
             try {
-                const fetchedDevice = await DeviceService.getDeviceDetails(deviceId);
-                populateData(fetchedDevice)
+                if (deviceId > 0) {
+                    const fetchedDevice = await DeviceService.getDeviceDetails(deviceId);
+                    // console.log(fetchedDevice)
+                    populateData(fetchedDevice)
+                }
             } catch (error) {
                 console.error(error);
             }
         })()
     }, [deviceId]);
+
+    const createWebSocket = (fetchedDevice : any, measurements : any) => {
+        if (fetchedDevice.type === "house_battery") {
+            WebSocketService.createSocket("/topic/house-battery-power-usage/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, power : message.attachment.power}, ...measurements.measurements]
+                if (newMeasurements.length > 10) {
+                   newMeasurements = newMeasurements.slice(0, 10)
+                }
+                setMeasurements({
+                    deviceType : measurements.deviceType,
+                    deviceId : measurements.deviceId,
+                    from : measurements.from,
+                    to : measurements.to,
+                    measurements : newMeasurements,
+                })
+                
+            })
+        }
+    }
+
+    useEffect(() => {
+        if (dev.type === "house_battery") {    
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/house-battery-power-usage/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                // console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, power : message.attachment.power}, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                       newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType : measurements.deviceType,
+                        deviceId : measurements.deviceId,
+                        from : measurements.from,
+                        to : measurements.to,
+                        measurements : newMeasurements,
+                    })
+                }
+            })
+        }
+    }, [measurements, currentPage])
+
 
     const handleFilterToggle = () => {
         if (isFilterVisible) {
@@ -64,6 +116,7 @@ const DeviceDetails = () => {
                     MaxTemperature: device.maxTemperature,
                     SupportedModes: device.supportedModes,
                     type: 'air_conditioning',
+                    measurementTopic: 'air_conditioning',
                 })
                 break;
             case "washing_machine":
@@ -71,6 +124,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     SupportedModes: device.supportedModes,
                     type: 'washing_machine',
+                    measurementTopic: 'washing_machine',
                 })
                 break;
             case "electric_vehicle_charger":
@@ -79,6 +133,7 @@ const DeviceDetails = () => {
                     ChargePower: device.chargePower.toString() + " kWh",
                     NumOfSlots: device.numOfSlots,
                     type: 'electric_vehicle_charger',
+                    measurementTopic: 'electric_vehicle_charger',
                 })
                 break;
             case "house_battery":
@@ -86,14 +141,17 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     Size: device.size.toString() + ' mAH',
                     type: 'house_battery',
+                    measurementTopic: 'house_battery_power_usage',
+                    measurementLabel: 'Power usage',
                 })
                 break;
             case "solar_panel_system":
                 setDev({
                     ...baseDevice,
-                    Size: device.size.toString() + ' m^2',
+                    Size: device.size.toString(),
                     Efficiency: device.efficiency.toString() + ' %',
                     type: 'solar_panel_system',
+                    measurementTopic: 'solar_panel_system_command',
                 })
                 break;
             case "vehicle_gate":
@@ -101,24 +159,29 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     AllowedVehicles: device.allowedVehicles,
                     type: 'vehicle_gate',
+                    measurementTopic: 'vehicle_gate',
                 })
                 break;
             case "ambient_sensor":
                 setDev({
                     ...baseDevice,
                     type: 'ambient_sensor',
+                    measurementTopic: 'air_conditioning',
                 })
                 break;
             case "lamp":
                 setDev({
                     ...baseDevice,
                     type: 'lamp_brightness',
+                    measurementTopic: 'lamp_brightness',
+                    measurementLabel: 'Lamp brightness',
                 })
                 break;
             case "sprinkler_system":
                 setDev({
                     ...baseDevice,
                     type: 'sprinkler_system',
+                    measurementTopic: 'sprinkler_system',
                 })
                 break;
             default:
@@ -126,79 +189,19 @@ const DeviceDetails = () => {
         }
     }
 
-    // const exampleDevice = {
-    //     Id: 123,
-    //     Name: 'Example Device',
-    //     RealEstateName: 'Example Estate',
-    //     PowerSupplyType: 'Example Power Supply',
-    //     EnergyConsumption: 'Example Energy Consumption',
-    // };
-
-    // const exampleAirConditioning = {
-    //     ...exampleDevice,
-    //     MinTemperature: 30,
-    //     MaxTemperature: 95,
-    //     SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
-    //     type: 'air_conditioning',
-    // };
-
-
-    // const exampleWashingMachine = {
-    //     ...exampleDevice,
-    //     SupportedModes: ['Mode1', 'Mode2', 'Mode3'],
-    //     type: 'washing_machine',
-    // };
-
-    // const exampleElectricVehicleCharger = {
-    //     ...exampleDevice,
-    //     ChargePower: 'Example Charge Power',
-    //     NumOfSlots: 2,
-    //     type: 'electric_vehicle_charger',
-    // };
-
-    // const exampleHouseBattery = {
-    //     ...exampleDevice,
-    //     Size: 'Example Size',
-    //     type: 'house_battery',
-    // };
-
-    // const exampleSolarPanelSystem = {
-    //     ...exampleDevice,
-    //     Size: 'Example Size',
-    //     Efficiency: 'Example Efficiency',
-    //     type: 'solar_panel_system',
-    // };
-
-    // const exampleVehicleGate = {
-    //     ...exampleDevice,
-    //     AllowedVehicles: ['ModeA', 'ModeB'],
-    //     type: 'vehicle_gate',
-    // };
-
-    // const exampleAmbientSensor = {
-    //     ...exampleDevice,
-    //     type: 'ambient_sensor',
-    // };
-
-    // const exampleLamp = {
-    //     ...exampleDevice,
-    //     type: 'lamp_brightness',
-    // };
-
-    // const exampleSprinklerSystem = {
-    //     ...exampleDevice,
-    //     type: 'sprinkler_system',
-    // };
-
-    // let dev = exampleHouseBattery;
-
-
-
     let [username, setUsername] = useState('');
 
     const handleUsernameFilterClick = () => {
-        console.log(username);
-        DeviceService.filter(dev.Id, dev.type, fromDate, toDate, username);
+        // console.log(username);
+        setCurrentPage(1);
+        (async () => {
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+            setNumberOfPages(fetchedNumberOfPages);
+        })();
+        (async () => {            
+            const fetchedMeasuremenets = await DeviceService.filter(dev.Id, dev.measurementTopic, fromDate, toDate, username, 1);
+            setMeasurements(fetchedMeasuremenets)
+        })()
     }
 
     const [fromDate, setFromDate] = useState('');
@@ -218,16 +221,74 @@ const DeviceDetails = () => {
     const handleDateFilterClick = (from: string, to: string) => {
         setFromDate(from);
         setToDate(to);
+        setCurrentPage(1);
+        (async () => {
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+            setNumberOfPages(fetchedNumberOfPages);
+        })();
+        (async () => {
+            const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+            setMeasurements(fetchedMeasurements);
+        })();
 
-        DeviceService.filter(dev.Id, dev.type, new Date(from).toISOString(), new Date(to).toISOString(), username);
     };
+
+    // useEffect(()=> {
+    //     (async () => {
+    //         const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(fromDate).toISOString(), new Date(toDate).toISOString(), username, 1);
+    //         setMeasurements(fetchedMeasurements);
+    //     })();
+    // }, [numberOfPages])
+
+    useEffect(() => {
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+            }
+        })();
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, 1);
+                // console.log(fetchedMeasurements);
+                setMeasurements(fetchedMeasurements);
+                createWebSocket(dev, fetchedMeasurements);
+            }
+        })()
+    }, [dev])
 
     const resetFilters = () => {
         setFromDate('');
         setToDate('');
         setUsername('');
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+            }
+        })();
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+                const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, '', '', '', 1);
+                setMeasurements(fetchedMeasurements)
+            }
+        })()
     }
 
+    const changePage = (pageNumber : number) => {
+        setCurrentPage(pageNumber)
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, currentPage);
+                setMeasurements(fetchedMeasurements)
+            }
+        })()
+    }, [currentPage])
 
 
     return (
@@ -261,7 +322,28 @@ const DeviceDetails = () => {
                             </>
                         }
                     </div>)}
-                    <Graph></Graph>
+                    {
+                        (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
+                        (
+                        <>
+                            <DetailsTable measurements={measurements} deviceType={deviceType} />
+                            <div>
+                                <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
+                            </div>
+                        </>)
+                    }
+                    {   
+                        (["house_battery", "lamp"].includes(dev.type)) &&
+                        (
+                        <>
+                            <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} />
+                            <div>
+                                <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
+                            </div>
+                        </>
+                        )
+                        
+                    }
                 </div>
             </div>
         </div>

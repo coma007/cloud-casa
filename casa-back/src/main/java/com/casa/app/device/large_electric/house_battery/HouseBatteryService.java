@@ -8,6 +8,8 @@ import com.casa.app.device.large_electric.house_battery.measurement.HouseBattery
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryPowerUsageMeasurement;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
+import com.casa.app.websocket.SocketMessage;
+import com.casa.app.websocket.WebSocketController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,8 @@ public class HouseBatteryService {
     private MqttGateway mqttGateway;
     @Autowired
     private InfluxDBService influxDBService;
+    @Autowired
+    private WebSocketController webSocketController;
 
     public void handleExportImport(Long id, String message) {
         System.out.println(message);
@@ -59,7 +63,10 @@ public class HouseBatteryService {
         } catch (NumberFormatException e) {
             return;
         }
-        influxDBService.write(new HouseBatteryPowerUsageMeasurement(battery.getId(), value, Instant.now()));
+        HouseBatteryPowerUsageMeasurement measurement = new HouseBatteryPowerUsageMeasurement(battery.getId(), value, Instant.now());
+        influxDBService.write(measurement);
+        measurement.setTimestamp(measurement.getTimestamp().getEpochSecond());
+        webSocketController.sendMessage(new SocketMessage<HouseBatteryPowerUsageMeasurement>("house-battery-power-usage", "New value", null, id.toString(), measurement));
     }
 
     public void handleBatteryState(Long id, String message) {
@@ -90,8 +97,8 @@ public class HouseBatteryService {
                 increaseEnergy(powerPerBattery, b);
             }
             else {
-//                double reducedPower = powerPerBattery / 60;
-                reduceEnergy(powerPerBattery, b);
+                double reducedPower = powerPerBattery / 60;
+                reduceEnergy(reducedPower, b);
             }
         }
     }
