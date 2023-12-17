@@ -46,7 +46,7 @@ func (lamp *Lamp) messageHandler(client mqtt.Client, msg mqtt.Message) {
 		fmt.Printf("Device %s is ON: %t\n", lamp.Id, lamp.LampOn)
 		message := strconv.FormatBool(lamp.LampOn) + "|" + tokens[2]
 		utils.SendMessage(client, "lamp_command", lamp.Id, message)
-	} 
+	}
 }
 
 func StartSimulation(device Lamp) {
