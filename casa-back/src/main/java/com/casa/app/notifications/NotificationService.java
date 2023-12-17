@@ -15,6 +15,7 @@ public class NotificationService {
         Notification newNotification = new Notification();
         newNotification.setUser(user);
         newNotification.setText(text);
+        newNotification.setRead(false);
         notificationRepository.save(newNotification);
     }
 }
