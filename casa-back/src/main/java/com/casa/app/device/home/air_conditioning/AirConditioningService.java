@@ -1,5 +1,6 @@
 package com.casa.app.device.home.air_conditioning;
 
+import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

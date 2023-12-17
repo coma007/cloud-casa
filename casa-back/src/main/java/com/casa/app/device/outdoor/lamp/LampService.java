@@ -2,15 +2,12 @@ package com.casa.app.device.outdoor.lamp;
 
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.measurement.MeasurementType;
+import com.casa.app.device.outdoor.lamp.dto.LampSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
-import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.Instant;
 import java.util.ArrayList;

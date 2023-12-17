@@ -4,6 +4,7 @@ import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
+import com.casa.app.device.large_electric.solar_panel_system.dto.SolarPanelSystemSimulationDTO;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemCommand;
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemPowerMeasurement;
 import com.casa.app.exceptions.UserNotFoundException;

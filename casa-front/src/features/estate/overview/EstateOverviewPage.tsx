@@ -7,12 +7,15 @@ import Table, { TableRow } from "../../../components/tables/Table/Table";
 import { RealEstate } from "../RealEstate";
 import { EstateService } from "../EstateService";
 import Button from "../../../components/forms/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 const EstateOverviewPage = () => {
 
     const [withdrawIsOpen, setWithdrawModalIsOpen] = useState(false);
     const [selectedEstate, setSelectedEstate] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         (async function () {
@@ -40,7 +43,7 @@ const EstateOverviewPage = () => {
 }
 
     const showDetails = (realEstate : RealEstate | string) => {
-        alert(realEstate)
+        // alert(realEstate)
     }
 
     const populateData = (estates: RealEstate[]) => {
@@ -65,6 +68,9 @@ const EstateOverviewPage = () => {
         setTableData(data);
     }
 
+    const createNew = () => {
+        navigate("/register-real-estate");
+    }
 
     return (
         <div>
@@ -73,7 +79,7 @@ const EstateOverviewPage = () => {
                 <div className={EstateOverviewPageCSS.header}>
                     <PageTitle title="Estates overview" description="Take a detailed view of your estates." />
                     <div className={EstateOverviewPageCSS.alignRight}>
-                        <Button text={"New estate"} onClick={undefined} submit={undefined} />
+                        <Button text={"New estate"} onClick={createNew} submit={undefined} />
                     </div>
                 </div>
                 <div className={EstateOverviewPageCSS.table} >

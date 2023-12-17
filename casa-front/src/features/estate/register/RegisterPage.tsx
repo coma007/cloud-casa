@@ -5,6 +5,9 @@ import { useEffect, useState } from 'react';
 import { Address, City } from '../Location';
 import { RealEstateCreate } from '../RealEstate';
 import { LocationService } from './LocationService';
+import Menu from '../../../components/navigation/Menu/Menu';
+import PageTitle from '../../../components/view/PageTitle/PageTitle';
+import RegisterPageCSS from "./RegisterPage.module.scss"
 
 const RegisterPage = () => {
 
@@ -65,9 +68,12 @@ const RegisterPage = () => {
 
 
     return (
-        <div className="container">
-            <h2 className="mb-4">Register Real Estate</h2>
-            <Row>
+        <div>
+            <Menu admin={false} />
+            <div>
+                <PageTitle title="Register real estate" description="Register new real estate." />
+            </div>
+            <Row className={RegisterPageCSS.form}>
                 <Col md={6}>
                     <div>
                         <RegisterForm formData={formData} setFormData={setFormData} countries={countries} cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />

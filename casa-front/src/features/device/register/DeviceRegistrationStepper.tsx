@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import Step1 from './Step1';
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+import Step1 from './BasicInfo';
 import AirConditioningStep from './AirConditioningStep';
 import WashingMachineStep from './WashingMachineStep';
 import ElectricVehicleChargerStep from './ElectricVehicleChargerStep';
 import HouseBatteryStep from './HouseBatteryStep';
-import SolarPanelSystem from './SolarPanelSystemStep';
 import SolarPanelSystemStep from './SolarPanelSystemStep';
 import VehicleGateStep from './VehicleGateStep';
 import { DeviceService } from '../DeviceService';
-import { DeviceCreate } from '../DeviceCreate';
+import { DeviceCreate } from '../Device';
+import Menu from '../../../components/navigation/Menu/Menu';
+import PageTitle from '../../../components/view/PageTitle/PageTitle';
 
 const StepperForm = () => {
   const [step, setStep] = useState(1);
@@ -27,7 +29,6 @@ const StepperForm = () => {
     size: 0.0, 
     efficiency: 0.0,
     allowedVehicles: []
-    // Add other fields for different device types if needed
   });
 
   const handleNameChange = (e) => {
@@ -141,28 +142,30 @@ const StepperForm = () => {
   };
 
   return (
-    <div>
-        <div className="formTitle">
-            <h2>Register device</h2>
+      <div>
+        <Menu admin={false} />
+        <div>
+          <PageTitle title="Register device" description="Register new device." />
         </div>
-        {step === 1 && (
-            <Step1
-            formData={formData}
-            handleChange={handleChange}
-            handleNameChange={handleNameChange}
-            nextStep={nextStep}
-            />
-        )}
-        {/* {step === 2 && formData.deviceType === "AmbientSensor" && <AmbientSensorStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
-        {/* {step === 2 && formData.deviceType === "Lamp" && <LampStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
-        {/* {step === 2 && formData.deviceType === "SprinklerSystem" && <SprinklerSystemStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
-        {step === 2 && formData.deviceType === "AirConditioning" && <AirConditioningStep formData={formData} handleChange={handleChange} handleSelectChange={handleSupportedModesChange} nextStep={register} prevStep={prevStep} />}
-        {step === 2 && formData.deviceType === "WashingMachine" && <WashingMachineStep formData={formData} handleChange={handleChange} handleSelectChange={handleSupportedModesChange} nextStep={register} prevStep={prevStep} />}
-        {step === 2 && formData.deviceType === "ElectricVehicleCharger" && <ElectricVehicleChargerStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
-        {step === 2 && formData.deviceType === "HouseBattery" && <HouseBatteryStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
-        {step === 2 && formData.deviceType === "SolarPanelSystem" && <SolarPanelSystemStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
-        {step === 2 && formData.deviceType === "VehicleGate" && <VehicleGateStep formData={formData} handleChange={handlePlatesChange} nextStep={register} prevStep={prevStep} />}
-        {/* Add additional steps for other device types */}
+        <div className={DeviceRegistrationStepperCSS.form}>
+          {step === 1 && (
+              <Step1
+              formData={formData}
+              handleChange={handleChange}
+              handleNameChange={handleNameChange}
+              nextStep={nextStep}
+              />
+          )}
+          {/* {step === 2 && formData.deviceType === "AmbientSensor" && <AmbientSensorStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
+          {/* {step === 2 && formData.deviceType === "Lamp" && <LampStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
+          {/* {step === 2 && formData.deviceType === "SprinklerSystem" && <SprinklerSystemStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
+          {step === 2 && formData.deviceType === "AirConditioning" && <AirConditioningStep formData={formData} handleChange={handleChange} handleSelectChange={handleSupportedModesChange} nextStep={register} prevStep={prevStep} />}
+          {step === 2 && formData.deviceType === "WashingMachine" && <WashingMachineStep formData={formData} handleChange={handleChange} handleSelectChange={handleSupportedModesChange} nextStep={register} prevStep={prevStep} />}
+          {step === 2 && formData.deviceType === "ElectricVehicleCharger" && <ElectricVehicleChargerStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
+          {step === 2 && formData.deviceType === "HouseBattery" && <HouseBatteryStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
+          {step === 2 && formData.deviceType === "SolarPanelSystem" && <SolarPanelSystemStep formData={formData} handleChange={handleChange} nextStep={register} prevStep={prevStep} />}
+          {step === 2 && formData.deviceType === "VehicleGate" && <VehicleGateStep formData={formData} handleChange={handlePlatesChange} nextStep={register} prevStep={prevStep} />}
+        </div>
     </div>
   );
 };

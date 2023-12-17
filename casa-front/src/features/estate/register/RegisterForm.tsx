@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { RealEstateCreate } from '../RealEstate';
+import React, {  } from 'react';
+import { Form, Container, Row, Col } from 'react-bootstrap';
 import { Address } from 'cluster';
 import { City } from '../Location';
 import { EstateService } from '../EstateService';
+import RegisterPageCSS from "./RegisterPage.module.scss"
+import Button from '../../../components/forms/Button/Button';
 
 
 const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, setSelectedCity, selectedCountry, setSelectedCountry }) => {
@@ -46,12 +47,13 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="name">
-                            <Form.Label>Name</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Name</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Enter name"
                                 name="name"
                                 value={formData.name}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             />
@@ -61,11 +63,12 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="type">
-                            <Form.Label>Type</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Type</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="type"
                                 value={formData.type}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             >
@@ -79,12 +82,13 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="size">
-                            <Form.Label>Size</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Size</Form.Label>
                             <Form.Control
                                 type="number"
                                 placeholder="Enter size"
                                 name="size"
                                 value={formData.size}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             />
@@ -94,12 +98,13 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="numberOfFloors">
-                            <Form.Label>Number of Floors</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Number of Floors</Form.Label>
                             <Form.Control
                                 type="number"
                                 placeholder="Enter number of floors"
                                 name="numberOfFloors"
                                 value={formData.numberOfFloors}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             />
@@ -110,11 +115,12 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="country">
-                            <Form.Label>Country</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Country</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="country"
                                 value={selectedCountry  }
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e, 'country')}
                             >
                                 <option value="">Select country</option>
@@ -130,11 +136,12 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="city">
-                            <Form.Label>City</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>City</Form.Label>
                             <Form.Control
                                 as="select"
                                 name="cityName"
                                 value={selectedCity}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e, 'city')}
                             >
                                 <option value="">Select city</option>
@@ -150,21 +157,20 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="street">
-                            <Form.Label>Street Address</Form.Label>
+                            <Form.Label className={RegisterPageCSS.marginBottom}>Street Address</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Enter street address"
                                 name="street"
                                 value={formData.address.address}
+                                className={RegisterPageCSS.input}
                                 onChange={(e) => handleInputChange(e, 'address')}
                                 required
                             />
                         </Form.Group>
                     </Col>
                 </Row>
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
+                <Button text={'Register'} onClick={handleSubmit} submit={undefined} />
             </Form>
         </Container>
     );
