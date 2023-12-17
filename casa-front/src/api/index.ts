@@ -18,10 +18,10 @@ export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id : number) => url + "/device/get
 export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id : number) => url + "/solarPanelSystem/toggleStatus/" + id 
 export const DEVICE_GET_DETAILS = (id : number) => url + "/device/getDeviceDetails/" + id
 export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page : number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
-
+export const DEVICE_GET_PAGE_NUMBER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filterPages?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
 export const LOCATION_CITIES = (country) => url + "/location/getAllCities/" + country;
 export const LOCATION_COUNTRIES = () => url + "/location/getAllCountries";
 
 
 
-export const WEBSOCKET = () => "ws://localhost:8080/socket";
+export const WEBSOCKET = () => "http://localhost:8080/socket";
