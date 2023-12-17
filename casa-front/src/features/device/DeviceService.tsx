@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER } from "../../api";
+import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER, GATE_MANAGER, LAMP_MANAGER } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
 import { DeviceCreate, DeviceDetails } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
@@ -23,9 +23,22 @@ export const DeviceService = {
         return response.data;
     },
 
-    getDeviceDetails: async function (deviceId : number): Promise<any> {
+    getDeviceDetails: async function (deviceId: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(DEVICE_GET_DETAILS(deviceId));
 
         return response.data;
     },
+
+
+    lampManager: async function (deviceId: number): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(LAMP_MANAGER(deviceId));
+        return response.data;
+    },
+
+
+    gateManager: async function (deviceId: number, func: string): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(GATE_MANAGER(func, deviceId));
+        return response.data;
+    },
+
 }

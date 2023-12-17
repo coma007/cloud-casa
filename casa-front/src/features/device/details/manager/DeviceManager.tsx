@@ -3,6 +3,7 @@ import Card from '../../../../components/view/Card/Card';
 import Button from '../../../../components/forms/Button/Button';
 import DeviceManagerCSS from './DeviceManager.module.scss'
 import InputField from '../../../../components/forms/InputField/InputField';
+import { DeviceService } from '../../DeviceService';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
     const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
@@ -14,16 +15,27 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     };
 
     const handleIsOpenClick = () => {
+        if (props.deviceType == "lamp_brightness") {
+            DeviceService.lampManager(props.device.Id);
+        }
+        else if (props.deviceType == "vehicle_gate") {
+            DeviceService.gateManager(props.device.Id, "open");
+        }
         setToggleIsOpen(!toggleIsOpen);
     };
 
 
     const handleIsPrivateClick = () => {
+        if (props.deviceType == "vehicle_gate") {
+            DeviceService.gateManager(props.device.Id, "mode");
+        }
         setToggleIsPrivate(!toggleIsPrivate);
     };
 
 
     const renderDeviceSpecificUI = () => {
+
+        console.log(props.deviceType)
         switch (props.deviceType) {
             case 'air_conditioning':
                 return (
@@ -101,7 +113,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'lamp':
+            case 'lamp_brightness':
                 return (
                     <div>
                         <p>
