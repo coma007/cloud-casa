@@ -35,6 +35,9 @@ export interface Schedule {
     working: boolean;
     mode: string | undefined;
     temperature: number | undefined;
+
+    repeating: boolean;
+    repeatingDaysIncrement: number;
 }
 
 

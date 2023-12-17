@@ -15,4 +15,7 @@ public class AirConditionScheduleDTO {
     private boolean working;
     private String mode;
     private Double temperature;
+
+    private boolean repeating;
+    private Long repeatingDaysIncrement;
 }

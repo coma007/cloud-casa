@@ -65,6 +65,9 @@ public class AirConditioningController {
     @PermitAll
     @PostMapping("/simulation/schedule")
     public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException {
+        if(dto.isRepeating() && dto.getRepeatingDaysIncrement() == null){
+            return ResponseEntity.badRequest().body("Repeat is set but increment is not, try setting increment");
+        }
         airConditioningService.setSchedule(dto);
         return ResponseEntity.ok().build();
     }
