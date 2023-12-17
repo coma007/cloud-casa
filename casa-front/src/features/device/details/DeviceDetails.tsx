@@ -241,7 +241,7 @@ const DeviceDetails = () => {
     // }, [numberOfPages])
 
     useEffect(() => {
-        if (dev.type == "vehicle_gate" || dev.type == "lamp_brightness") return;
+        if (dev.type == "vehicle_gate") return;
         (async () => {
             if (Object.keys(dev).length > 0) {
                 const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
@@ -335,8 +335,8 @@ const DeviceDetails = () => {
                         </>)
                     }
                     {   
-                        (["house_battery"].includes(dev.type)) &&
-                        // (["house_battery", "lamp"].includes(dev.type)) &&
+                        // (["house_battery"].includes(dev.type)) &&
+                        (["house_battery", "lamp_brightness"].includes(dev.type)) &&
                         (
                         <>
                             <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} />
