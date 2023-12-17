@@ -195,6 +195,17 @@ public class AirConditioningService {
 
     @Scheduled(fixedDelay = 5000)
     public void checkSchedule() {
+//        reset repeating schedules
+        List<AirConditionSchedule> schedulesToReset = airConditionScheduleRepository.getRepeating();
+        schedulesToReset.stream().parallel().forEach(schedule -> {
+            schedule.setOverride(false);
+            schedule.setActivated(false);
+            schedule.setEndTime(schedule.getEndTime().plusDays(schedule.getRepeatingDaysIncrement()));
+            schedule.setStartTime(schedule.getStartTime().plusDays(schedule.getRepeatingDaysIncrement()));
+            airConditionScheduleRepository.save(schedule);
+        });
+
+//        check for current schedules
         List<AirConditionSchedule> schedules = airConditionScheduleRepository.getSchedulesToActivated();
         schedules.stream().parallel().forEach(schedule ->{
             try {
@@ -237,6 +248,7 @@ public class AirConditioningService {
                 throw new ScheduleOverlappingException();
             }
 
+
             AirConditionSchedule schedule = new AirConditionSchedule();
             schedule.setStartTime(start);
             schedule.setEndTime(end);
@@ -246,6 +258,8 @@ public class AirConditioningService {
             schedule.setMode(dto.getMode());
             schedule.setActivated(false);
             schedule.setWorking(dto.isWorking());
+            schedule.setRepeating(dto.isRepeating());
+            schedule.setRepeatingDaysIncrement(dto.getRepeatingDaysIncrement());
             airConditionScheduleRepository.save(schedule);
 
         }catch (NullPointerException e){

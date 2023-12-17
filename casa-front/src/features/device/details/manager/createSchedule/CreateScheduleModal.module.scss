@@ -1,0 +1,76 @@
+.inlineInput {
+    width: 100%;
+    margin: 12px 0px;
+}
+
+.input {
+    width: 100%;
+    margin: 12px 0px;
+}
+
+.lastInputContainer {
+    margin: 0px 0px 27px 0px;
+}
+
+.button {
+    margin-top: 20px;
+    position: relative;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+
+.grid div{
+    width: 100%;
+}
+
+
+.content {
+    width: 90%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    column-gap: 2%;
+}
+
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0px;
+}
+
+.customSelect {
+    margin-left: 15px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.accentButton {
+    font-family: 'Lato', sans-serif;
+    display: inline-block;
+    margin-right: 30px;
+    padding: 10px 20px;
+    border: 0px;
+    border-radius: 10px;
+    background-color: #32F0D9;
+    color: black;
+    font-weight: 400;
+    font-size: medium;
+    cursor: pointer;
+}
+
+.accentButton:hover {
+    background-color: rgba(134, 145, 157, 0.9);;
+}
+
+.title{
+    padding-bottom: 40px;
+}

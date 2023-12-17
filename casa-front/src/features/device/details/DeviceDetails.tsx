@@ -101,7 +101,7 @@ const DeviceDetails = () => {
 
     const populateData = (device) => {
         let baseDevice = {
-            Id: device.id,
+            Id: deviceId,
             Name: device.name,
             RealEstateName: device.realEstateName,
             PowerSupplyType: device.powerSupplyType,
