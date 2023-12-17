@@ -42,7 +42,6 @@ export const DeviceService = {
         return response.data;
     },
 
-<<<<<<< casa-front/src/features/device/DeviceService.tsx
 
     sendWorkingCommand: async function (command: WorkingCommand): Promise<any> {
         try {
@@ -78,10 +77,9 @@ export const DeviceService = {
         } catch (error) {
             console.error(error);
         }
-=======
+    },
     toggleSolarPanelSystem: async function (deviceId : number): Promise<any> {
         let response: ServiceResponse<any> = await axios.post(DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM(deviceId));
         return response.data;
->>>>>>> casa-front/src/features/device/DeviceService.tsx
     },
 }
