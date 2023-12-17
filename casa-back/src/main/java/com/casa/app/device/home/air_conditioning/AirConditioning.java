@@ -38,7 +38,12 @@ public class AirConditioning extends Device {
         detailsDTO.setName(this.getName());
         detailsDTO.setEnergyConsumption(this.getEnergyConsumption());
         detailsDTO.setPowerSupplyType(this.getPowerSupplyType().toString());
-        detailsDTO.setRealEstateName(this.getRealEstate().getName());
+
+        if(getRealEstate() == null)
+            detailsDTO.setRealEstateName(null);
+        else
+            detailsDTO.setRealEstateName(this.getRealEstate().getName());
+
         detailsDTO.setMinTemperature(this.minTemperature);
         detailsDTO.setMaxTemperature(this.maxTemperature);
         detailsDTO.setSupportedModes(new ArrayList<>());
