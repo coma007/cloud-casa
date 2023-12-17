@@ -6,6 +6,7 @@ import (
 	"math"
 	"math/rand"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -58,12 +59,16 @@ type VehicleGate struct {
 	VehiclesInside  []string
 }
 
-func (gate *VehicleGate) ToggleOpen(open bool) {
-	gate.IsOpen = open
+func (gate *VehicleGate) ToggleOpen() {
+	gate.IsOpen = !gate.IsOpen
 }
 
-func (gate *VehicleGate) ToggleMode(mode VehicleGateMode) {
-	gate.CurrentMode = mode
+func (gate *VehicleGate) ToggleMode() {
+	if (gate.CurrentMode == PRIVATE) {
+		gate.CurrentMode = PUBLIC
+	} else {
+		gate.CurrentMode = PRIVATE
+	}
 }
 
 func (gate *VehicleGate) AddVehicleInside(vehicle string) {
@@ -135,17 +140,15 @@ func (gate *VehicleGate) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	if tokens[1] == "OPEN" {
-		fmt.Printf("Device %s is OPEN\n", gate.Id)
-		gate.ToggleOpen(true)
-	} else if tokens[1] == "CLOSE" {
-		fmt.Printf("Device %s is CLOSED\n", gate.Id)
-		gate.ToggleOpen(false)
-	} else if tokens[1] == "PRIVATE" {
-		fmt.Printf("Device %s is set to PRIVATE mode\n", gate.Id)
-		gate.ToggleMode(PRIVATE)
-	} else if tokens[1] == "PUBLIC" {
-		fmt.Printf("Device %s is set to PUBLIC mode\n", gate.Id)
-		gate.ToggleMode(PUBLIC)
+		gate.ToggleOpen()
+		fmt.Printf("Device %s is OPEN: %t\n", gate.Id, gate.IsOpen)
+		message := strconv.FormatBool(gate.IsOpen) + "|" + tokens[2]
+		utils.SendMessage(client, "vehicle_gate_command", gate.Id, message)
+	} else if tokens[1] == "MODE" {
+		gate.ToggleMode()
+		fmt.Printf("Device %s is PRIVATE: %t\n", gate.Id, gate.CurrentMode == PRIVATE)
+		message := strconv.FormatBool(gate.CurrentMode == PRIVATE) + "|" + tokens[2]
+		utils.SendMessage(client, "vehicle_gate_mode", gate.Id, message)
 	}
 }
 
@@ -162,8 +165,8 @@ func StartSimulation(device VehicleGate) {
 			if device.CanPass(licencePlates) {
 				device.AddVehicleInside(licencePlates)
 				if !device.IsOpen {
-					device.ToggleOpen(true)
-					utils.SendMessage(client, "vehicle_gate_command", device.Id, "true")
+					device.ToggleOpen()
+					utils.SendMessage(client, "vehicle_gate_command", device.Id, "true|SIMULATION")
 				}
 			}
 		} else if detectedObjectOut && len(device.VehiclesInside) != 0 {
@@ -171,12 +174,12 @@ func StartSimulation(device VehicleGate) {
 			utils.SendMessage(client, "vehicle_gate_licence_plates", device.Id, licencePlates)
 			device.RemoveVehicleInside(licencePlates)
 			if !device.IsOpen {
-				device.ToggleOpen(true)
-				utils.SendMessage(client, "vehicle_gate_command", device.Id, "true")
+				device.ToggleOpen()
+				utils.SendMessage(client, "vehicle_gate_command", device.Id, "true|SIMULATION")
 			}
 		} else if device.IsOpen {
-			device.ToggleOpen(false)
-			utils.SendMessage(client, "vehicle_gate_command", device.Id, "false")
+			device.ToggleOpen()
+			utils.SendMessage(client, "vehicle_gate_command", device.Id, "false|SIMULATION")
 		}
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)

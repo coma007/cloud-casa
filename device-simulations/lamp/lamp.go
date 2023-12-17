@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 
@@ -41,12 +42,11 @@ func (lamp *Lamp) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	if tokens[1] == "ON" {
-		fmt.Printf("Device %s is turning ON\n", lamp.Id)
-		lamp.ToggleWorking(true)
-	} else {
-		fmt.Printf("Device %s is turning OFF\n", lamp.Id)
-		lamp.ToggleWorking(false)
-	}
+		lamp.ToggleWorking(!lamp.LampOn)
+		fmt.Printf("Device %s is ON: %t\n", lamp.Id, lamp.LampOn)
+		message := strconv.FormatBool(lamp.LampOn) + "|" + tokens[2]
+		utils.SendMessage(client, "lamp_command", lamp.Id, message)
+	} 
 }
 
 func StartSimulation(device Lamp) {
@@ -61,10 +61,10 @@ func StartSimulation(device Lamp) {
 			utils.SendMessage(client, "lamp_brightness", device.Id, value)
 			if brightness < 0.3 && device.LampOn == false {
 				device.ToggleWorking(true)
-				utils.SendMessage(client, "lamp_command", device.Id, "true")
+				utils.SendMessage(client, "lamp_command", device.Id, "true|SIMULATION")
 			} else if brightness >= 0.3 && device.LampOn == true {
 				device.ToggleWorking(false)
-				utils.SendMessage(client, "lamp_command", device.Id, "false")
+				utils.SendMessage(client, "lamp_command", device.Id, "false|SIMULATION")
 			}
 		}
 		utils.Ping(device.Id, client)

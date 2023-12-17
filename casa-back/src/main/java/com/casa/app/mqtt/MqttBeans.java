@@ -113,17 +113,18 @@ public class MqttBeans {
                         lampService.brightnessHandler(id, content);
                         break;
                     case (MeasurementType.lampCommand):
-                        lampService.commandHandler(id, content, "SIMULATION");
+                        lampService.commandHandler(id, content);
                         break;
                     case (MeasurementType.sprinklerSystem):
                         // call service handler here
                         break;
                     case (MeasurementType.vehicleGateLicencePlates):
-                        System.out.println(content);
                         vehicleGateService.licencePlatesHandler(id, content);
                         break;
+                    case (MeasurementType.vehicleGateMode):
+                        vehicleGateService.modeHandler(id, content);
+                        break;
                     case (MeasurementType.vehicleGateCommand):
-                        System.out.println(content);
                         vehicleGateService.commandHandler(id, content);
                         break;
                     default:

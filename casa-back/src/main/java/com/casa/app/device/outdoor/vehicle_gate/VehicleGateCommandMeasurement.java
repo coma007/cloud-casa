@@ -21,6 +21,9 @@ public class VehicleGateCommandMeasurement extends AbstractMeasurement {
     @Column
     Boolean is_open;
 
+    @Column
+    String user;
+
     @Column(timestamp = true)
     Instant timestamp;
 }
