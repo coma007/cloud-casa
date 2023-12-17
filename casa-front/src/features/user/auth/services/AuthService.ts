@@ -40,6 +40,7 @@ export const AuthService = {
     let token = response.data;
     if(token !== ''){
       localStorage.setItem("token", token);
+      window.location.reload();
     }
     return token;
   },
@@ -66,7 +67,16 @@ export const AuthService = {
 
 axios.interceptors.request.use(
   config => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
+    if(token !== undefined && token !== null && token !== ""){
+      const user = jwtDecode(token!); 
+      let currentDate = new Date();
+      if (user.exp  === undefined || user.exp * 1000 < currentDate.getTime()){
+        localStorage.removeItem("token");
+        window.location.reload();
+      }
+    }
+
     if (config.url && !config.url.includes("maps.googleapis.com")) {
       if (token) {
         config.headers['Authorization'] ='Bearer ' + token;
