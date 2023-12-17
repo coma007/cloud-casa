@@ -4,9 +4,10 @@ import MenuCSS from './Menu.module.scss'
 
 import Logo from "../../../assets/logo.png"
 
-interface IMenuProps {admin : boolean}
+interface IMenuProps {admin : boolean, superadmin?: boolean, superadminInit?: boolean}
 
-const Menu = ({admin} : IMenuProps) => {
+
+const Menu = ({admin, superadmin, superadminInit} : IMenuProps) => {
     const [createIsOpen, setCreateIsOpen] = useState(false);
     const openCreateModal = () => {
         setCreateIsOpen(true);
@@ -26,7 +27,14 @@ const Menu = ({admin} : IMenuProps) => {
                         <MenuItem className={MenuCSS.nonMainOption} tooltipText="Estates overview" tooltip={true} image={undefined} path="/real-estate-overview" text={'ESTATES'} />
                         <MenuItem className={MenuCSS.nonMainOption} tooltipText="Devices overview" tooltip={true} image={undefined} path="/device-overview" text={'DEVICES'} />
                     </>)
+                    
                 }
+                    { superadmin && 
+                    (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Register new admin" tooltip={true} image={undefined} path="/register/admin" text={'NEW ADMIN'} />)
+                }
+                 { superadminInit && 
+                    (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Register new admin" tooltip={true} image={undefined} path="/init/register/admin" text={'NEW ADMIN'} />)
+                 }
             </div>
             <div className={MenuCSS.rightMenu}>
                 <div className={`${MenuCSS.menuRight} ${MenuCSS.menuGrid}`}>

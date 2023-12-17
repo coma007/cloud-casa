@@ -74,7 +74,7 @@ const RegisterAdminForm = () => {
       >
         {({ errors, touched, setFieldValue, validateForm, isValid }) => (
           <Form>
-            <div className={RegisterAdminFormCSS.grid}>
+            <div>
               <div>
                 <Field component={InputField} className={RegisterAdminFormCSS.inlineInput} usage="Email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   setEmail(e.target.value);

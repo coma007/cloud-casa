@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Credentials, NewPassword, UserRegister } from "../types/User";
 import { CHANGE_PASSWORD, LOGIN, REGISTER, REGISTER_ADMIN, SUPER_AND_INIT } from "../../../../api";
+import { jwtDecode } from "jwt-decode";
 
 export const AuthService = {
 
@@ -46,6 +47,14 @@ export const AuthService = {
   logout: () => {
     localStorage.removeItem("token")
   },
+
+  getRole: () =>{
+    let token = localStorage.getItem("token");
+    if(token === null) return null;
+    const user = jwtDecode(token); 
+    // console.log(user["role"][0]["name"]);
+    return user["role"][0]["name"]
+  }
 
 
   // getUserData: async (): Promise<User> => {
