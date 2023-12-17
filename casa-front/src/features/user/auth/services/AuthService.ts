@@ -40,6 +40,7 @@ export const AuthService = {
     let token = response.data;
     if(token !== ''){
       localStorage.setItem("token", token);
+      window.location.reload();
     }
     return token;
   },
