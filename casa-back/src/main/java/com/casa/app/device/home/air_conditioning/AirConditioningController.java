@@ -45,7 +45,7 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/temperature")
-    public ResponseEntity<Boolean> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException {
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendTemperatureCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -53,7 +53,10 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/mode")
-    public ResponseEntity<Boolean> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+        if(dto.getMode().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Mode field must be filled");
+        }
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendModeCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -61,7 +64,7 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/schedule")
-    public ResponseEntity<Boolean> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException {
+    public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException {
         airConditioningService.setSchedule(dto);
         return ResponseEntity.ok().build();
     }

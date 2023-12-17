@@ -49,7 +49,7 @@ const DeviceDetails = () => {
 
     const populateData = (device) => {
         let baseDevice = {
-            Id: 123,
+            Id: deviceId,
             Name: device.name,
             RealEstateName: device.realEstateName,
             PowerSupplyType: device.powerSupplyType,
@@ -126,69 +126,69 @@ const DeviceDetails = () => {
         }
     }
 
-    const exampleDevice = {
-        Id: 123,
-        Name: 'Example Device',
-        RealEstateName: 'Example Estate',
-        PowerSupplyType: 'Example Power Supply',
-        EnergyConsumption: 'Example Energy Consumption',
-    };
+    // const exampleDevice = {
+    //     Id: 123,
+    //     Name: 'Example Device',
+    //     RealEstateName: 'Example Estate',
+    //     PowerSupplyType: 'Example Power Supply',
+    //     EnergyConsumption: 'Example Energy Consumption',
+    // };
 
-    const exampleAirConditioning = {
-        ...exampleDevice,
-        MinTemperature: 30,
-        MaxTemperature: 95,
-        SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
-        type: 'air_conditioning',
-    };
+    // const exampleAirConditioning = {
+    //     ...exampleDevice,
+    //     MinTemperature: 30,
+    //     MaxTemperature: 95,
+    //     SupportedModes: ['Cool', 'Heat', 'Dry', 'Fan'],
+    //     type: 'air_conditioning',
+    // };
 
 
-    const exampleWashingMachine = {
-        ...exampleDevice,
-        SupportedModes: ['Mode1', 'Mode2', 'Mode3'],
-        type: 'washing_machine',
-    };
+    // const exampleWashingMachine = {
+    //     ...exampleDevice,
+    //     SupportedModes: ['Mode1', 'Mode2', 'Mode3'],
+    //     type: 'washing_machine',
+    // };
 
-    const exampleElectricVehicleCharger = {
-        ...exampleDevice,
-        ChargePower: 'Example Charge Power',
-        NumOfSlots: 2,
-        type: 'electric_vehicle_charger',
-    };
+    // const exampleElectricVehicleCharger = {
+    //     ...exampleDevice,
+    //     ChargePower: 'Example Charge Power',
+    //     NumOfSlots: 2,
+    //     type: 'electric_vehicle_charger',
+    // };
 
-    const exampleHouseBattery = {
-        ...exampleDevice,
-        Size: 'Example Size',
-        type: 'house_battery',
-    };
+    // const exampleHouseBattery = {
+    //     ...exampleDevice,
+    //     Size: 'Example Size',
+    //     type: 'house_battery',
+    // };
 
-    const exampleSolarPanelSystem = {
-        ...exampleDevice,
-        Size: 'Example Size',
-        Efficiency: 'Example Efficiency',
-        type: 'solar_panel_system',
-    };
+    // const exampleSolarPanelSystem = {
+    //     ...exampleDevice,
+    //     Size: 'Example Size',
+    //     Efficiency: 'Example Efficiency',
+    //     type: 'solar_panel_system',
+    // };
 
-    const exampleVehicleGate = {
-        ...exampleDevice,
-        AllowedVehicles: ['ModeA', 'ModeB'],
-        type: 'vehicle_gate',
-    };
+    // const exampleVehicleGate = {
+    //     ...exampleDevice,
+    //     AllowedVehicles: ['ModeA', 'ModeB'],
+    //     type: 'vehicle_gate',
+    // };
 
-    const exampleAmbientSensor = {
-        ...exampleDevice,
-        type: 'ambient_sensor',
-    };
+    // const exampleAmbientSensor = {
+    //     ...exampleDevice,
+    //     type: 'ambient_sensor',
+    // };
 
-    const exampleLamp = {
-        ...exampleDevice,
-        type: 'lamp_brightness',
-    };
+    // const exampleLamp = {
+    //     ...exampleDevice,
+    //     type: 'lamp_brightness',
+    // };
 
-    const exampleSprinklerSystem = {
-        ...exampleDevice,
-        type: 'sprinkler_system',
-    };
+    // const exampleSprinklerSystem = {
+    //     ...exampleDevice,
+    //     type: 'sprinkler_system',
+    // };
 
     // let dev = exampleHouseBattery;
 

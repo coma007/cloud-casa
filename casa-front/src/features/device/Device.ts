@@ -11,3 +11,18 @@ export interface DeviceDetails {
     energyConsumption: number,
     type: string,
 }
+
+export interface TemperatureCommand {
+    temperature: number,
+    id: number
+}
+
+export interface WorkingCommand {
+    working: boolean,
+    id: number
+}
+
+export interface ModeCommand {
+    mode: string,
+    id: number
+}

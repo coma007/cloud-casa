@@ -17,6 +17,10 @@ export const DEVICE_GET_ALL_BY_OWNER = () => url + "/device/getAllByOwner"
 export const DEVICE_GET_DETAILS = (id : number) => url + "/device/getDeviceDetails/" + id
 export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
 
+export const AIR_CONDITION_TEMPERATURE = () => url + "/airConditioning/simulation/temperature"
+export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
+export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"
+
 export const LOCATION_CITIES = (country) => url + "/location/getAllCities/" + country;
 export const LOCATION_COUNTRIES = () => url + "/location/getAllCountries";
 

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER } from "../../api";
+import { AIR_CONDITION_MODE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { DeviceCreate, DeviceDetails } from "./Device";
+import { DeviceCreate, DeviceDetails, ModeCommand, TemperatureCommand, WorkingCommand } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
 
 export const DeviceService = {
@@ -27,5 +27,33 @@ export const DeviceService = {
         let response: ServiceResponse<any> = await axios.get(DEVICE_GET_DETAILS(deviceId));
 
         return response.data;
+    },
+
+
+    sendWorkingCommand: async function (command: WorkingCommand): Promise<void> {
+        try {
+            let response = await axios.post(AIR_CONDITION_WORKING(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    sendTemperatureCommand: async function (command: TemperatureCommand): Promise<void> {
+        try {
+            let response = await axios.post(AIR_CONDITION_TEMPERATURE(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    sendModeCommand: async function (command: ModeCommand): Promise<void> {
+        try {
+            let response = await axios.post(AIR_CONDITION_MODE(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
     },
 }
