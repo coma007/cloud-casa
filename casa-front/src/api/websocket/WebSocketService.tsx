@@ -1,3 +1,5 @@
+import SockJS from "sockjs-client";
+import * as Stomp from "stompjs";
 import { WEBSOCKET } from "..";
 
 
@@ -11,51 +13,36 @@ import { WEBSOCKET } from "..";
 
 
 export const WebSocketService = {
-  createSocket: function (setSocket: any) {
+	isLoaded: false,
+	stompClient: null as Stomp.Client | null,
+	stompSubscription: null as Stomp.Subscription | null,
 
-    // Create a new WebSocket instance
-    const newSocket = new WebSocket(WEBSOCKET(), 'echo-protocol');
+	createSocket : function (topic : string, handleMessage : (message : any) => void) {
+		let socket = new SockJS("http://localhost:8080/socket");
+		this.stompClient = Stomp.over(socket);
+		
+		this.stompClient.connect({}, () =>{
+			this.isLoaded = true;
+			this.openSocket(topic, handleMessage);
+		});
+	},
 
-    // Store the WebSocket instance in state
-    setSocket(newSocket);
+	openSocket : function(topic : string, handleMessage : (message : any) => void) {
+		if (this.stompClient && this.stompClient.connected) {
+			if (this.stompSubscription) {
+				this.stompSubscription.unsubscribe();
+			}
+			this.stompSubscription = this.stompClient!.subscribe(topic, (message) =>{
+				handleMessage(JSON.parse(message.body));
+			});
+		}
+	},
 
-    // Cleanup function to close the WebSocket on component unmount
-    return () => {
-      newSocket.close();
-    };
-  },
+	unsubscribe : function() {
+		if (this.stompSubscription) {
+			this.stompSubscription.unsubscribe();
+		}
+		this.stompSubscription = null
+	}
 
-  defineSocket: (socket: WebSocket | null, topic: string, processMessage: any) => {
-    if (socket) {
-      // WebSocket event listener for when the connection is opened
-      socket.onopen = () => {
-        console.log('Connected to WebSocket.');
-        socket.send("subscribe:" + topic)
-        //socket.send("subscribe:NewAlarmRecordsCreated")
-      };
-
-      // WebSocket event listener for when a message is received
-      socket.onmessage = async (event) => {
-        console.log(processMessage)
-        let message: string = await event.data.text();
-        let tokens = message.split("=>");
-        topic = tokens[0];
-        message = JSON.parse(tokens[1]);
-        console.log('Received message:', message);
-        processMessage(message)
-        // Process the received message
-      };
-
-      // WebSocket event listener for when the connection is closed
-      socket.onclose = (event) => {
-        console.log('WebSocket connection closed:', event);
-        // Handle WebSocket closure event, you can initiate reconnection logic here
-      };
-
-      // WebSocket event listener for errors
-      socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-    }
-  }
 }

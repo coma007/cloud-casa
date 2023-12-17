@@ -42,7 +42,7 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
     };
 
     return (
-        <Container>
+        <Container className={RegisterPageCSS.center}>
             <Form onSubmit={handleSubmit}>
                 <Row className="mb-3">
                     <Col>

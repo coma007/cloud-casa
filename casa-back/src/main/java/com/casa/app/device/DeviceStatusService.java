@@ -45,7 +45,7 @@ public class DeviceStatusService {
         for (Device d : deviceRepository.findAll()) {
             if (d.getStatus() == DeviceStatus.ONLINE) {
                 if ((new Date()).getTime() - d.getLastSeen().getTime() > 2*60*1000) {
-                    System.out.println("Pobegulja");
+//                    System.out.println("Pobegulja");
                     d.setStatus(DeviceStatus.OFFLINE);
                     deviceRepository.save(d);
                 }

@@ -1,0 +1,19 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 2vh;
+}
+
+.pagination p {
+    margin-bottom: 0;
+    margin-top: auto;
+    margin-left: 0.4vw;
+
+    font-size: 20px;
+}
+
+.paginationButton button{
+    width: 40px;
+    margin-left: 0.4vw;
+}

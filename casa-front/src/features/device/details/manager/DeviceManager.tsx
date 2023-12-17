@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import Button from '../../../../components/forms/Button/Button';
 import DeviceManagerCSS from './DeviceManager.module.scss'
@@ -6,20 +6,35 @@ import InputField from '../../../../components/forms/InputField/InputField';
 import { DeviceService } from '../../DeviceService';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
+    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status == 'ONLINE');
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 
-    const handleIsOnClick = () => {
+    useEffect(() => {
+        setToggleIsOn(props.device.Status === 'ONLINE');
+    }, [props.device.Status]);
+
+    const handleIsOnClick = async () => {
+        if (props.deviceType === "solar_panel_system") {
+            (async function () {
+                try {
+                    await DeviceService.toggleSolarPanelSystem(props.device.Id);
+                    // const fetchedDevices = [{} as RealEstate]
+                } catch (error) {
+                    console.error(error);
+                }
+            })()
+        } else if (props.deviceType == "lamp_brightness") {
+            console.log("ovdje")
+            await DeviceService.lampManager(props.device.Id);
+        }
         setToggleIsOn(!toggleIsOn);
+
     };
 
-    const handleIsOpenClick = () => {
-        if (props.deviceType == "lamp_brightness") {
-            DeviceService.lampManager(props.device.Id);
-        }
-        else if (props.deviceType == "vehicle_gate") {
-            DeviceService.gateManager(props.device.Id, "open");
+    const handleIsOpenClick = async () => {
+        if (props.deviceType == "vehicle_gate") {
+            await DeviceService.gateManager(props.device.Id, "open");
         }
         setToggleIsOpen(!toggleIsOpen);
     };
@@ -35,7 +50,6 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
     const renderDeviceSpecificUI = () => {
 
-        console.log(props.deviceType)
         switch (props.deviceType) {
             case 'air_conditioning':
                 return (
@@ -100,8 +114,8 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
             case 'vehicle_gate':
                 return (
                     <div className={DeviceManagerCSS.row}>
-                        <Button text={toggleIsOn ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
-                        <Button text={toggleIsOn ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleIsPrivateClick} submit={undefined} />
+                        <Button text={toggleIsOpen ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
+                        <Button text={toggleIsPrivate ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleIsPrivateClick} submit={undefined} />
                     </div>
                 );
 

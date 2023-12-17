@@ -2,10 +2,7 @@ package com.casa.app.estate;
 
 import com.casa.app.location.Address;
 import com.casa.app.location.CityDTO;
-import com.casa.app.request.RealEstateRequest;
-import com.casa.app.location.City;
 import com.casa.app.request.RealEstateRequestDTO;
-import com.casa.app.user.User;
 import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RealEstateDTO {
 
+    private Long id;
     private String name;
     private Address address;
     private String type;
@@ -27,6 +25,7 @@ public class RealEstateDTO {
 
 
     public RealEstateDTO(RealEstate estate) {
+        this.id = estate.getId();
         this.name = estate.getName();
         this.address = estate.getAddress();
         this.type = estate.getType().name();

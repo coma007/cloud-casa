@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,8 +66,11 @@ public class InfluxDBService {
         String flux = buildFluxQuery(measurement, device, user, fromString, toString);
         QueryApi queryApi = client.getQueryApi();
 
-        FluxTable table = queryApi.query(flux).get(0);
-        List<FluxRecord> records = table.getRecords();
+        List<FluxTable> tables = queryApi.query(flux);
+        List<FluxRecord> records = new ArrayList<>();
+        if (tables.size() > 0) {
+            records = tables.get(0).getRecords();
+        }
 
         MeasurementList measurements = new MeasurementList(measurement, device.getId(), from, to);
         for (FluxRecord fluxRecord : records) {

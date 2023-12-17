@@ -1,6 +1,5 @@
 package com.casa.app.device;
 
-import com.casa.app.device.dto.DeviceDTO;
 import com.casa.app.device.dto.DeviceDetailsDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.home.air_conditioning.AirConditioning;
@@ -14,8 +13,8 @@ import com.casa.app.device.large_electric.electric_vehicle_charger.dto.ElectricV
 import com.casa.app.device.large_electric.house_battery.HouseBattery;
 import com.casa.app.device.large_electric.house_battery.dto.HouseBatteryDetailsDTO;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystem;
-import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
 import com.casa.app.device.large_electric.solar_panel_system.dto.SolarPanelSystemDetailsDTO;
+import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.device.outdoor.lamp.dto.LampDetailsDTO;
@@ -23,25 +22,30 @@ import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystem;
 import com.casa.app.device.outdoor.sprinkler_system.dto.SprinklerSystemDetailsDTO;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
+import com.casa.app.estate.RealEstate;
+import com.casa.app.estate.RealEstateService;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
-import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.lang.Math.min;
 
 @Service
 public class DeviceService {
 
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private RealEstateService realEstateService;
 
     @Autowired
     private InfluxDBService influxDBService;
@@ -58,6 +62,21 @@ public class DeviceService {
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException();
         }
+        List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
+        for (Device d : devices) {
+            DeviceDetailsDTO dto = d.toDetailsDTO();
+            dto.setType(getType(d));
+            devicesDTO.add(dto);
+        }
+        return devicesDTO;
+    }
+
+    public List<DeviceDetailsDTO> getAllByRealEstate(Long realEstateId) {
+        RealEstate realEstate = realEstateService.getById(realEstateId);
+        if (realEstate == null) {
+            return null;
+        }
+        List<Device> devices = deviceRepository.findAllByRealEstate(realEstate);
         List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             DeviceDetailsDTO dto = d.toDetailsDTO();
@@ -145,11 +164,39 @@ public class DeviceService {
         return type;
     }
 
-    public MeasurementList queryMeasurements(Long id, String measurement, String from, String to, String username) {
+    public MeasurementList queryMeasurements(Long id, String measurement, String from, String to, String username, int page) {
         Device device = deviceRepository.getReferenceById(id);
-        Instant fromDate = Instant.parse(from);
-        Instant toDate = Instant.parse(to);
+        Instant fromDate = null, toDate = null;
+        if (!from.equals("")) {
+            fromDate = Instant.parse(from);
+        }
+        if (!to.equals("")) {
+            toDate = Instant.parse(to);
+        }
         User user = userService.getByUsername(username);
-        return influxDBService.query(measurement, device, fromDate, toDate, user);
+        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
+        if (data.getMeasurements().size() != 0) {
+            Collections.reverse(data.getMeasurements());
+            int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
+            int lastIndex = min(10 * page, data.getMeasurements().size());
+            List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);
+            data.setMeasurements(newData);
+        }
+        return data;
+    }
+
+    public int queryNumOfPages(Long id, String measurement, String from, String to, String username) {
+        Device device = deviceRepository.getReferenceById(id);
+        Instant fromDate = null;
+        if (!from.equals("")) {
+            fromDate = Instant.parse(from);
+        }
+        Instant toDate = null;
+        if (!to.equals("")) {
+            toDate = Instant.parse(to);
+        }
+        User user = userService.getByUsername(username);
+        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
+        return (data.getMeasurements().size() == 0) ? 0 : (data.getMeasurements().size() / 10) + 1;
     }
 }
