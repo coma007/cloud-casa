@@ -14,6 +14,7 @@ export interface RealEstateCreate {
 }
 
 export interface RealEstate {
+    id: number
     name: string;
     address: Address;
     city: City;

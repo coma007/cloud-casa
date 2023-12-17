@@ -10,6 +10,7 @@ import FilterDate from './inspect/filter/FilterDate'
 import Button from '../../../components/forms/Button/Button'
 import { DeviceService } from '../DeviceService'
 import { useLocation } from 'react-router-dom'
+import DetailsTable from './inspect/table/DetailsTable'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -17,6 +18,7 @@ const DeviceDetails = () => {
     const [deviceId, setDeviceId] = useState(-1);
     const [deviceType, setDeviceType] = useState("");
     const [dev, setDev] = useState<any>({});
+    const [measurements, setMeasurements] = useState<any>({});
     const location = useLocation();
 
     useEffect(() => {
@@ -29,8 +31,11 @@ const DeviceDetails = () => {
     useEffect(() => {
         (async function () {
             try {
-                const fetchedDevice = await DeviceService.getDeviceDetails(deviceId);
-                populateData(fetchedDevice)
+                if (deviceId > 0) {
+                    const fetchedDevice = await DeviceService.getDeviceDetails(deviceId);
+                    console.log(fetchedDevice)
+                    populateData(fetchedDevice)
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -49,7 +54,7 @@ const DeviceDetails = () => {
 
     const populateData = (device) => {
         let baseDevice = {
-            Id: 123,
+            Id: device.id,
             Name: device.name,
             RealEstateName: device.realEstateName,
             PowerSupplyType: device.powerSupplyType,
@@ -198,7 +203,7 @@ const DeviceDetails = () => {
 
     const handleUsernameFilterClick = () => {
         console.log(username);
-        DeviceService.filter(dev.Id, dev.type, fromDate, toDate, username);
+        DeviceService.filter(dev.Id, dev.type, fromDate, toDate, username, 1);
     }
 
     const [fromDate, setFromDate] = useState('');
@@ -219,7 +224,10 @@ const DeviceDetails = () => {
         setFromDate(from);
         setToDate(to);
 
-        DeviceService.filter(dev.Id, dev.type, new Date(from).toISOString(), new Date(to).toISOString(), username);
+        (async () => {
+            const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.type, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+            setMeasurements(fetchedMeasurements)
+        })()
     };
 
     const resetFilters = () => {
@@ -261,6 +269,10 @@ const DeviceDetails = () => {
                             </>
                         }
                     </div>)}
+                    {
+                        (["solar_panel_system", "lamp"].includes(dev.type)) &&
+                        (<DetailsTable measurements={measurements} deviceType={deviceType} />)
+                    }
                     <Graph></Graph>
                 </div>
             </div>

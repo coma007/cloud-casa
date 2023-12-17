@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import Button from '../../../../components/forms/Button/Button';
 import DeviceManagerCSS from './DeviceManager.module.scss'
 import InputField from '../../../../components/forms/InputField/InputField';
+import { DeviceService } from '../../DeviceService';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
+    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status == 'ONLINE');
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 
+    useEffect(() => {
+        setToggleIsOn(props.device.Status === 'ONLINE');
+    }, [props.device.Status]);
+
     const handleIsOnClick = () => {
-        setToggleIsOn(!toggleIsOn);
+        if (props.deviceType === "solar_panel_system") {
+            (async function () {
+                try {
+                    await DeviceService.toggleSolarPanelSystem(props.device.Id);
+                    setToggleIsOn(!toggleIsOn);
+                    // const fetchedDevices = [{} as RealEstate]
+                } catch (error) {
+                    console.error(error);
+                }
+            })()
+        } else {
+            setToggleIsOn(!toggleIsOn);
+        }
     };
 
     const handleIsOpenClick = () => {

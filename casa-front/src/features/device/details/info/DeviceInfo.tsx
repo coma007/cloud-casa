@@ -1,8 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import DeviceInfoCSS from './DeviceInfo.module.scss';
+import SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
 
 const DeviceInfo = (props: { deviceType: string; device: any }) => {
+
+    const [status, setStatus] = useState(props.device.Status)
+
+    useEffect(()=> {
+        setStatus(props.device.Status)
+    }, [props.device.Status])
+
+    let isLoaded = false;
+    let socket = new SockJS("http://localhost:8080/socket");
+    let stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () =>{
+      isLoaded = true;
+      openSocket();
+    });
+    
+    function handleMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
+        setStatus(message.message)
+    }
+    function openSocket() {
+        if(isLoaded){
+            if (props.deviceType === "solar_panel_system") {
+                stompClient!.subscribe('/topic/solar-panel-system-status/'+ props.device.Id, (message) =>{
+                handleMessage(JSON.parse(message.body));
+                });
+            }
+        }
+    }
+
     const additionalProperties = () => {
         switch (props.deviceType) {
             case 'air_conditioning':
@@ -107,7 +138,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
     return (
         <Card>
             <p className={DeviceInfoCSS.row}>
-                <b>STATUS:</b> {props.device.Status}
+                <b>STATUS:</b> {status}
             </p>
             <p className={DeviceInfoCSS.row}>
                 <b>NAME:</b> {props.device.Name}
