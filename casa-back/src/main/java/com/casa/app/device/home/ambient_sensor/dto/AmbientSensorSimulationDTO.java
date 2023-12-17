@@ -1,4 +1,4 @@
-package com.casa.app.device.home.ambient_sensor;
+package com.casa.app.device.home.ambient_sensor.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

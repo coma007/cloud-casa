@@ -1,6 +1,6 @@
 package com.casa.app.device.outdoor.vehicle_gate;
 
-import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

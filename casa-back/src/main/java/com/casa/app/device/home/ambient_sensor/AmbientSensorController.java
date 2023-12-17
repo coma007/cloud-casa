@@ -1,5 +1,6 @@
 package com.casa.app.device.home.ambient_sensor;
 
+import com.casa.app.device.home.ambient_sensor.dto.AmbientSensorSimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

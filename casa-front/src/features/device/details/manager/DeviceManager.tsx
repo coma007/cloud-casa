@@ -5,7 +5,7 @@ import DeviceManagerCSS from './DeviceManager.module.scss'
 import InputField from '../../../../components/forms/InputField/InputField';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
-    const [toggleIsOn, setToggleIsOn] = useState(false);
+    const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
 
@@ -25,7 +25,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
     const renderDeviceSpecificUI = () => {
         switch (props.deviceType) {
-            case 'AirConditioning':
+            case 'air_conditioning':
                 return (
                     <div>
                         <div className={DeviceManagerCSS.row}>
@@ -57,7 +57,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'WashingMachine':
+            case 'washing_machine':
                 return (
                     <div>
                         <div className={DeviceManagerCSS.row}>
@@ -78,14 +78,14 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'SolarPanelSystem':
+            case 'solar_panel_system':
                 return (
                     <div>
                         <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
                     </div>
                 );
 
-            case 'VehicleGate':
+            case 'vehicle_gate':
                 return (
                     <div className={DeviceManagerCSS.row}>
                         <Button text={toggleIsOn ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
@@ -93,7 +93,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'SprinklerSystem':
+            case 'sprinkler_system':
                 return (
                     <div className={DeviceManagerCSS.row}>
                         <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
@@ -101,7 +101,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'Lamp':
+            case 'lamp':
                 return (
                     <div>
                         <p>

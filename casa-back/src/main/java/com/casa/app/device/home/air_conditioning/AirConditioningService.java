@@ -26,6 +26,7 @@ import com.casa.app.user.UserRepository;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

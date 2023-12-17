@@ -24,6 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,11 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.getContext();
         User user = (User) context.getAuthentication().getPrincipal();
         return userRepository.getReferenceById(user.getId());
+    }
+
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElse(null);
     }
 
 

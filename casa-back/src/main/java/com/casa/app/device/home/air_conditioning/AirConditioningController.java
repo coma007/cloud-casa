@@ -10,6 +10,7 @@ import com.casa.app.exceptions.ScheduleOverlappingException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

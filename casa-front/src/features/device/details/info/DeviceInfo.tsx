@@ -5,7 +5,7 @@ import DeviceInfoCSS from './DeviceInfo.module.scss';
 const DeviceInfo = (props: { deviceType: string; device: any }) => {
     const additionalProperties = () => {
         switch (props.deviceType) {
-            case 'AirConditioning':
+            case 'air_conditioning':
                 return (
                     <>
                         <hr />
@@ -26,7 +26,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     </>
                 );
 
-            case 'WashingMachine':
+            case 'washing_machine':
                 return (
                     <>
                         <hr />
@@ -44,7 +44,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     </>
                 );
 
-            case 'ElectricVehicleCharger':
+            case 'electric_vehicle_charger':
                 return (
                     <>
                         <hr />
@@ -57,7 +57,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     </>
                 );
 
-            case 'HouseBattery':
+            case 'house_battery':
                 return (
                     <>
                         <hr />
@@ -67,7 +67,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     </>
                 );
 
-            case 'SolarPanelSystem':
+            case 'solar_panel_system':
                 return (
                     <>
                         <hr />
@@ -80,7 +80,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     </>
                 );
 
-            case 'VehicleGate':
+            case 'vehicle_gate':
                 return (
                     <>
                         <hr />
@@ -106,6 +106,9 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
 
     return (
         <Card>
+            <p className={DeviceInfoCSS.row}>
+                <b>STATUS:</b> {props.device.Status}
+            </p>
             <p className={DeviceInfoCSS.row}>
                 <b>NAME:</b> {props.device.Name}
             </p>

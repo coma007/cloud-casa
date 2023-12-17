@@ -1,6 +1,7 @@
 package com.casa.app.device.outdoor.lamp;
 
 
+import com.casa.app.device.outdoor.lamp.dto.LampSimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -63,45 +63,45 @@ public class MeasurementService {
                 );
             case (MeasurementType.houseBatteryPowerUsage):
                 return new HouseBatteryPowerUsageMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Double) record.getValueByKey("power"),
                         record.getTime()
                 );
             case (MeasurementType.houseBatteryImportExport):
                 return new HouseBatteryImportExportMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("type"),
                         (Double) record.getValueByKey("value"),
                         record.getTime()
                 );
             case (MeasurementType.houseBatteryState):
                 return new HouseBatteryCurrentStateMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Double) record.getValueByKey("currentState"),
                         record.getTime()
                 );
             case (MeasurementType.solarPanelSystem):
                 return new SolarPanelSystemPowerMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Double) record.getValueByKey("power"),
                         record.getTime()
                 );
             case (MeasurementType.solarPanelSystemCommand):
                 return new SolarPanelSystemCommand(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("command"),
                         (String) record.getValueByKey("user"),
                         record.getTime()
                 );
             case (MeasurementType.lampBrightness):
                 return new LampBrightnessMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Double) record.getValueByKey("brightness"),
                         record.getTime()
                 );
             case (MeasurementType.lampCommand):
                 return new LampCommandMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Boolean) record.getValueByKey("is_on"),
                         (String) record.getValueByKey("user"),
                         record.getTime()

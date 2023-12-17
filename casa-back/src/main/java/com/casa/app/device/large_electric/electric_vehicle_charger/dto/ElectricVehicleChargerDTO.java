@@ -1,8 +1,9 @@
-package com.casa.app.device.large_electric.electric_vehicle_charger;
+package com.casa.app.device.large_electric.electric_vehicle_charger.dto;
 
 import com.casa.app.device.dto.DeviceDTO;
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.PowerSupplyType;
+import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleCharger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

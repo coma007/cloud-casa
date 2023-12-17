@@ -1,3 +1,6 @@
+import Button from "../../../components/forms/Button/Button";
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+
 const WashingMachineStep =({ formData, handleChange, handleSelectChange, prevStep, nextStep }) => {
 
     const handlePrev = (e) => {
@@ -21,12 +24,17 @@ const WashingMachineStep =({ formData, handleChange, handleSelectChange, prevSte
                     multiple
                     value={formData.supportedModes}
                     onChange={handleSelectChange}
+                    className={`${DeviceRegistrationStepperCSS.input} ${DeviceRegistrationStepperCSS.multipleSelect}`}
                 >
                     <option value="WHITE">White</option>
                     <option value="COLOR">Color</option>
                 </select>
-                <button type="submit">Register</button>
-                <button onClick={handlePrev}>Back</button>
+                <div className={DeviceRegistrationStepperCSS.button}>
+                    <Button text={"Register"} onClick={handleNext} submit={undefined} />
+                    <div className={DeviceRegistrationStepperCSS.marginLeft}>
+                        <Button text={"Back"} onClick={handlePrev} submit={undefined} />
+                    </div>
+                </div>
             </form>
     </div>
     )
