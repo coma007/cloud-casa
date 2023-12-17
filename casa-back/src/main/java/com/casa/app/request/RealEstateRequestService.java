@@ -56,8 +56,8 @@ public class RealEstateRequestService {
         return requests.stream().map(request -> new RealEstateDTO(request.getRealEstate())).collect(Collectors.toList());
     }
 
-    public List<RealEstateDTO> getAllRealEstate(boolean approved) {
-        List<RealEstateRequest> requests = realEstateRequestRepository.getAllByApproved(approved);
+    public List<RealEstateDTO> getAllUnresolvedRealEstate() {
+        List<RealEstateRequest> requests = realEstateRequestRepository.getAllByApprovedAndDeclined(false, false);
         return requests.stream().map(request -> new RealEstateDTO(request.getRealEstate())).collect(Collectors.toList());
     }
 }

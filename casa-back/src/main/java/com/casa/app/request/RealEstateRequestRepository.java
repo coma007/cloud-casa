@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface RealEstateRequestRepository extends JpaRepository<RealEstateRequest, Long> {
 
+    public List<RealEstateRequest> getAllByApprovedAndDeclined(boolean approved, boolean declined);
     public List<RealEstateRequest> getAllByApproved(boolean approved);
 }
