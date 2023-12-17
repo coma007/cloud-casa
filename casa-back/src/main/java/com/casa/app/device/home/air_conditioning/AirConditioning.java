@@ -25,6 +25,8 @@ public class AirConditioning extends Device {
 
     private List<AirConditioningMode> supportedModes;
 
+
+    
 //    private Double currentTargetTemperature;
 //    private Boolean working;
 //    private String mode;
