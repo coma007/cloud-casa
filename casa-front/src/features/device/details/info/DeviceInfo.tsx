@@ -14,10 +14,12 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
     }, [props.device.Status])
 
     useEffect(()=>{
-        WebSocketService.createSocket('/topic/solar-panel-system-status/'+ props.device.Id, handleMessage);
+        if (props.deviceType === "solar_panel_system") {
+            WebSocketService.createSocket('/topic/solar-panel-system-status/'+ props.device.Id, handleSolarPanelMessage);
+        }
     }, [props.device.Id])
     
-    function handleMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
+    function handleSolarPanelMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
         setStatus(message.message)
     }
 
@@ -80,7 +82,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SIZE:</b> <span>{props.device.Size} m<sup>2</sup></span>
+                            <b>SIZE:</b> <span>{props.device.Size}</span>
                         </p>
                     </>
                 );

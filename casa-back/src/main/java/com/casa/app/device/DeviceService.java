@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.min;
@@ -175,6 +176,7 @@ public class DeviceService {
         User user = userService.getByUsername(username);
         MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
         if (data.getMeasurements().size() != 0) {
+            Collections.reverse(data.getMeasurements());
             int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
             int lastIndex = min(10 * page, data.getMeasurements().size());
             List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);

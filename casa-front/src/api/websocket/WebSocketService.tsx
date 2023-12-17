@@ -13,24 +13,36 @@ import { WEBSOCKET } from "..";
 
 
 export const WebSocketService = {
-	createSocket : function (topic : string, handleMessage : (message : any) => void) : WebSocket {
-		let isLoaded = false;
+	isLoaded: false,
+	stompClient: null as Stomp.Client | null,
+	stompSubscription: null as Stomp.Subscription | null,
+
+	createSocket : function (topic : string, handleMessage : (message : any) => void) {
 		let socket = new SockJS("http://localhost:8080/socket");
-		let stompClient = Stomp.over(socket);
-
-		stompClient.connect({}, () =>{
-			isLoaded = true;
-			openSocket();
+		this.stompClient = Stomp.over(socket);
+		
+		this.stompClient.connect({}, () =>{
+			this.isLoaded = true;
+			this.openSocket(topic, handleMessage);
 		});
+	},
 
-		function openSocket() {
-			if(isLoaded){
-				stompClient!.subscribe(topic, (message) =>{
-				handleMessage(JSON.parse(message.body));
-				});
+	openSocket : function(topic : string, handleMessage : (message : any) => void) {
+		if (this.stompClient && this.stompClient.connected) {
+			if (this.stompSubscription) {
+				this.stompSubscription.unsubscribe();
 			}
+			this.stompSubscription = this.stompClient!.subscribe(topic, (message) =>{
+				handleMessage(JSON.parse(message.body));
+			});
 		}
-		return socket;
-    }
-  
+	},
+
+	unsubscribe : function() {
+		if (this.stompSubscription) {
+			this.stompSubscription.unsubscribe();
+		}
+		this.stompSubscription = null
+	}
+
 }

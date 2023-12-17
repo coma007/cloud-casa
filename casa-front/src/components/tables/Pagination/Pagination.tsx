@@ -21,7 +21,7 @@ const Pagination = (props : {currentPage: number, numberOfPages: number, onClick
         }
 
         const newStartPages : number[] = [];
-        console.log(props.numberOfPages)
+        // console.log(props.numberOfPages)
         for (let i = 0; i < Math.min(3, props.numberOfPages); i++) {
             newStartPages.push(i);
         }
