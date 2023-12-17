@@ -98,6 +98,7 @@ public class MeasurementService {
                 return new VehicleGateCommandMeasurement(
                         (Long) record.getValueByKey("id"),
                         (Boolean) record.getValueByKey("is_open"),
+                        (String) record.getValueByKey("user"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateMode):
