@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react"
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Menu from "../../../components/navigation/Menu/Menu";
 import PageTitle from "../../../components/view/PageTitle/PageTitle";
 import DeviceOverviewPageCSS from "./DeviceOverviewPage.module.scss"
@@ -19,6 +19,34 @@ const DeviceOverviewPage = () => {
     const [withdrawIsOpen, setWithdrawModalIsOpen] = useState(false);
     const [selectedDevice, setSelectedDevice] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
+
+    let location = useLocation()
+
+    useEffect(() => {
+        // console.log(location.state);
+        if (location.state !== null && location.state.id !== undefined) {
+            (async function () {
+                try {
+                    const fetchedDevices = await DeviceService.getAllByRealEstate(location.state.id);
+                    // const fetchedDevices = [{} as RealEstate]
+                    populateData(fetchedDevices);
+                } catch (error) {
+                    console.error(error);
+                }
+            })()
+        } else {
+            (async function () {
+                try {
+                    const fetchedDevices = await DeviceService.getAllByOwner();
+                    // const fetchedDevices = [{} as RealEstate]
+                    populateData(fetchedDevices);
+                } catch (error) {
+                    console.error(error);
+                }
+            })()
+        }
+    }, [location.state]);
+
 
     const navigate = useNavigate();
 
@@ -74,26 +102,6 @@ const DeviceOverviewPage = () => {
         setTableData(data);
     }
     let isLoaded = false;
-
-    let socket = new SockJS("http://localhost:8080/socket");
-    let stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, () =>{
-      isLoaded = true;
-      openSocket();
-    });
-    
-    function handleMessage(message: {body: string}){
-        let activeDriversLocations: [{latitude: number, longitude: number}] = JSON.parse(message.body);
-        // refreshActiveDrivers(activeDriversLocations);
-    }
-    function openSocket() {
-        if(isLoaded){
-          stompClient!.subscribe('/active/vehicle/location', (message: {body: string}) =>{
-          handleMessage(message);
-          });
-        }
-      }
     
     const newDevice = () => {
         navigate("/register-device")

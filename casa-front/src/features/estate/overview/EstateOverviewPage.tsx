@@ -40,10 +40,6 @@ const EstateOverviewPage = () => {
             { content: "Status", widthPercentage: 10}
         ],
         onClick: undefined
-}
-
-    const showDetails = (realEstate : RealEstate | string) => {
-        // alert(realEstate)
     }
 
     const populateData = (estates: RealEstate[]) => {
@@ -70,6 +66,11 @@ const EstateOverviewPage = () => {
 
     const createNew = () => {
         navigate("/register-real-estate");
+    }
+
+    const showDetails = (realEstate : RealEstate) => {
+        console.log(realEstate)
+        navigate("/device-overview", {state : {id: realEstate.id}})
     }
 
     return (

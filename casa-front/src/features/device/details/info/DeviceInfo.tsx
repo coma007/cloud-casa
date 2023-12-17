@@ -1,8 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import DeviceInfoCSS from './DeviceInfo.module.scss';
+import SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { WebSocketService } from '../../../../api/websocket/WebSocketService';
 
 const DeviceInfo = (props: { deviceType: string; device: any }) => {
+
+    const [status, setStatus] = useState(props.device.Status)
+
+    useEffect(()=> {
+        setStatus(props.device.Status)
+    }, [props.device.Status])
+
+    useEffect(()=>{
+        if (props.deviceType === "solar_panel_system") {
+            WebSocketService.createSocket('/topic/solar-panel-system-status/'+ props.device.Id, handleSolarPanelMessage);
+        }
+    }, [props.device.Id])
+    
+    function handleSolarPanelMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
+        setStatus(message.message)
+    }
+
     const additionalProperties = () => {
         switch (props.deviceType) {
             case 'air_conditioning':
@@ -62,7 +82,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SIZE:</b> {props.device.Size}
+                            <b>SIZE:</b> <span>{props.device.Size}</span>
                         </p>
                     </>
                 );
@@ -72,7 +92,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SIZE:</b> {props.device.Size}
+                            <b>SIZE:</b> <span>{props.device.Size} m<sup>2</sup></span>
                         </p>
                         <p className={DeviceInfoCSS.row}>
                             <b>EFFICIENCY:</b> {props.device.Efficiency}
@@ -107,7 +127,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
     return (
         <Card>
             <p className={DeviceInfoCSS.row}>
-                <b>STATUS:</b> {props.device.Status}
+                <b>STATUS:</b> {status}
             </p>
             <p className={DeviceInfoCSS.row}>
                 <b>NAME:</b> {props.device.Name}
