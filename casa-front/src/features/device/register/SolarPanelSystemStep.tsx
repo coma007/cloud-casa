@@ -1,3 +1,6 @@
+import Button from "../../../components/forms/Button/Button";
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+
 const SolarPanelSystemStep = ({ formData, handleChange, prevStep, nextStep }) => {
 
     const handlePrev = (e) => {
@@ -23,7 +26,7 @@ const SolarPanelSystemStep = ({ formData, handleChange, prevStep, nextStep }) =>
                     value={formData.size}
                     onChange={handleChange}
                 />
-                <label htmlFor="efficiency">Efficiency:</label>
+                <label htmlFor="efficiency" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Efficiency:</label>
                 <input
                     type="number"
                     name="efficiency"
@@ -31,8 +34,12 @@ const SolarPanelSystemStep = ({ formData, handleChange, prevStep, nextStep }) =>
                     value={formData.efficiency}
                     onChange={handleChange}
                 />
-                <button type="submit">Register</button>
-                <button onClick={handlePrev}>Back</button>
+                <div className={DeviceRegistrationStepperCSS.button}>
+                    <Button text={"Register"} onClick={handleNext} submit={undefined} />
+                    <div className={DeviceRegistrationStepperCSS.marginLeft}>
+                        <Button text={"Back"} onClick={handlePrev} submit={undefined} />
+                    </div>
+                </div>
             </form>
     </div>
     )

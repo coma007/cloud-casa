@@ -1,5 +1,6 @@
 package com.casa.app.device;
 
+import com.casa.app.device.dto.DeviceDetailsDTO;
 import com.casa.app.estate.RealEstate;
 import com.casa.app.user.regular_user.RegularUser;
 import jakarta.persistence.*;
@@ -22,6 +23,9 @@ public class Device {
     private Long id;
 
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private RegularUser owner;
     private PowerSupplyType powerSupplyType;
     private double energyConsumption;
@@ -33,4 +37,17 @@ public class Device {
     @Cascade(CascadeType.ALL)
     @OneToOne
     private ConnectionCredentials credentials;
+
+    public DeviceDetailsDTO toDetailsDTO() {
+        DeviceDetailsDTO detailsDTO = new DeviceDetailsDTO();
+        detailsDTO.setId(this.id);
+        detailsDTO.setName(this.name);
+        detailsDTO.setEnergyConsumption(this.energyConsumption);
+        detailsDTO.setPowerSupplyType(this.powerSupplyType.toString());
+        if(realEstate != null)
+            detailsDTO.setRealEstateName(this.realEstate.getName());
+        else
+            detailsDTO.setRealEstateName(null);
+        return detailsDTO;
+    }
 }

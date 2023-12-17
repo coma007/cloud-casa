@@ -2,11 +2,10 @@ package com.casa.app.device.large_electric.house_battery;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
+import com.casa.app.device.large_electric.house_battery.dto.HouseBatterySimulationDTO;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryImportExportMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryPowerUsageMeasurement;
-import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystem;
-import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import org.springframework.beans.factory.annotation.Autowired;

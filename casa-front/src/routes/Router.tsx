@@ -39,6 +39,7 @@ const Router = () => {
                     <Route path="/" element={<EstateOverviewPage />} />
                     <Route path="/real-estate-overview" element={<EstateOverviewPage />} />
                     <Route path="/device-overview" element={<DeviceOverviewPage />} />
+                    <Route path="/reigster-device" element={<StepperForm />} />
                     <Route path="/register-real-estate" element={<EstateRegisterPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/logout" element={<Logout />} />

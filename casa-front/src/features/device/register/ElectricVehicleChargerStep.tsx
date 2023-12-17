@@ -1,3 +1,6 @@
+import Button from "../../../components/forms/Button/Button";
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+
 const ElectricVehicleChargerStep = ({ formData, handleChange, prevStep, nextStep }) => {
 
     const handlePrev = (e) => {
@@ -22,15 +25,19 @@ const ElectricVehicleChargerStep = ({ formData, handleChange, prevStep, nextStep
                     value={formData.chargePower}
                     onChange={handleChange}
                 />
-                <label htmlFor="numOfSlots">Number of slots:</label>
+                <label htmlFor="numOfSlots" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Number of slots:</label>
                 <input
                     type="number"
                     name="numOfSlots"
                     value={formData.numOfSlots}
                     onChange={handleChange}
                 />
-                <button type="submit">Register</button>
-                <button onClick={handlePrev}>Back</button>
+                <div className={DeviceRegistrationStepperCSS.button}>
+                    <Button text={"Register"} onClick={handleNext} submit={undefined} />
+                    <div className={DeviceRegistrationStepperCSS.marginLeft}>
+                        <Button text={"Back"} onClick={handlePrev} submit={undefined} />
+                    </div>
+                </div>
             </form>
     </div>
     )

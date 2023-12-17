@@ -1,3 +1,6 @@
+import Button from "../../../components/forms/Button/Button";
+import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+
 const HouseBatteryStep = ({ formData, handleChange, prevStep, nextStep }) => {
 
     const handlePrev = (e) => {
@@ -23,8 +26,12 @@ const HouseBatteryStep = ({ formData, handleChange, prevStep, nextStep }) => {
                     value={formData.size}
                     onChange={handleChange}
                 />
-                <button type="submit">Register</button>
-                <button onClick={handlePrev}>Back</button>
+                <div className={DeviceRegistrationStepperCSS.button}>
+                    <Button text={"Register"} onClick={handleNext} submit={undefined} />
+                    <div className={DeviceRegistrationStepperCSS.marginLeft}>
+                        <Button text={"Back"} onClick={handlePrev} submit={undefined} />
+                    </div>
+                </div>
             </form>
     </div>
     )

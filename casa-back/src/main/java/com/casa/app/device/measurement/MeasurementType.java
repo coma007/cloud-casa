@@ -1,7 +1,12 @@
 package com.casa.app.device.measurement;
 
 public class MeasurementType {
-    public final static String airConditioning = "air_conditioning";
+    public final static String airConditioningWorkingAck = "air_conditioning_working_ack";
+    public final static String airConditioningTemperatureAck = "air_conditioning_temperature_ack";
+    public final static String airConditioningModeAck = "air_conditioning_mode_ack";
+    public final static String airConditioningModeCommand = "air_conditioning_mode_command";
+    public final static String airConditioningTemperatureCommand = "air_conditioning_temperature_command";
+    public final static String airConditioningWorkingCommand = "air_conditioning_working_command";
     public final static String ambientSensor = "ambient_sensor";
     public final static String washingMachine = "washing_machine";
     public final static String electricVehicleCharger = "electric_vehicle_charger";

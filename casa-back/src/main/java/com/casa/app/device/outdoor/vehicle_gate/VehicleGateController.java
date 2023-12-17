@@ -2,6 +2,7 @@ package com.casa.app.device.outdoor.vehicle_gate;
 
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

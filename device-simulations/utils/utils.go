@@ -9,8 +9,8 @@ import (
 
 func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
 	//TODO
-	//opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
-	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883")
+	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	//opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883")
 	opts.SetClientID(strconv.FormatInt(deviceId, 10))
 	opts.SetUsername("admin")
 	opts.SetPassword("12345678")
@@ -36,6 +36,7 @@ func Ping(deviceId int64, client mqtt.Client) {
 }
 
 func SendMessage(client mqtt.Client, topic string, deviceId int64, message string) {
+	//fmt.Println("SENDING TO " + topic + ", MESSAGE: " + message)
 	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+message)
 	token.Wait()
 }

@@ -46,7 +46,7 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
 
     return (
       <ModalWindow
-      height="70%"
+      height="45%"
       isOpen={props.show}
       closeWithdrawalModal={null}
       okWithdrawalModal={handleButtonSubmit}
@@ -79,8 +79,8 @@ const ChangePasswordModal = (props: { show: any, setShow: any }) => {
                         }} />
                         <ErrorMsg val={errors["new password"]} />
                     </div>
-                    <div>
-                        <Field component={InputField} className={`alignRight ${ChangePasswordModalCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    <div className={`${ChangePasswordModalCSS.lastInputContainer}`}>
+                        <Field component={InputField} className={`${ChangePasswordModalCSS.inlineInput}`} usage="Confirm password" value={confirmPassword} onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setConfirmPassword(e.target.value);
                             setFieldValue("confirm password", e.target.value);
                         }} />

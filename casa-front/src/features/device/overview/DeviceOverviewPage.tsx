@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react"
+import { useNavigate } from 'react-router-dom';
 import Menu from "../../../components/navigation/Menu/Menu";
 import PageTitle from "../../../components/view/PageTitle/PageTitle";
 import DeviceOverviewPageCSS from "./DeviceOverviewPage.module.scss"
@@ -11,6 +12,7 @@ import { WebSocketService } from "../../../api/websocket/WebSocketService";
 // import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import SockJS from "sockjs-client";
+import { DeviceDetails } from "../Device";
 
 const DeviceOverviewPage = () => {
 
@@ -18,36 +20,24 @@ const DeviceOverviewPage = () => {
     const [selectedDevice, setSelectedDevice] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         (async function () {
             try {
-                // const fetchedDevices = await DeviceService.getAllByOwner();
-                const fetchedDevices = [{} as RealEstate]
+                const fetchedDevices = await DeviceService.getAllByOwner();
+                // const fetchedDevices = [{} as RealEstate]
                 populateData(fetchedDevices);
             } catch (error) {
                 console.error(error);
             }
         })()
     }, []);
-
-    // const [socket, setSocket] = useState<WebSocket | null>(null);
-
-    // useEffect(() => {
-    //     WebSocketService.createSocket(setSocket);
-    // }, []);
-
-    // const processValue = (message: any) => {
-    //     console.log(message);
-    // }
-
-    // useEffect(() => {
-    //     WebSocketService.defineSocket(socket, "myTopic", processValue);
-    // }, [socket]);
     
-
     const headers: TableRow = { 
         rowData: [
             { content: "Name", widthPercentage: 30},
+            { content: "Real estate name", widthPercentage: 30},
             { content: "Power supply", widthPercentage: 30},
             { content: "Energy consumption", widthPercentage: 30},
             { content: "Type", widthPercentage: 30}
@@ -55,22 +45,29 @@ const DeviceOverviewPage = () => {
         onClick: undefined
 }
 
-    const showDetails = (realDevice : RealEstate | string) => {
-        alert(realDevice)
+    const showDetails = (deviceId : number, deviceType : string) => {
+        // alert(deviceId + " " + deviceType)
+        navigate("/device-details", {state : {id: deviceId, type: deviceType}})
     }
 
-    const populateData = (devices: RealEstate[]) => {
+    const populateData = (devices: DeviceDetails[]) => {
         let data: TableRow[] = []
         if (devices !== undefined) {
             devices.forEach(device => {
+                console.log(device)
+                let deviceType = device.type;
+                while (deviceType.includes('_')) {
+                    deviceType = deviceType.replace('_', ' ');
+                }
                 data.push({
                     rowData: [
-                        { content: "Klima 1", widthPercentage: 30},
-                        { content: "AUTONOMOUS", widthPercentage: 30},
-                        { content: "5", widthPercentage: 30},
-                        { content: "Air conditioning", widthPercentage: 30},
+                        { content: device.name, widthPercentage: 30},
+                        { content: device.realEstateName, widthPercentage: 30},
+                        { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
+                        { content: device.energyConsumption, widthPercentage: 30},
+                        { content: deviceType, widthPercentage: 30},
                     ],
-                    onClick: () => {showDetails(device)}
+                    onClick: () => {showDetails(device.id, device.type)}
                 });
             });
         }
@@ -98,6 +95,9 @@ const DeviceOverviewPage = () => {
         }
       }
     
+    const newDevice = () => {
+        navigate("/register-device")
+    }
 
 
     return (
@@ -107,7 +107,7 @@ const DeviceOverviewPage = () => {
                 <div className={DeviceOverviewPageCSS.header}>
                     <PageTitle title="Devices overview" description="Take a detailed view of your devices." />
                     <div className={DeviceOverviewPageCSS.alignRight}>
-                        <Button text={"New device"} onClick={undefined} submit={undefined} />
+                        <Button text={"New device"} onClick={newDevice} submit={undefined} />
                     </div>
                 </div>
                 <div className={DeviceOverviewPageCSS.table} >

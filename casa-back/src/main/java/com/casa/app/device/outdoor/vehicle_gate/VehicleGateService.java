@@ -6,6 +6,7 @@ import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.user.regular_user.RegularUser;
