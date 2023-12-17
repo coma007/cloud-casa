@@ -26,10 +26,17 @@ const CreateScheduleModal = (props: { show: any, setShow: any, device: any }) =>
     const [temperature, setTemperature] = useState<number | undefined>(undefined);
     const [mode, setMode] = useState<string | undefined>(undefined);
 
+    const [repeating, setRepeating] = useState<boolean>(false);
+    const [repeatingDaysIncrement, setRepeatingDaysIncrement] = useState<number>(1);
+
     const formRef = useRef<FormikProps<FormikValues>>(null);
 
     const handleIsOnClick = () => {
         setToggleIsOn(!toggleIsOn);
+    };
+
+    const handleIsOnRepeatingClick = () => {
+        setRepeating(!repeating);
     };
 
     const handleIsOpenClick = () => {
@@ -56,7 +63,8 @@ const CreateScheduleModal = (props: { show: any, setShow: any, device: any }) =>
     const handleSubmit = () => {
         try {
             DeviceService.createSchedule({startTime: startTime, endTime: endTime, mode: mode,
-                 temperature: temperature, working: !toggleIsOn, deviceId: props.device.Id});
+                 temperature: temperature, working: !toggleIsOn, deviceId: props.device.Id
+                , repeating :repeating, repeatingDaysIncrement: repeatingDaysIncrement});
         } catch (error) {
             console.error(error);
         }
@@ -67,6 +75,11 @@ const CreateScheduleModal = (props: { show: any, setShow: any, device: any }) =>
         let time = e.target['value'];
         setStartTime(time);
         console.log(time);
+    }
+
+    const handleRepeatingChange = (e) =>{
+        let inc = e.target.value;
+        setRepeatingDaysIncrement(Number(inc));
     }
 
     const handleToChange = (e) =>{
@@ -130,6 +143,17 @@ const CreateScheduleModal = (props: { show: any, setShow: any, device: any }) =>
                     Set Temperature:
                     <div className={CreateScheduleModalCSS.input}>
                         <InputField usage={'Temperature'} className={''} onChange={handleTemperatureChange} disabled={toggleIsOn}/>
+                    </div>
+                </div>
+            </div>
+            <div className={CreateScheduleModalCSS.row}>
+                <Button text={repeating ? 'Repeating OFF' : 'Repeating ON'} onClick={handleIsOnRepeatingClick} submit={undefined} className={CreateScheduleModalCSS.accentButton} />
+            </div>
+            <div className={CreateScheduleModalCSS.row}>
+                <div className={CreateScheduleModalCSS.row}>
+                    Repeating:
+                    <div className={CreateScheduleModalCSS.input}>
+                        <InputField usage={'Repeating'} className={''} onChange={handleRepeatingChange} disabled={repeating} />
                     </div>
                 </div>
             </div>

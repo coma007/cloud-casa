@@ -68,6 +68,9 @@ public class AirConditioningController {
         if(dto.isRepeating() && dto.getRepeatingDaysIncrement() == null){
             return ResponseEntity.badRequest().body("Repeat is set but increment is not, try setting increment");
         }
+        if(dto.getRepeatingDaysIncrement() <= 0){
+            return ResponseEntity.badRequest().body("Increment must be whole number greater than 0");
+        }
         airConditioningService.setSchedule(dto);
         return ResponseEntity.ok().build();
     }
