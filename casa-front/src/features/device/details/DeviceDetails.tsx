@@ -203,7 +203,10 @@ const DeviceDetails = () => {
 
     const handleUsernameFilterClick = () => {
         console.log(username);
-        DeviceService.filter(dev.Id, dev.type, fromDate, toDate, username, 1);
+        (async () => {            
+            const fetchedMeasuremenets = await DeviceService.filter(dev.Id, "solar_panel_system_command", fromDate, toDate, username, 1);
+            setMeasurements(fetchedMeasuremenets)
+        })()
     }
 
     const [fromDate, setFromDate] = useState('');
@@ -225,10 +228,22 @@ const DeviceDetails = () => {
         setToDate(to);
 
         (async () => {
-            const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.type, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+            const fetchedMeasurements = await DeviceService.filter(dev.Id, "solar_panel_system_command", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
             setMeasurements(fetchedMeasurements)
         })()
     };
+
+    useEffect(() => {
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedMeasurements = await DeviceService.filter(deviceId, "solar_panel_system_command", fromDate, toDate, username, 1);
+                // console.log(fetchedMeasurements)
+                // const newDate = new Date(fetchedMeasurements.measurements.at(0).timestamp * 1000)
+                // console.log(newDate)
+                setMeasurements(fetchedMeasurements)
+            }
+        })()
+    }, [dev])
 
     const resetFilters = () => {
         setFromDate('');

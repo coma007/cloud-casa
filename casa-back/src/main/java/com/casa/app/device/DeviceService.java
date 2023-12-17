@@ -165,14 +165,21 @@ public class DeviceService {
 
     public MeasurementList queryMeasurements(Long id, String measurement, String from, String to, String username, int page) {
         Device device = deviceRepository.getReferenceById(id);
-        Instant fromDate = Instant.parse(from);
-        Instant toDate = Instant.parse(to);
+        Instant fromDate = null, toDate = null;
+        if (!from.equals("")) {
+            fromDate = Instant.parse(from);
+        }
+        if (!to.equals("")) {
+            toDate = Instant.parse(to);
+        }
         User user = userService.getByUsername(username);
         MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
-        int firstIndex = min(10*(page-1), data.getMeasurements().size());
-        int lastIndex = min(10*page, data.getMeasurements().size());
-        List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);
-        data.setMeasurements(newData);
+        if (data.getMeasurements().size() != 0) {
+            int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
+            int lastIndex = min(10 * page, data.getMeasurements().size());
+            List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);
+            data.setMeasurements(newData);
+        }
         return data;
     }
 
