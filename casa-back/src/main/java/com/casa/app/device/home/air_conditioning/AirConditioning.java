@@ -24,4 +24,8 @@ public class AirConditioning extends Device {
     private int maxTemperature;
 
     private List<AirConditioningMode> supportedModes;
+
+//    private Double currentTargetTemperature;
+//    private Boolean working;
+//    private String mode;
 }

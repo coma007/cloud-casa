@@ -2,7 +2,6 @@ package com.casa.app.device.home.air_conditioning;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
-import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionModeDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionTemperatureDTO;
@@ -11,6 +10,8 @@ import com.casa.app.device.home.air_conditioning.measurements.commands.*;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionModeExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
+import com.casa.app.notifications.Notification;
+import com.casa.app.notifications.NotificationRepository;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditionScheduleRepository;
 import com.casa.app.exceptions.DeviceNotFoundException;
@@ -19,6 +20,7 @@ import com.casa.app.exceptions.ScheduleOverlappingException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
+import com.casa.app.notifications.NotificationService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserRepository;
 import com.casa.app.user.regular_user.RegularUser;
@@ -33,11 +35,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 @Service
 public class AirConditioningService {
+    private final static String SUCCESS = "SUCCESS";
 
     @Autowired
     private AirConditioningRepository airConditioningRepository;
@@ -60,6 +62,8 @@ public class AirConditioningService {
     private UserRepository userRepository;
     @Autowired
     private AirConditionScheduleRepository airConditionScheduleRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     public List<AirConditioningSimulationDTO> getAllSimulation() {
         List<AirConditioning> airConditioners = airConditioningRepository.findAll();
@@ -71,28 +75,28 @@ public class AirConditioningService {
         return airConditionerDTOS;
     }
 
-    public void sendCommand(Long deviceId, AirConditionCommand command) throws UserNotFoundException {
+    public void sendCommand(Long deviceId, AirConditionCommand command) throws UserNotFoundException, DeviceNotFoundException {
         Device device = deviceRepository.findById(deviceId).orElse(null);
         if (device == null) {
-            return;
+            throw new DeviceNotFoundException();
         }
         influxDBService.write(command);
         mqttGateway.sendToMqtt(device.getId()+"~" + command.toMessage(), device.getId().toString());
     }
 
-    public void sendWorkingCommand(AirConditionWorkingDTO dto, RegularUser currentUser) throws UserNotFoundException {
+    public void sendWorkingCommand(AirConditionWorkingDTO dto, RegularUser currentUser) throws UserNotFoundException, DeviceNotFoundException {
         overrideIdNeeded(dto.getId());
         AirConditioningWorkingCommand command = new AirConditioningWorkingCommand(dto.getId(), CommandType.WORKING, dto.isWorking() ? "TURN ON" : "TURN OFF", currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendTemperatureCommand(AirConditionTemperatureDTO dto, RegularUser currentUser) throws UserNotFoundException {
+    public void sendTemperatureCommand(AirConditionTemperatureDTO dto, RegularUser currentUser) throws UserNotFoundException, DeviceNotFoundException {
         overrideIdNeeded(dto.getId());
         AirConditioningTemperatureCommand command = new AirConditioningTemperatureCommand(dto.getId(), CommandType.TEMPERATURE, dto.getTemperature(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendModeCommand(AirConditionModeDTO dto, RegularUser currentUser) throws UserNotFoundException {
+    public void sendModeCommand(AirConditionModeDTO dto, RegularUser currentUser) throws UserNotFoundException, DeviceNotFoundException {
         overrideIdNeeded(dto.getId());
         AirConditioningModeCommand command = new AirConditioningModeCommand(dto.getId(), CommandType.MODE, dto.getMode(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
@@ -114,14 +118,17 @@ public class AirConditioningService {
         boolean working = tokens[1].equalsIgnoreCase("TURN ON");
         String username = tokens[2];
         String executed = tokens[3];
+        boolean exec = executed.equalsIgnoreCase(SUCCESS);
 
-        Device device = deviceRepository.findById(id).orElse(null);
+        AirConditioning device = airConditioningRepository.findById(id).orElse(null);
         User user = userRepository.findByUsername(username).orElse(null);
         if (device == null || user == null) {
             return;
         }
         try {
-//            device.setStatus(working ? DeviceStatus.ONLINE : DeviceStatus.OFFLINE);
+//            device.setWorking(working);
+            notificationService.makeNotification(user,
+                    "Setting air condition " + (working ? "ON" : "OFF") + ", was " + (exec ? "successful" : "failure") );
             AirConditionWorkingExecution result = new AirConditionWorkingExecution(device.getId(), tokens[0], executed, username, Instant.now());
             influxDBService.write(result);
             deviceRepository.save(device);
@@ -138,14 +145,17 @@ public class AirConditioningService {
         double temperature = Double.parseDouble(tokens[1].trim());
         String username = tokens[2];
         String executed = tokens[3];
+        boolean exec = executed.equalsIgnoreCase(SUCCESS);
 
-        Device device = deviceRepository.findById(id).orElse(null);
+        AirConditioning device = airConditioningRepository.findById(id).orElse(null);
         User user = userRepository.findByUsername(username).orElse(null);
         if (device == null || user == null) {
             return;
         }
         try {
-//            device.setStatus(working ? DeviceStatus.ONLINE : DeviceStatus.OFFLINE);
+//            device.setCurrentTargetTemperature(temperature);
+            notificationService.makeNotification(user, "Setting air condition temperature to "
+                    + temperature + ", was " + (exec ? "successful" : "failure") );
             AirConditionTemperatureExecution result = new AirConditionTemperatureExecution(device.getId(), temperature, executed, username, Instant.now());
             influxDBService.write(result);
             deviceRepository.save(device);
@@ -162,6 +172,7 @@ public class AirConditioningService {
         String mode = tokens[1];
         String username = tokens[2];
         String executed = tokens[3];
+        boolean exec = executed.equalsIgnoreCase(SUCCESS);
 
         AirConditioning device = airConditioningRepository.findById(id).orElse(null);
         User user = userRepository.findByUsername(username).orElse(null);
@@ -169,7 +180,9 @@ public class AirConditioningService {
             return;
         }
         try {
-//            device.set.setStatus(working ? DeviceStatus.ONLINE : DeviceStatus.OFFLINE);
+//            device.setMode(mode);
+            notificationService.makeNotification(user, "Setting air condition mode to "
+                    + mode + ", was " + (exec ? "successful" : "failure"));
             AirConditionModeExecution result = new AirConditionModeExecution(device.getId(), mode, executed, username, Instant.now());
             influxDBService.write(result);
             deviceRepository.save(device);
@@ -199,6 +212,8 @@ public class AirConditioningService {
                 airConditionScheduleRepository.save(schedule);
             } catch (UserNotFoundException e) {
 //                TODO
+                throw new RuntimeException(e);
+            } catch (DeviceNotFoundException e) {
                 throw new RuntimeException(e);
             }
         });

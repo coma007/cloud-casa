@@ -36,7 +36,7 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/working")
-    public ResponseEntity<Boolean> setWorking(@RequestBody AirConditionWorkingDTO dto) throws UserNotFoundException {
+    public ResponseEntity<Boolean> setWorking(@RequestBody AirConditionWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException {
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendWorkingCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -44,7 +44,7 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/temperature")
-    public ResponseEntity<Boolean> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException {
+    public ResponseEntity<Boolean> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException {
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendTemperatureCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -52,7 +52,7 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/mode")
-    public ResponseEntity<Boolean> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException {
+    public ResponseEntity<Boolean> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendModeCommand(dto, currentUser);
         return ResponseEntity.ok().build();
