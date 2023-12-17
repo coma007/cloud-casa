@@ -44,7 +44,10 @@ public class Device {
         detailsDTO.setName(this.name);
         detailsDTO.setEnergyConsumption(this.energyConsumption);
         detailsDTO.setPowerSupplyType(this.powerSupplyType.toString());
-        detailsDTO.setRealEstateName(this.realEstate.getName());
+        if(realEstate != null)
+            detailsDTO.setRealEstateName(this.realEstate.getName());
+        else
+            detailsDTO.setRealEstateName(null);
         return detailsDTO;
     }
 }
