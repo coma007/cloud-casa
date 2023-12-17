@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Card from '../../../../components/view/Card/Card';
 import Button from '../../../../components/forms/Button/Button';
 import DeviceManagerCSS from './DeviceManager.module.scss'
 import InputField from '../../../../components/forms/InputField/InputField';
 import { DeviceService } from '../../DeviceService';
+import { Modal } from 'react-bootstrap';
+import ModalWindow from '../../../../components/view/Modal/ModalWindow';
+import CreateScheduleModal from './createSchedule/CreateScheduleModal';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
     const [toggleIsOn, setToggleIsOn] = useState(props.device.Status);
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
     const [toggleIsPrivate, setToggleIsPrivate] = useState(false);
+
+    const [showCreateSchedule, setShowCreateSchedule] = useState(false);
 
     const [temperature, setTemperature] = useState<number>(0.0);
     const [mode, setMode] = useState<string>("");
@@ -58,6 +63,11 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     
     };
 
+    const showModal = () => {
+        setShowCreateSchedule(true);
+    
+    };
+
 
     const handleIsPrivateClick = () => {
         setToggleIsPrivate(!toggleIsPrivate);
@@ -74,16 +84,19 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
         })()
     }, [props.device.SupportedModes]);
 
-
     const renderDeviceSpecificUI = () => {
 
         switch (props.deviceType) {
             case 'air_conditioning':
                 return (
                     <div>
+                        <CreateScheduleModal 
+                        show={showCreateSchedule}
+                        setShow={setShowCreateSchedule}
+                        device={props.device} />
                         <div className={DeviceManagerCSS.row}>
                             <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleOnOffCommand} submit={undefined} />
-                            <Button text="Custom Mode" onClick={undefined} submit={undefined} />
+                            <Button text="Custom Mode" onClick={showModal} submit={undefined} />
                         </div>
                         <div className={DeviceManagerCSS.row}>
                             <div>

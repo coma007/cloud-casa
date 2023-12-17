@@ -16,7 +16,7 @@ const InputField = ({ usage, className, value, onChange, disabled, type, refFile
         <span>
             {disabled === undefined ?
             (<input className={`${InputFieldCSS.input}, ${className}`} placeholder={usage} value={value} onChange={onChange} ref={refFile} type={type.toLowerCase()} />)
-            : (<input disabled className={`${InputFieldCSS.input}, ${className}`} placeholder={usage} value={value} onChange={onChange} ref={refFile} type={type.toLowerCase()} />)
+            : (<input disabled={disabled} className={`${InputFieldCSS.input}, ${className}`} placeholder={usage} value={value} onChange={onChange} ref={refFile} type={type.toLowerCase()} />)
 }
         </span>
     )

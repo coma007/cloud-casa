@@ -26,3 +26,16 @@ export interface ModeCommand {
     mode: string,
     id: number
 }
+
+export interface Schedule {
+    startTime: string;
+    endTime: string;
+    deviceId: number;
+    
+    working: boolean;
+    mode: string | undefined;
+    temperature: number | undefined;
+}
+
+
+

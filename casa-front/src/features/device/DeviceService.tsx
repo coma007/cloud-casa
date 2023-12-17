@@ -1,7 +1,7 @@
 import axios from "axios";
-import { AIR_CONDITION_MODE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER } from "../../api";
+import { AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_DETAILS, DEVICE_REGISTER } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { DeviceCreate, DeviceDetails, ModeCommand, TemperatureCommand, WorkingCommand } from "./Device";
+import { DeviceCreate, DeviceDetails, ModeCommand, Schedule, TemperatureCommand, WorkingCommand } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
 
 export const DeviceService = {
@@ -30,7 +30,7 @@ export const DeviceService = {
     },
 
 
-    sendWorkingCommand: async function (command: WorkingCommand): Promise<void> {
+    sendWorkingCommand: async function (command: WorkingCommand): Promise<any> {
         try {
             let response = await axios.post(AIR_CONDITION_WORKING(), command);
             return response.data;
@@ -39,7 +39,7 @@ export const DeviceService = {
         }
     },
 
-    sendTemperatureCommand: async function (command: TemperatureCommand): Promise<void> {
+    sendTemperatureCommand: async function (command: TemperatureCommand): Promise<any> {
         try {
             let response = await axios.post(AIR_CONDITION_TEMPERATURE(), command);
             return response.data;
@@ -48,9 +48,18 @@ export const DeviceService = {
         }
     },
 
-    sendModeCommand: async function (command: ModeCommand): Promise<void> {
+    sendModeCommand: async function (command: ModeCommand): Promise<any> {
         try {
             let response = await axios.post(AIR_CONDITION_MODE(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    createSchedule: async function (schedule: Schedule): Promise<any> {
+        try {
+            let response = await axios.post(AIR_CONDITION_SCHEDULE(), schedule);
             return response.data;
         } catch (error) {
             console.error(error);
