@@ -195,6 +195,6 @@ public class DeviceService {
         }
         User user = userService.getByUsername(username);
         MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
-        return (data.getMeasurements().size() / 10) + 1;
+        return (data.getMeasurements().size() == 0) ? 0 : (data.getMeasurements().size() / 10) + 1;
     }
 }

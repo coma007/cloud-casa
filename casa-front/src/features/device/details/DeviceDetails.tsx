@@ -11,6 +11,7 @@ import Button from '../../../components/forms/Button/Button'
 import { DeviceService } from '../DeviceService'
 import { useLocation } from 'react-router-dom'
 import DetailsTable from './inspect/table/DetailsTable'
+import Pagination from '../../../components/tables/Pagination/Pagination'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -19,6 +20,8 @@ const DeviceDetails = () => {
     const [deviceType, setDeviceType] = useState("");
     const [dev, setDev] = useState<any>({});
     const [measurements, setMeasurements] = useState<any>({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numberOfPages, setNumberOfPages] = useState(1);
     const location = useLocation();
 
     useEffect(() => {
@@ -96,7 +99,7 @@ const DeviceDetails = () => {
             case "solar_panel_system":
                 setDev({
                     ...baseDevice,
-                    Size: device.size.toString() + ' m^2',
+                    Size: device.size.toString(),
                     Efficiency: device.efficiency.toString() + ' %',
                     type: 'solar_panel_system',
                 })
@@ -203,6 +206,11 @@ const DeviceDetails = () => {
 
     const handleUsernameFilterClick = () => {
         console.log(username);
+        setCurrentPage(1);
+        (async () => {
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, "solar_panel_system_command", fromDate, toDate, username);
+            setNumberOfPages(fetchedNumberOfPages);
+        })();
         (async () => {            
             const fetchedMeasuremenets = await DeviceService.filter(dev.Id, "solar_panel_system_command", fromDate, toDate, username, 1);
             setMeasurements(fetchedMeasuremenets)
@@ -226,20 +234,35 @@ const DeviceDetails = () => {
     const handleDateFilterClick = (from: string, to: string) => {
         setFromDate(from);
         setToDate(to);
-
+        setCurrentPage(1);
+        (async () => {
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, "solar_panel_system_command", fromDate, toDate, username);
+            setNumberOfPages(fetchedNumberOfPages);
+        })();
         (async () => {
             const fetchedMeasurements = await DeviceService.filter(dev.Id, "solar_panel_system_command", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-            setMeasurements(fetchedMeasurements)
-        })()
+            setMeasurements(fetchedMeasurements);
+        })();
+
     };
+
+    // useEffect(()=> {
+    //     (async () => {
+    //         const fetchedMeasurements = await DeviceService.filter(dev.Id, "solar_panel_system_command", new Date(fromDate).toISOString(), new Date(toDate).toISOString(), username, 1);
+    //         setMeasurements(fetchedMeasurements);
+    //     })();
+    // }, [numberOfPages])
 
     useEffect(() => {
         (async () => {
             if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, "solar_panel_system_command", fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+            }
+        })();
+        (async () => {
+            if (Object.keys(dev).length > 0) {
                 const fetchedMeasurements = await DeviceService.filter(deviceId, "solar_panel_system_command", fromDate, toDate, username, 1);
-                // console.log(fetchedMeasurements)
-                // const newDate = new Date(fetchedMeasurements.measurements.at(0).timestamp * 1000)
-                // console.log(newDate)
                 setMeasurements(fetchedMeasurements)
             }
         })()
@@ -249,8 +272,34 @@ const DeviceDetails = () => {
         setFromDate('');
         setToDate('');
         setUsername('');
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, "solar_panel_system_command", fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+            }
+        })();
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, "solar_panel_system_command", fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
+                const fetchedMeasurements = await DeviceService.filter(deviceId, "solar_panel_system_command", '', '', '', 1);
+                setMeasurements(fetchedMeasurements)
+            }
+        })()
     }
 
+    const changePage = (pageNumber : number) => {
+        setCurrentPage(pageNumber)
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (Object.keys(dev).length > 0) {
+                const fetchedMeasurements = await DeviceService.filter(deviceId, "solar_panel_system_command", fromDate, toDate, username, currentPage);
+                setMeasurements(fetchedMeasurements)
+            }
+        })()
+    }, [currentPage])
 
 
     return (
@@ -285,8 +334,16 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system", "lamp"].includes(dev.type)) &&
-                        (<DetailsTable measurements={measurements} deviceType={deviceType} />)
+                        (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
+                        (
+                        <>
+                            <DetailsTable measurements={measurements} deviceType={deviceType} />
+                            <div>
+                                {20 > 10 && 
+                                    (<Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />)
+                                }
+                            </div>
+                        </>)
                     }
                     <Graph></Graph>
                 </div>

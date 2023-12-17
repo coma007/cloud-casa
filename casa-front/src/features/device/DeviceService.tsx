@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM } from "../../api";
+import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
 import { DeviceCreate, DeviceDetails } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
@@ -13,6 +13,12 @@ export const DeviceService = {
 
     filter: async function (id: number, measurement: string, from: string, to: string, username: string, page : number): Promise<DeviceMeasurementList> {
         let response: ServiceResponse<DeviceMeasurementList> = await axios.get(DEVICE_FILTER(id, measurement, from, to, username, page));
+
+        return response.data;
+    },
+
+    getPageNumber: async function (id: number, measurement: string, from: string, to: string, username: string): Promise<number> {
+        let response: ServiceResponse<number> = await axios.get(DEVICE_GET_PAGE_NUMBER(id, measurement, from, to, username));
 
         return response.data;
     },

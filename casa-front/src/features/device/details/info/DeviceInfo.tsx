@@ -3,6 +3,7 @@ import Card from '../../../../components/view/Card/Card';
 import DeviceInfoCSS from './DeviceInfo.module.scss';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
+import { WebSocketService } from '../../../../api/websocket/WebSocketService';
 
 const DeviceInfo = (props: { deviceType: string; device: any }) => {
 
@@ -12,26 +13,12 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
         setStatus(props.device.Status)
     }, [props.device.Status])
 
-    let isLoaded = false;
-    let socket = new SockJS("http://localhost:8080/socket");
-    let stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, () =>{
-      isLoaded = true;
-      openSocket();
-    });
+    useEffect(()=>{
+        WebSocketService.createSocket('/topic/solar-panel-system-status/'+ props.device.Id, handleMessage);
+    }, [props.device.Id])
     
     function handleMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
         setStatus(message.message)
-    }
-    function openSocket() {
-        if(isLoaded){
-            if (props.deviceType === "solar_panel_system") {
-                stompClient!.subscribe('/topic/solar-panel-system-status/'+ props.device.Id, (message) =>{
-                handleMessage(JSON.parse(message.body));
-                });
-            }
-        }
     }
 
     const additionalProperties = () => {
@@ -93,7 +80,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SIZE:</b> {props.device.Size}
+                            <b>SIZE:</b> <span>{props.device.Size} m<sup>2</sup></span>
                         </p>
                     </>
                 );
@@ -103,7 +90,7 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>SIZE:</b> {props.device.Size}
+                            <b>SIZE:</b> <span>{props.device.Size} m<sup>2</sup></span>
                         </p>
                         <p className={DeviceInfoCSS.row}>
                             <b>EFFICIENCY:</b> {props.device.Efficiency}
