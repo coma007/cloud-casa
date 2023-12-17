@@ -1,6 +1,8 @@
 package com.casa.app.device.measurement;
 
-import com.casa.app.device.home.air_conditioning.AirConditioningMeasurement;
+import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionModeExecution;
+import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
+import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerMeasurement;
@@ -23,9 +25,29 @@ public class MeasurementService {
 
     public AbstractMeasurement createMeasurement(FluxRecord record) {
         switch (record.getMeasurement()) {
-            case (MeasurementType.airConditioning):
-                return new AirConditioningMeasurement(
-                        // add values from record
+            case (MeasurementType.airConditioningWorkingAck):
+                return new AirConditionWorkingExecution(
+                        (Long) record.getValueByKey("id"),
+                        (String) record.getValueByKey("working"),
+                        (String) record.getValueByKey("executed"),
+                        (String) record.getValueByKey("user"),
+                        record.getTime()
+                );
+            case (MeasurementType.airConditioningTemperatureAck):
+                return new AirConditionTemperatureExecution(
+                        (Long) record.getValueByKey("id"),
+                        (Double) record.getValueByKey("temperature"),
+                        (String) record.getValueByKey("executed"),
+                        (String) record.getValueByKey("user"),
+                        record.getTime()
+                );
+            case (MeasurementType.airConditioningModeAck):
+                return new AirConditionModeExecution(
+                        (Long) record.getValueByKey("id"),
+                        (String) record.getValueByKey("mode"),
+                        (String) record.getValueByKey("executed"),
+                        (String) record.getValueByKey("user"),
+                        record.getTime()
                 );
             case (MeasurementType.ambientSensor):
                 return new AmbientSensorMeasurement(

@@ -36,6 +36,7 @@ func Ping(deviceId int64, client mqtt.Client) {
 }
 
 func SendMessage(client mqtt.Client, topic string, deviceId int64, message string) {
+	//fmt.Println("SENDING TO " + topic + ", MESSAGE: " + message)
 	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+message)
 	token.Wait()
 }

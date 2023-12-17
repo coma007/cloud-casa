@@ -2,7 +2,10 @@ module device-simulations
 
 go 1.20
 
-require github.com/eclipse/paho.mqtt.golang v1.4.3
+require (
+	github.com/eclipse/paho.mqtt.golang v1.4.3
+	github.com/mroth/weightedrand v1.0.0
+)
 
 require golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 

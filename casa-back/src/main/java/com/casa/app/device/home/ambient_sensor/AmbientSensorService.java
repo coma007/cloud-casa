@@ -19,7 +19,7 @@ public class AmbientSensorService {
     InfluxDBService influxDBService;
 
     public void handleMessage(Long id, String message) {
-        System.out.println(message);
+//        System.out.println(message);
         try {
                 double temperature = Double.parseDouble(message.split("\\|")[0]);
                 double humidity = Double.parseDouble(message.split("\\|")[1]);

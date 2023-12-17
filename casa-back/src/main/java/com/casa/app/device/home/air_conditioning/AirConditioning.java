@@ -27,6 +27,10 @@ public class AirConditioning extends Device {
     private int maxTemperature;
     private List<AirConditioningMode> supportedModes;
 
+
+//    private Double currentTargetTemperature;
+//    private Boolean working;
+//    private String mode;
     @Override public AirConditioningDetailsDTO toDetailsDTO() {
         AirConditioningDetailsDTO detailsDTO = new AirConditioningDetailsDTO();
         detailsDTO.setStatus(this.getStatus().toString());
