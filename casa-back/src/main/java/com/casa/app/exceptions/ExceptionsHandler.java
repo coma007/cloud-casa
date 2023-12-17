@@ -37,4 +37,19 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUserNotFoundException(Exception ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
+
+    @ExceptionHandler(value = {DeviceNotFoundException.class})
+    public ResponseEntity<Object> handleDeviceNotFoundException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Device not found");
+    }
+
+    @ExceptionHandler(value = {ScheduleOverlappingException.class})
+    public ResponseEntity<Object> handleScheduleOverlappingException(Exception ex, WebRequest request) {
+        return ResponseEntity.badRequest().body("Schedule is overlapping with different schedule");
+    }
+
+    @ExceptionHandler(value = {InvalidDateException.class})
+    public ResponseEntity<Object> handleInvalidDateException(Exception ex, WebRequest request) {
+        return ResponseEntity.badRequest().body("Invalid date/dates given");
+    }
 }

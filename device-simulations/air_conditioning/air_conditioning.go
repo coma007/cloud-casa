@@ -6,6 +6,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	wr "github.com/mroth/weightedrand"
 	"math/rand"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -14,15 +15,45 @@ import (
 type AuxAirConditioningMode string
 
 const (
-	FAILURE = "FAILURE"
-	SUCCESS = "SUCCESS"
-)
-
-const (
 	COOLING_STRING     AuxAirConditioningMode = "COOLING"
 	HEATING_STRING     AuxAirConditioningMode = "HEATING"
 	AUTO_STRING        AuxAirConditioningMode = "AUTO"
 	VENTILATION_STRING AuxAirConditioningMode = "VENTILATION"
+)
+
+func ToStringAux(conditioner AuxAirConditioningMode) string {
+	switch conditioner {
+	case COOLING_STRING:
+		return "COOLING"
+	case HEATING_STRING:
+		return "HEATING"
+	case AUTO_STRING:
+		return "AUTO"
+	case VENTILATION_STRING:
+		return "VENTILATION"
+	default:
+		return ""
+	}
+}
+
+func ToString(conditioner AirConditioningMode) string {
+	switch conditioner {
+	case COOLING:
+		return "COOLING"
+	case HEATING:
+		return "HEATING"
+	case AUTO:
+		return "AUTO"
+	case VENTILATION:
+		return "VENTILATION"
+	default:
+		return ""
+	}
+}
+
+const (
+	FAILURE = "FAILURE"
+	SUCCESS = "SUCCESS"
 )
 
 const (
@@ -104,15 +135,16 @@ func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg
 	if result == SUCCESS {
 		if contentTokens[1] == "TURN ON" {
 			conditioner.Working = true
-		} else {
+		} else if contentTokens[1] == "TURN OFF" {
 			conditioner.Working = false
+		} else {
+			result = FAILURE
 		}
 	} else {
-		conditioner.Working = false
+		result = FAILURE
 	}
 
 	data := append(contentTokens, result)
-	fmt.Println("HANDLING COMMAND, CONTENT: " + content + ", RESULT: " + result)
 	fmt.Println("HANDLING Working COMMAND")
 	utils.SendComplexMessage(client, "air_conditioning_working_ack", conditioner.Id, data)
 }
@@ -166,6 +198,14 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 		result = FAILURE
 	}
 
+	stringArray := make([]string, len(conditioner.SupportedModes))
+	for i, mode := range conditioner.SupportedModes {
+		stringArray[i] = ToString(mode)
+	}
+	if !slices.Contains(stringArray, contentTokens[1]) {
+		result = FAILURE
+	}
+
 	if result == SUCCESS {
 		switch contentTokens[1] {
 		case "COOLING":
@@ -214,9 +254,6 @@ func (conditioner *AirConditioning) redirectCommand(client mqtt.Client, msg mqtt
 			conditioner.handleWorkingCommand(client, msg)
 		}
 	}
-	fmt.Printf("MODE: %s\n", conditioner.CurrentMode)
-	fmt.Printf("TARGET TEMP: %f\n", conditioner.TargetTemperature)
-	fmt.Printf("WORKING: %b\n", conditioner.Working)
 }
 
 func (conditioner *AirConditioning) findIncrement() float64 {
@@ -238,9 +275,16 @@ func (conditioner *AirConditioning) findIncrement() float64 {
 func StartSimulation(device AirConditioning) {
 	client := utils.MqttSetup(device.Id, device.redirectCommand)
 	defer client.Disconnect(250)
+	rand.Seed(time.Now().UTC().UnixNano())
+	minTemp := device.MinTemperature
+	maxTemp := device.MaxTemperature
+	device.CurrentTemperature = minTemp + rand.Float64()*(maxTemp-minTemp)
 
 	for {
-		fmt.Println(device.CurrentTemperature)
+		fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
+		fmt.Printf("MODE: %s\n", device.CurrentMode)
+		fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
+		fmt.Printf("WORKING: %t\n", device.Working)
 		increment := device.findIncrement()
 		device.CurrentTemperature += increment
 

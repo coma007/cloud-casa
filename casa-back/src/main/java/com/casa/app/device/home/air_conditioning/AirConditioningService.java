@@ -4,12 +4,18 @@ import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionModeDTO;
+import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionTemperatureDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionWorkingDTO;
 import com.casa.app.device.home.air_conditioning.measurements.commands.*;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionModeExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
+import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
+import com.casa.app.device.home.air_conditioning.schedule.AirConditionScheduleRepository;
+import com.casa.app.exceptions.DeviceNotFoundException;
+import com.casa.app.exceptions.InvalidDateException;
+import com.casa.app.exceptions.ScheduleOverlappingException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
@@ -19,11 +25,15 @@ import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 @Service
@@ -48,6 +58,8 @@ public class AirConditioningService {
     private RegularUserRepository regularUserRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AirConditionScheduleRepository airConditionScheduleRepository;
 
     public List<AirConditioningSimulationDTO> getAllSimulation() {
         List<AirConditioning> airConditioners = airConditioningRepository.findAll();
@@ -68,26 +80,35 @@ public class AirConditioningService {
         mqttGateway.sendToMqtt(device.getId()+"~" + command.toMessage(), device.getId().toString());
     }
 
-    public void sendWorkingCommand(AirConditionWorkingDTO dto) throws UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
+    public void sendWorkingCommand(AirConditionWorkingDTO dto, RegularUser currentUser) throws UserNotFoundException {
+        overrideIdNeeded(dto.getId());
         AirConditioningWorkingCommand command = new AirConditioningWorkingCommand(dto.getId(), CommandType.WORKING, dto.isWorking() ? "TURN ON" : "TURN OFF", currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendTemperatureCommand(AirConditionTemperatureDTO dto) throws UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
+    public void sendTemperatureCommand(AirConditionTemperatureDTO dto, RegularUser currentUser) throws UserNotFoundException {
+        overrideIdNeeded(dto.getId());
         AirConditioningTemperatureCommand command = new AirConditioningTemperatureCommand(dto.getId(), CommandType.TEMPERATURE, dto.getTemperature(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendModeCommand(AirConditionModeDTO dto) throws UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
+    public void sendModeCommand(AirConditionModeDTO dto, RegularUser currentUser) throws UserNotFoundException {
+        overrideIdNeeded(dto.getId());
         AirConditioningModeCommand command = new AirConditioningModeCommand(dto.getId(), CommandType.MODE, dto.getMode(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
+    private void overrideIdNeeded(Long deviceId){
+        List<AirConditionSchedule> result = airConditionScheduleRepository.getCurrentSchedule(deviceId);
+        if(!result.isEmpty()){
+            AirConditionSchedule currentSchedule = result.get(0);
+            currentSchedule.setOverride(true);
+            airConditionScheduleRepository.save(currentSchedule);
+        }
+    }
+
     public void handleWorkingAckMessage(Long id, String message){
-        System.out.println("===============================" + message);
+//        System.out.println("===============================" + message);
 
         String[] tokens = message.split("\\|");
         boolean working = tokens[1].equalsIgnoreCase("TURN ON");
@@ -100,7 +121,7 @@ public class AirConditioningService {
             return;
         }
         try {
-            device.setStatus(working ? DeviceStatus.ONLINE : DeviceStatus.OFFLINE);
+//            device.setStatus(working ? DeviceStatus.ONLINE : DeviceStatus.OFFLINE);
             AirConditionWorkingExecution result = new AirConditionWorkingExecution(device.getId(), tokens[0], executed, username, Instant.now());
             influxDBService.write(result);
             deviceRepository.save(device);
@@ -111,7 +132,7 @@ public class AirConditioningService {
     }
 
     public void handleTemperatureAckMessage(Long id, String message){
-        System.out.println("===============================" + message);
+//        System.out.println("===============================" + message);
 
         String[] tokens = message.split("\\|");
         double temperature = Double.parseDouble(tokens[1].trim());
@@ -135,7 +156,7 @@ public class AirConditioningService {
     }
 
     public void handleModeAckMessage(Long id, String message){
-        System.out.println("===============================" + message);
+//        System.out.println("===============================" + message);
 
         String[] tokens = message.split("\\|");
         String mode = tokens[1];
@@ -154,6 +175,65 @@ public class AirConditioningService {
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
             return;
+        }
+
+    }
+
+    @Scheduled(fixedDelay = 5000)
+    public void checkSchedule() {
+        List<AirConditionSchedule> schedules = airConditionScheduleRepository.getSchedulesToActivated();
+        schedules.stream().parallel().forEach(schedule ->{
+            try {
+                sendWorkingCommand(new AirConditionWorkingDTO(schedule.isWorking(), schedule.getAirConditioning().getId()), schedule.getAirConditioning().getOwner());
+                if(schedule.isWorking()) {
+                    if(schedule.getMode() != null) {
+                        sendModeCommand(new AirConditionModeDTO(schedule.getMode(), schedule.getAirConditioning().getId()), schedule.getAirConditioning().getOwner());
+                    }
+
+                    if(schedule.getTemperature() != null){
+                        sendTemperatureCommand(new AirConditionTemperatureDTO(schedule.getTemperature(), schedule.getAirConditioning().getId()), schedule.getAirConditioning().getOwner());
+                    }
+                }
+
+                schedule.setActivated(true);
+                airConditionScheduleRepository.save(schedule);
+            } catch (UserNotFoundException e) {
+//                TODO
+                throw new RuntimeException(e);
+            }
+        });
+//        System.out.println(schedules.size());
+    }
+
+    public void setSchedule(AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException {
+        try{
+            LocalDateTime start = LocalDateTime.parse(dto.getStartTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            LocalDateTime end = LocalDateTime.parse(dto.getEndTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            AirConditioning airConditioning = airConditioningRepository.findById(dto.getDeviceId()).orElse(null);
+            if(airConditioning == null){
+                throw new DeviceNotFoundException();
+            }
+            LocalDateTime now = LocalDateTime.now();
+            if( end.isBefore(start) || end.isBefore(now) || start.isBefore(now))
+                throw new InvalidDateException();
+            if(airConditionScheduleRepository.existsOverlaping(start, end, dto.getDeviceId())){
+                throw new ScheduleOverlappingException();
+            }
+
+            AirConditionSchedule schedule = new AirConditionSchedule();
+            schedule.setStartTime(start);
+            schedule.setEndTime(end);
+            schedule.setOverride(false);
+            schedule.setAirConditioning(airConditioning);
+            schedule.setTemperature(dto.getTemperature());
+            schedule.setMode(dto.getMode());
+            schedule.setActivated(false);
+            schedule.setWorking(dto.isWorking());
+            airConditionScheduleRepository.save(schedule);
+
+        }catch (NullPointerException e){
+            throw new InvalidDateException();
         }
 
     }
