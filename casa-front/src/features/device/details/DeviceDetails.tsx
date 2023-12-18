@@ -252,7 +252,26 @@ const DeviceDetails = () => {
         setToDateMin(nextDay.toISOString().split('T')[0]);
         setToDate(nextDay.toISOString().split('T')[0]);
     };
+
+    const handleFromTimeChange = (e) => {
+        const selectedFromDate = e.target.value;
+        setFromDate(selectedFromDate);
+
+        const nextMonth = new Date(selectedFromDate);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        setToDateMin(nextMonth.toISOString().split('T')[0]);
+        setToDate(nextMonth.toISOString().split('T')[0]);
+    };
     const handleDateFilterClick = (from: string, to: string) => {
+        if(["ambient_sensor"].includes(dev.type)){
+            let fromTime = new Date(from);
+            let toTime = new Date(to); 
+            let diff = (toTime.getTime() - fromTime.getTime()) / 1000 / 60 / 60 / 24;
+            if(diff > 30){
+                console.log('Too big diffrence');
+                return;
+            }
+        }
         setFromDate(from);
         setToDate(to);
         setCurrentPage(1);
@@ -365,13 +384,16 @@ const DeviceDetails = () => {
                                       id="scheduleStart"
                                       name="from"
                                       value={fromDate}
-                                      onChange={handleFromDateChange} />
+                                      onChange={handleFromTimeChange}
+                                      className={DeviceDetailsCSS.filterings} />
                                       <input
                                       type="datetime-local"
                                       id="scheduleEnd"
                                       name="from"
                                       value={toDate}
-                                      onChange={(e) => setToDate(e.target.value)} />
+                                      onChange={(e) => setToDate(e.target.value)}
+                                      className={DeviceDetailsCSS.filterings} />
+                                      <Button text={'Filter'}  onClick={() =>handleDateFilterClick(fromDate, toDate)}  submit={undefined} className={DeviceDetailsCSS.filterings} />
                                       </>
                         ) ||
                         <>
