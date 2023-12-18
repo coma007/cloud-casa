@@ -61,6 +61,8 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     };
 
     const handleTemperatureChange = (e) => {
+        if( isNaN(+e.target.value) )
+        return;
         setTemperature(Number(e.target.value));
     };
 
