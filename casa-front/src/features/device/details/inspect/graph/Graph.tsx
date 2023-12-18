@@ -17,7 +17,8 @@ const Graph = (props: { label: string, deviceType: string, measurements: DeviceM
     const [tagName, setTagName] = useState<string>("");
     const [showGraph, setShowGraph] = useState(false)
 
-    useEffect(() => {
+
+	useEffect(() => {
         console.log(props.deviceType)
         if (Object.keys(props.measurements).length > 0) {
             let newData: ({ value: number | null, timestamp: string | null })[] = []
