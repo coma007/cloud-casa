@@ -6,7 +6,7 @@ import DeviceTableCSS from './DetailsTable.module.scss'
 const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasurementList, topic?: string }) => {
     let header, data;
 
-    const parseAirConditioningCommand = (measurement, formattedTime) =>{
+    const parseAirConditioningCommand = (measurement) =>{
         let result = measurement.executed;
         let command = "";
         if("working" in measurement) command = measurement.working;
@@ -14,6 +14,8 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
         if("mode" in measurement) command = "SET MODE TO " + measurement.mode;
 
         let user = measurement.user;
+        const timestamp = new Date(measurement.timestamp * 1000)
+        const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
 
         let rowData = [
             { content: formattedTime, widthPercentage: 25 },
@@ -106,7 +108,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                     if(props.deviceType == 'air_conditioning'){
                         
                         data.push({
-                            rowData: parseAirConditioningCommand(m.attachment, formattedTime),
+                            rowData: parseAirConditioningCommand(m),
                             onClick: undefined
                         })
                     }

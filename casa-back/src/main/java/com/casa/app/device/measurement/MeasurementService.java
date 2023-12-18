@@ -27,7 +27,7 @@ public class MeasurementService {
         switch (record.getMeasurement()) {
             case (MeasurementType.airConditioningWorkingAck):
                 return new AirConditionWorkingExecution(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("working"),
                         (String) record.getValueByKey("executed"),
                         (String) record.getValueByKey("user"),
@@ -35,7 +35,7 @@ public class MeasurementService {
                 );
             case (MeasurementType.airConditioningTemperatureAck):
                 return new AirConditionTemperatureExecution(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Double) record.getValueByKey("temperature"),
                         (String) record.getValueByKey("executed"),
                         (String) record.getValueByKey("user"),
@@ -43,7 +43,7 @@ public class MeasurementService {
                 );
             case (MeasurementType.airConditioningModeAck):
                 return new AirConditionModeExecution(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("mode"),
                         (String) record.getValueByKey("executed"),
                         (String) record.getValueByKey("user"),

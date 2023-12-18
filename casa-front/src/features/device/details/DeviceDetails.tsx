@@ -129,7 +129,9 @@ const DeviceDetails = () => {
 
         else if (fetchedDevice.type === "air_conditioning") {
             WebSocketService.createSocket("/topic/air_conditioning_commands/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
-                let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, attachment : message.attachment}, ...measurements.measurements]
+                let tstp = (new Date(message.attachment.timestamp)).getTime() / 1000;
+                message.attachment.timestamp = tstp;
+                let newMeasurements = [{ ...message.attachment, id : message.attachment.id}, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
                    newMeasurements = newMeasurements.slice(0, 10)
                 }
@@ -235,7 +237,9 @@ const DeviceDetails = () => {
             WebSocketService.openSocket("/topic/air_conditioning_commands/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
                 console.log(measurements)
                 if (currentPage == 1) {
-                    let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, attachment : message.attachment}, ...measurements.measurements]
+                    let tstp = (new Date(message.attachment.timestamp)).getTime() / 1000;
+                    message.attachment.timestamp = tstp;
+                    let newMeasurements = [{ ...message.attachment, id : message.attachment.id}, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                        newMeasurements = newMeasurements.slice(0, 10)
                     }
@@ -404,12 +408,32 @@ const DeviceDetails = () => {
         setToDate(to);
         setCurrentPage(1);
         (async () => {
-            const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
-            setNumberOfPages(fetchedNumberOfPages);
+            if(deviceType == "air_conditioning"){
+                const fetchedNumberOfPages1 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_mode_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
+                const fetchedNumberOfPages2 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_working_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
+                const fetchedNumberOfPages3 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_temperature_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
+                setNumberOfPages(fetchedNumberOfPages1 + fetchedNumberOfPages2 + fetchedNumberOfPages3);
+            }
+            else{
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
+                setNumberOfPages(fetchedNumberOfPages);
+            }
+          
         })();
         (async () => {
-            const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-            setMeasurements(fetchedMeasurements);
+            if(deviceType == "air_conditioning"){
+                const fetchedMeasurements1 = await DeviceService.filter(dev.Id, "air_conditioning_mode_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+                const fetchedMeasurements2 = await DeviceService.filter(dev.Id, "air_conditioning_working_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+                const fetchedMeasurements3 = await DeviceService.filter(dev.Id, "air_conditioning_temperature_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+                let fetchedMeasurements = fetchedMeasurements1;
+                fetchedMeasurements.measurements =  [...fetchedMeasurements1.measurements, ...fetchedMeasurements2.measurements, ...fetchedMeasurements3.measurements];
+                setMeasurements(fetchedMeasurements);
+            }
+            else{
+                const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+                setMeasurements(fetchedMeasurements);
+            }
+    
         })();
 
     };
@@ -423,16 +447,39 @@ const DeviceDetails = () => {
     useEffect(() => {
         (async () => {
             if (Object.keys(dev).length > 0) {
-                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, fromDate, toDate, username);
-                setNumberOfPages(fetchedNumberOfPages);
+                if(deviceType == "air_conditioning"){
+                    const fetchedNumberOfPages1 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_mode_ack", fromDate, toDate, username);
+                    const fetchedNumberOfPages2 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_working_ack", fromDate, toDate, username);
+                    const fetchedNumberOfPages3 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_temperature_ack", fromDate, toDate, username);
+                    setNumberOfPages(fetchedNumberOfPages1 + fetchedNumberOfPages2 + fetchedNumberOfPages3);
+                }
+                else{
+                    const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, fromDate, toDate, username);
+                    setNumberOfPages(fetchedNumberOfPages);
+                }
+            
             }
         })();
         (async () => {
             if (Object.keys(dev).length > 0) {
-                const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, 1);
+                if(deviceType == "air_conditioning"){
+                    const fetchedMeasurements1 = await DeviceService.filter(dev.Id, "air_conditioning_mode_ack", fromDate, toDate, username, 1);
+                    const fetchedMeasurements2 = await DeviceService.filter(dev.Id, "air_conditioning_working_ack", fromDate, toDate, username, 1);
+                    const fetchedMeasurements3 = await DeviceService.filter(dev.Id, "air_conditioning_temperature_ack", fromDate, toDate, username, 1);
+                    let fetchedMeasurements = fetchedMeasurements1;
+                    fetchedMeasurements.measurements =  [...fetchedMeasurements1.measurements, ...fetchedMeasurements2.measurements, ...fetchedMeasurements3.measurements];
+                    setMeasurements(fetchedMeasurements);
+                    createWebSocket(dev, fetchedMeasurements);
+                }
+                else{
+                    const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, 1);
+                    setMeasurements(fetchedMeasurements);
+                    createWebSocket(dev, fetchedMeasurements);
+                }
+                // if(dev.)
                 // console.log(fetchedMeasurements);
-                setMeasurements(fetchedMeasurements);
-                createWebSocket(dev, fetchedMeasurements);
+                
+               
             }
         })()
     }, [dev, dev.measurementTopic])
