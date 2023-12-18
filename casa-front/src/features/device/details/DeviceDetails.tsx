@@ -166,7 +166,7 @@ const DeviceDetails = () => {
                 setDev({
                     ...baseDevice,
                     type: 'ambient_sensor',
-                    measurementTopic: 'air_conditioning',
+                    measurementTopic: 'ambient_sensor',
                 })
                 break;
             case "lamp":
@@ -217,13 +217,12 @@ const DeviceDetails = () => {
         setToDateMin(nextDay.toISOString().split('T')[0]);
         setToDate(nextDay.toISOString().split('T')[0]);
     };
-
     const handleDateFilterClick = (from: string, to: string) => {
         setFromDate(from);
         setToDate(to);
         setCurrentPage(1);
         (async () => {
-            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
             setNumberOfPages(fetchedNumberOfPages);
         })();
         (async () => {
@@ -232,7 +231,6 @@ const DeviceDetails = () => {
         })();
 
     };
-
     // useEffect(()=> {
     //     (async () => {
     //         const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(fromDate).toISOString(), new Date(toDate).toISOString(), username, 1);
@@ -290,6 +288,8 @@ const DeviceDetails = () => {
         })()
     }, [currentPage])
 
+    const [ambientMeasurement, setAmbientMeasurement] = useState("temperature");
+
 
     return (
         <div>
@@ -303,6 +303,18 @@ const DeviceDetails = () => {
                     {
                         (!["ambient_sensor", "house_battery", "electric_vehicle_charger"].includes(dev.type)) &&
                         <DeviceManager deviceType={dev.type} device={dev}></DeviceManager>
+                    }
+                    {   
+                        (["ambient_sensor"].includes(dev.type)) &&
+                        (
+                        <>
+                            <div className={DeviceDetailsCSS.buttons} >
+                                <Button className={DeviceDetailsCSS.ambientButton} text={"Temperature"} onClick={() => setAmbientMeasurement("temperature")} submit={undefined}></Button>
+                                 <Button className={DeviceDetailsCSS.ambientButton} text={"Humidity"} onClick={() => setAmbientMeasurement("humidity")} submit={undefined}></Button>
+                             </div>
+                        </>
+                        )
+                        
                     }
                 </div>
                 <div>
@@ -333,10 +345,10 @@ const DeviceDetails = () => {
                         </>)
                     }
                     {   
-                        (["house_battery", "lamp"].includes(dev.type)) &&
+                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) &&
                         (
                         <>
-                            <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} />
+                            <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
                             <div>
                                 <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
                             </div>
@@ -344,6 +356,7 @@ const DeviceDetails = () => {
                         )
                         
                     }
+              
                 </div>
             </div>
         </div>

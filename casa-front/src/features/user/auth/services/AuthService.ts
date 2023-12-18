@@ -55,7 +55,15 @@ export const AuthService = {
     const user = jwtDecode(token); 
     // console.log(user["role"][0]["name"]);
     return user["role"][0]["name"]
-  }
+  },
+
+  getUsername: () =>{
+    let token = localStorage.getItem("token");
+    if(token === null) return null;
+    const user = jwtDecode(token); 
+    // console.log(user["role"][0]["name"]);
+    return user.sub;
+  },
 
 
   // getUserData: async (): Promise<User> => {

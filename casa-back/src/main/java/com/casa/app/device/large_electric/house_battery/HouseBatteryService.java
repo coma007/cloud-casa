@@ -65,7 +65,8 @@ public class HouseBatteryService {
         }
         HouseBatteryPowerUsageMeasurement measurement = new HouseBatteryPowerUsageMeasurement(battery.getId(), value, Instant.now());
         influxDBService.write(measurement);
-        measurement.setTimestamp(measurement.getTimestamp().getEpochSecond());
+//        TODO to epoch second
+        measurement.setTimestamp(measurement.getTimestamp());
         webSocketController.sendMessage(new SocketMessage<HouseBatteryPowerUsageMeasurement>("house-battery-power-usage", "New value", null, id.toString(), measurement));
     }
 

@@ -20,7 +20,10 @@ public class AmbientSensor extends Device {
         detailsDTO.setName(this.getName());
         detailsDTO.setEnergyConsumption(this.getEnergyConsumption());
         detailsDTO.setPowerSupplyType(this.getPowerSupplyType().toString());
-        detailsDTO.setRealEstateName(this.getRealEstate().getName());
+        if(getRealEstate() != null)
+            detailsDTO.setRealEstateName(getRealEstate().getName());
+        else
+            detailsDTO.setRealEstateName(null);;
         return detailsDTO;
     }
 }

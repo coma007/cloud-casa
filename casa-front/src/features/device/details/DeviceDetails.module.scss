@@ -13,3 +13,17 @@
     align-items: center;
     margin-bottom: 20px;
 }
+
+.buttons{
+    // float: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // margin: 10px, 30px;
+    // padding: 30px;
+} 
+
+.ambientButton{
+    width: 50%; 
+    margin-left: 10px;
+}
