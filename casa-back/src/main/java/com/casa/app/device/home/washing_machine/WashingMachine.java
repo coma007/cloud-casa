@@ -1,8 +1,6 @@
 package com.casa.app.device.home.washing_machine;
 
 import com.casa.app.device.Device;
-import com.casa.app.device.home.air_conditioning.AirConditioningMode;
-import com.casa.app.device.home.air_conditioning.dto.AirConditioningDetailsDTO;
 import com.casa.app.device.home.washing_machine.dto.WashingMachineDetailsDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;

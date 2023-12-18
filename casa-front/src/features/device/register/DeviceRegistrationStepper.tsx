@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
-import Step1 from './BasicInfo';
+import BasicInfo from './BasicInfo';
 import AirConditioningStep from './AirConditioningStep';
 import WashingMachineStep from './WashingMachineStep';
 import ElectricVehicleChargerStep from './ElectricVehicleChargerStep';
@@ -11,6 +11,9 @@ import { DeviceService } from '../DeviceService';
 import { DeviceCreate } from '../Device';
 import Menu from '../../../components/navigation/Menu/Menu';
 import PageTitle from '../../../components/view/PageTitle/PageTitle';
+import { useNavigate } from 'react-router';
+import { RealEstate } from '../../estate/RealEstate';
+import { EstateService } from '../../estate/EstateService';
 
 const StepperForm = () => {
   const [step, setStep] = useState(1);
@@ -18,7 +21,7 @@ const StepperForm = () => {
     deviceName: '',
     powerSupplyType: 'AUTONOMOUS',
     energyConsumption: 0,
-    realEstateName: '',
+    realEstateId: -1,
     picture: null,
     deviceType: 'AmbientSensor',
     minTemperature: 0,
@@ -30,6 +33,37 @@ const StepperForm = () => {
     efficiency: 0.0,
     allowedVehicles: []
   });
+
+  const [realEstates, setRealEstates] = useState<RealEstate[]>([] as RealEstate[])
+
+  useEffect(() => {
+      (async function () {
+          try {
+              const fetchedEstates = await EstateService.getAllByOwner();
+              setRealEstates(fetchedEstates);
+              setFormData({
+                deviceName: '',
+                powerSupplyType: 'AUTONOMOUS',
+                energyConsumption: 0,
+                realEstateId: fetchedEstates.at(0)?.id!,
+                picture: null,
+                deviceType: 'AmbientSensor',
+                minTemperature: 0,
+                maxTemperature: 0,
+                supportedModes: [],
+                chargePower: 0,
+                numOfSlots: 0,
+                size: 0.0, 
+                efficiency: 0.0,
+                allowedVehicles: []
+              })
+          } catch (error) {
+              console.error(error);
+          }
+      })()
+  }, []);
+
+  const navigate = useNavigate();
 
   const handleNameChange = (e) => {
     const { name, value } = e.target;
@@ -60,6 +94,7 @@ const StepperForm = () => {
   }
 
   const handleChange = (e) => {
+    console.log(e.target)
     const { name, value, files} = e.target;
   
     setFormData({
@@ -69,6 +104,7 @@ const StepperForm = () => {
   };
 
   const nextStep = () => {
+    console.log(formData)
     if (formData.deviceType === "AmbientSensor" || formData.deviceType === "Lamp" || formData.deviceType === "SprinklerSystem") {
         register()
     } else {
@@ -83,7 +119,7 @@ const StepperForm = () => {
     device.device.name = formData.deviceName;
     device.device.powerSupplyType = formData.powerSupplyType;
     device.device.energyConsumption = formData.energyConsumption;
-    device.device.realEstateName = formData.realEstateName;
+    device.device.realEstateId = formData.realEstateId;
     if (device.type === "AirConditioning" || device.type === "WashingMachine") {
         device.device.supportedModes = formData.supportedModes
     }
@@ -113,25 +149,26 @@ const StepperForm = () => {
     console.log(newData)
     try {
         await DeviceService.register(newData).then((value) => console.log(value));
-        alert("Success")
-        setStep(1)
-        setFormData({
-            deviceName: '',
-            powerSupplyType: 'AUTONOMOUS',
-            energyConsumption: 0,
-            realEstateName: '',
-            picture: null,
-            deviceType: 'AmbientSensor',
-            minTemperature: 0,
-            maxTemperature: 0,
-            supportedModes: [],
-            chargePower: 0,
-            numOfSlots: 0,
-            size: 0.0, 
-            efficiency: 0.0,
-            allowedVehicles: []
-            // Add other fields for different device types if needed
-          })
+        navigate("/device-overview");
+        // alert("Success")
+        // setStep(1)
+        // setFormData({
+        //     deviceName: '',
+        //     powerSupplyType: 'AUTONOMOUS',
+        //     energyConsumption: 0,
+        //     realEstateId: -1,
+        //     picture: null,
+        //     deviceType: 'AmbientSensor',
+        //     minTemperature: 0,
+        //     maxTemperature: 0,
+        //     supportedModes: [],
+        //     chargePower: 0,
+        //     numOfSlots: 0,
+        //     size: 0.0, 
+        //     efficiency: 0.0,
+        //     allowedVehicles: []
+        //     // Add other fields for different device types if needed
+        //   })
     } catch (error: any) {
         alert(error.response.data);
       }
@@ -149,12 +186,13 @@ const StepperForm = () => {
         </div>
         <div className={DeviceRegistrationStepperCSS.form}>
           {step === 1 && (
-              <Step1
-              formData={formData}
-              handleChange={handleChange}
-              handleNameChange={handleNameChange}
-              nextStep={nextStep}
-              />
+              <BasicInfo
+            formData={formData}
+            handleChange={handleChange}
+            handleNameChange={handleNameChange}
+            nextStep={nextStep}
+            estates={realEstates}
+            />
           )}
           {/* {step === 2 && formData.deviceType === "AmbientSensor" && <AmbientSensorStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}
           {/* {step === 2 && formData.deviceType === "Lamp" && <LampStep formData={formData} handleChange={handleChange} prevStep={prevStep} />} */}

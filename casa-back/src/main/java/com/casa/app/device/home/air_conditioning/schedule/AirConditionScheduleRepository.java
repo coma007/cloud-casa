@@ -33,4 +33,10 @@ public interface AirConditionScheduleRepository extends JpaRepository<AirConditi
             " and ( CURRENT_TIMESTAMP BETWEEN acs.startTime AND acs.endTime )")
     List<AirConditionSchedule> getCurrentSchedule(Long deviceId);
 
+    @Query(value = "select acs from AirConditionSchedule acs" +
+            " where acs.repeating = true" +
+            " and ( CURRENT_TIMESTAMP > acs.endTime )")
+    List<AirConditionSchedule> getRepeating();
+
+
 }
