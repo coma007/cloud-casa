@@ -84,6 +84,32 @@ const DeviceDetails = () => {
                 }
             })
         }
+
+        else if (fetchedDevice.type === "vehicle_gate") {
+            WebSocketService.createSocket("/topic/" + gateMode + "/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                // console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, licence_plates: message.attachment.licence_plates }, ...measurements.measurements]
+                    if (gateMode === "vehicle_gate_command") {
+                        console.log(message.attachment)
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_open: message.attachment.is_open, user: message.attachment.user }, ...measurements.measurements]
+                    }
+                    else if (gateMode === "vehicle_gate_mode") {
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_private: message.attachment.is_private, user: message.attachment.user }, ...measurements.measurements]
+                    }
+                    if (newMeasurements.length > 10) {
+                        newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
+                    })
+                }
+            })
+        }
     }
 
     useEffect(() => {
@@ -112,6 +138,32 @@ const DeviceDetails = () => {
                 // console.log(measurements)
                 if (currentPage == 1) {
                     let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, brightness: message.attachment.brightness }, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                        newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
+                    })
+                }
+            })
+        }
+        else if (dev.type === "vehicle_gate") {
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/" + gateMode + "/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                // console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, licence_plates: message.attachment.licence_plates }, ...measurements.measurements]
+                    if (gateMode === "vehicle_gate_command") {
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_open: message.attachment.is_open, user: message.attachment.user }, ...measurements.measurements]
+                    }
+                    else if (gateMode === "vehicle_gate_mode") {
+                        console.log(message.attachment)
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_private: message.attachment.is_private, user: message.attachment.user }, ...measurements.measurements]
+                    }
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
                     }
@@ -282,7 +334,7 @@ const DeviceDetails = () => {
     useEffect(() => {
         (async () => {
             if (Object.keys(dev).length > 0) {
-                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, fromDate, toDate, username);
                 setNumberOfPages(fetchedNumberOfPages);
             }
         })();
@@ -297,18 +349,22 @@ const DeviceDetails = () => {
     }, [dev, dev.measurementTopic])
 
     const resetFilters = () => {
+
+        if (fromDate == "" || toDate == "") {
+            return;
+        }
         setFromDate('');
         setToDate('');
         setUsername('');
         (async () => {
             if (Object.keys(dev).length > 0) {
-                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(fromDate).toISOString(), new Date(toDate).toISOString(), username);
                 setNumberOfPages(fetchedNumberOfPages);
             }
         })();
         (async () => {
             if (Object.keys(dev).length > 0) {
-                const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(fromDate).toISOString(), new Date(toDate).toISOString(), username);
                 setNumberOfPages(fetchedNumberOfPages);
                 const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, '', '', '', 1);
                 setMeasurements(fetchedMeasurements)

@@ -89,6 +89,11 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
             }
         }
     }, [props.measurements, props.topic])
+
+    // if (props.deviceType == "vehicle_gate") {
+
+    // }
+
     const [headers, setHeaders] = useState<TableRow>(header)
     const [rows, setRows] = useState<TableRow[]>(data)
     const [showTable, setShowTable] = useState(false)
