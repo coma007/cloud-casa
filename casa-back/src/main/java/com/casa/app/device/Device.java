@@ -32,6 +32,7 @@ public class Device {
     private DeviceStatus status;
     private Date lastSeen;
     @ManyToOne
+    @JoinColumn(name = "real_estate_id")
     private RealEstate realEstate;
 
     @Cascade(CascadeType.ALL)

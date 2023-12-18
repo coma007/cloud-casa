@@ -1,13 +1,12 @@
+import { useEffect, useState } from 'react';
 import Button from '../../../components/forms/Button/Button';
 import UploadImage from '../../../components/forms/UploadImage/UploadImage';
 import DeviceRegistrationStepperCSS from "./DeviceRegistrationStepper.module.scss"
+import { EstateService } from '../../estate/EstateService';
+import { RealEstate } from '../../estate/RealEstate';
 
-const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
-    // Render form inputs for the first step
-    // Include inputs for device name, power supply type, energy consumption, real estate name, picture, and device type selection
-    // Use formData and handleChange to manage input values
-  
-
+const BasicInfo = ({ formData, handleChange, handleNameChange, estates , nextStep }) => {
+    
     const handleNext = (e) => {
       e.preventDefault();
     //   console.log(formData.deviceName)
@@ -25,6 +24,19 @@ const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
                 value={formData.deviceName}
                 onChange={handleNameChange}
             />
+            <label htmlFor="realEstateId" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Real estate:</label>
+            <select
+                name="realEstateId"
+                value={formData.realEstateId}
+                onChange={handleChange}
+                className={DeviceRegistrationStepperCSS.input}
+            >
+                {estates.map((estate, index) => (
+                                    <option key={index} value={estate.id}>
+                                        {estate.name}
+                                    </option>
+                                ))}
+            </select>
             <label htmlFor="fileInput" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Upload Picture:</label>
             <UploadImage fileRef={formData.picture} className={''} />
             <label htmlFor="energyConsumption" className={`${DeviceRegistrationStepperCSS.marginTop}`}>Energy consumption:</label>
@@ -69,4 +81,4 @@ const Step1 = ({ formData, handleChange, handleNameChange, nextStep }) => {
     );
   };
 
-export default Step1;
+export default BasicInfo;
