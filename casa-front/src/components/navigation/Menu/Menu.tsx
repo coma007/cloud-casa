@@ -38,8 +38,19 @@ const Menu = ({admin, superadmin, superadminInit} : IMenuProps) => {
             </div>
             <div className={MenuCSS.rightMenu}>
                 <div className={`${MenuCSS.menuRight} ${MenuCSS.menuGrid}`}>
-                <MenuItem className={MenuCSS.nonMainOption} tooltipText="Profile details" tooltip={true} image={undefined} path="/profile" text={'PROFILE'} />
-                <MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout" text={'LOGOUT'} />
+                <MenuItem className={MenuCSS.nonMainOption} tooltipText="Profile details" tooltip={true} image={undefined} path="/profile" text={'PROFILE'} />                
+                { superadminInit ?
+                    (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout/super-admin-init" text={'LOGOUT'} />)
+                    :
+                    (<>{ superadmin ? 
+                        (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout/super-admin" text={'LOGOUT'} />)
+                        :
+                        (<>{ admin ? 
+                            (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout/admin" text={'LOGOUT'} />)
+                            : (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout" text={'LOGOUT'} />)
+                        }</>)
+                    }</>)
+                }
                 </div>
             </div>
         </div>
