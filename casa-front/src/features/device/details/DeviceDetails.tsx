@@ -64,6 +64,22 @@ const DeviceDetails = () => {
                 
             })
         }
+        else if (fetchedDevice.type === "ambient_sensor") {
+            WebSocketService.createSocket("/topic/ambient_sensor_reading/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, temperature : message.attachment.temperature, humidity: message.attachment.humidity}, ...measurements.measurements]
+                if (newMeasurements.length > 10) {
+                   newMeasurements = newMeasurements.slice(0, 10)
+                }
+                setMeasurements({
+                    deviceType : measurements.deviceType,
+                    deviceId : measurements.deviceId,
+                    from : measurements.from,
+                    to : measurements.to,
+                    measurements : newMeasurements,
+                })
+                
+            })
+        }
     }
 
     useEffect(() => {
@@ -73,6 +89,25 @@ const DeviceDetails = () => {
                 // console.log(measurements)
                 if (currentPage == 1) {
                     let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, power : message.attachment.power}, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                       newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType : measurements.deviceType,
+                        deviceId : measurements.deviceId,
+                        from : measurements.from,
+                        to : measurements.to,
+                        measurements : newMeasurements,
+                    })
+                }
+            })
+        }
+        else if (dev.type === "ambient_sensor") {    
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/ambient_sensor_reading/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, temperature : message.attachment.temperature, humidity : message.attachment.humidity}, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                        newMeasurements = newMeasurements.slice(0, 10)
                     }
