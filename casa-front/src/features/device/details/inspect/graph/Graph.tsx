@@ -11,7 +11,7 @@ import { Card } from 'react-bootstrap';
 Chart.register(...registerables);
 
 
-const Graph = (props: { label: string, deviceType: string, measurements: DeviceMeasurementList }) => {
+const Graph = (props: { label: string, deviceType: string, measurements : DeviceMeasurementList, ambientMeasurement?: string }) => {
     const [data, setData] = useState<{ labels: any, datasets: any } | undefined>(undefined);
     const [graphData, setGraphData] = useState<({ value: number | null, timestamp: string | null })[]>([])
     const [tagName, setTagName] = useState<string>("");
@@ -43,15 +43,26 @@ const Graph = (props: { label: string, deviceType: string, measurements: DeviceM
                     }
                 }
             }
+            else if (props.deviceType == "ambient_sensor") {
+                for (let record of props.measurements.measurements) {
+                    console.log(record)
+                    if (record !== undefined) {
+                        const timestamp = new Date(record.timestamp * 1000)
+                        const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
+                        newData = [{ value: record[props.ambientMeasurement!], timestamp: formattedTime }, ...newData]
+                    }
+
+                }
+            }
             let length = newData.length;
             while (length < 5) {
-                newData = [{ value: null, timestamp: null }, ...newData]
+                newData = [{ value: null, timestamp: null }, ...newData];
                 length = newData.length;
             }
             setGraphData(newData)
             setShowGraph(true)
         }
-    }, [props.measurements])
+    }, [props.measurements, props.ambientMeasurement])
 
     useEffect(() => {
         if (graphData.length === 0) {

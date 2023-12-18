@@ -51,7 +51,10 @@ public class MeasurementService {
                 );
             case (MeasurementType.ambientSensor):
                 return new AmbientSensorMeasurement(
-                        // add values from record
+                        Long.valueOf((String) record.getValueByKey("id")),
+                        (Double) record.getValueByKey("temperature"),
+                        (Double) record.getValueByKey("humidity"),
+                        record.getTime()
                 );
             case (MeasurementType.washingMachine):
                 return new WashingMachineMeasurement(
