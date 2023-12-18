@@ -12,6 +12,7 @@ import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.websocket.SocketMessage;
+import com.casa.app.websocket.WebSocketController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,24 +34,29 @@ public class VehicleGateService {
     private MqttGateway mqttGateway;
     @Autowired
     private RegularUserService regularUserService;
+    @Autowired
+    private WebSocketController webSocketController;
 
     public void licencePlatesHandler(Long id, String message) {
         String licencePlate = message;
         VehicleGateLicencePlatesMeasurement vehicleGate = new VehicleGateLicencePlatesMeasurement( id, licencePlate, Instant.now());
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.vehicleGateLicencePlates, message, id.toString(), id.toString(), vehicleGate));
         influxDBService.write(vehicleGate);
     }
 
     public void commandHandler(Long id, String message) {
-        String user = message.split("|")[1];
-        Boolean isOpen = Boolean.parseBoolean(message.split("|")[0]);
+        String user = message.split("\\|")[1];
+        Boolean isOpen = Boolean.parseBoolean(message.split("\\|")[0]);
         VehicleGateCommandMeasurement vehicleGate = new VehicleGateCommandMeasurement( id, isOpen, user, Instant.now());
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.vehicleGateCommand, message, id.toString(), id.toString(), vehicleGate));
         influxDBService.write(vehicleGate);
     }
 
     public void modeHandler(Long id, String message) {
-        String user = message.split("|")[1];
-        Boolean isPrivate = Boolean.parseBoolean(message.split("|")[0]);
+        String user = message.split("\\|")[1];
+        Boolean isPrivate = Boolean.parseBoolean(message.split("\\|")[0]);
         VehicleGateModeMeasurement vehicleGate = new VehicleGateModeMeasurement( id, isPrivate, user, Instant.now());
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.vehicleGateMode, message, id.toString(), id.toString(), vehicleGate));
         influxDBService.write(vehicleGate);
     }
 

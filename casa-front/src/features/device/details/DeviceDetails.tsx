@@ -198,7 +198,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     AllowedVehicles: device.allowedVehicles,
                     type: 'vehicle_gate',
-                    measurementTopic: 'vehicle_gate',
+                    measurementTopic: 'vehicle_gate_licence_plates',
                 })
                 break;
             case "ambient_sensor":
@@ -280,7 +280,6 @@ const DeviceDetails = () => {
     // }, [numberOfPages])
 
     useEffect(() => {
-        if (dev.type == "vehicle_gate") return;
         (async () => {
             if (Object.keys(dev).length > 0) {
                 const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
@@ -295,7 +294,7 @@ const DeviceDetails = () => {
                 createWebSocket(dev, fetchedMeasurements);
             }
         })()
-    }, [dev])
+    }, [dev, dev.measurementTopic])
 
     const resetFilters = () => {
         setFromDate('');
@@ -331,6 +330,13 @@ const DeviceDetails = () => {
     }, [currentPage])
 
 
+    const [gateMode, setGateMode] = useState("vehicle_gate_licence_plates")
+
+    const handleGateModeChange = (mode: string) => {
+        setGateMode(mode);
+        dev.measurementTopic = mode;
+    }
+
     return (
         <div>
             <Menu admin={false} />
@@ -344,6 +350,15 @@ const DeviceDetails = () => {
                         (!["ambient_sensor", "house_battery", "electric_vehicle_charger"].includes(dev.type)) &&
                         <DeviceManager deviceType={dev.type} device={dev}></DeviceManager>
                     }
+
+                    {deviceType == "vehicle_gate" &&
+                        <div>
+                            <br></br>
+                            <small>Chose a mode of querying data on the right</small> <br></br>
+                            <button onClick={() => { handleGateModeChange("vehicle_gate_licence_plates") }} className={DeviceDetailsCSS.smallButton}>license plates</button>
+                            <button onClick={() => handleGateModeChange("vehicle_gate_command")} className={DeviceDetailsCSS.smallButton}>open/close</button>
+                            <button onClick={() => handleGateModeChange("vehicle_gate_mode")} className={DeviceDetailsCSS.smallButton}>public/private</button>
+                        </div>}
                 </div>
                 <div>
                     <div className={DeviceDetailsCSS.row}>
@@ -363,11 +378,12 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system"].includes(dev.type)) &&
-                        // (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
+                        // (["solar_panel_system"].includes(dev.type)) &&
+                        (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
                         (
                             <>
-                                <DetailsTable measurements={measurements} deviceType={deviceType} />
+
+                                <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />
                                 <div>
                                     <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
                                 </div>

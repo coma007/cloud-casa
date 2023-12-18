@@ -25,7 +25,6 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                 }
             })()
         } else if (props.deviceType == "lamp_brightness") {
-            console.log("ovdje")
             await DeviceService.lampManager(props.device.Id);
         }
         setToggleIsOn(!toggleIsOn);
