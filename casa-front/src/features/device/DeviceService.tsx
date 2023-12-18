@@ -1,6 +1,5 @@
 import axios from "axios";
-import { AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING } from "../../api";
-import { DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM } from "../../api";
+import { AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
 import { DeviceCreate, DeviceDetails, ModeCommand, Schedule, TemperatureCommand, WorkingCommand } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
@@ -42,6 +41,17 @@ export const DeviceService = {
         return response.data;
     },
 
+
+    lampManager: async function (deviceId: number): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(LAMP_MANAGER(deviceId));
+        return response.data;
+    },
+
+
+    gateManager: async function (deviceId: number, func: string): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(GATE_MANAGER(deviceId, func));
+        return response.data;
+    },
 
     sendWorkingCommand: async function (command: WorkingCommand): Promise<any> {
         try {

@@ -11,5 +11,5 @@ public class DeviceDTO {
     private String name;
     private String powerSupplyType;
     private double energyConsumption;
-    private String realEstateName;
+    private Long realEstateId;
 }

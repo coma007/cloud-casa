@@ -13,11 +13,12 @@ Chart.register(...registerables);
 
 const Graph = (props: { label: string, deviceType: string, measurements : DeviceMeasurementList, ambientMeasurement?: string }) => {
     const [data, setData] = useState<{ labels: any, datasets: any } | undefined>(undefined);
-    const [graphData, setGraphData] = useState<({value: number|null, timestamp: string | null})[]>([])
+    const [graphData, setGraphData] = useState<({ value: number | null, timestamp: string | null })[]>([])
     const [tagName, setTagName] = useState<string>("");
     const [showGraph, setShowGraph] = useState(false)
 
-    useEffect(() => {
+
+	useEffect(() => {
         console.log(props.deviceType)
         if (Object.keys(props.measurements).length > 0) {
             let newData: ({ value: number | null, timestamp: string | null })[] = []
@@ -50,6 +51,7 @@ const Graph = (props: { label: string, deviceType: string, measurements : Device
                         const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
                         newData = [{ value: record[props.ambientMeasurement!], timestamp: formattedTime }, ...newData]
                     }
+
                 }
             }
             let length = newData.length;
@@ -66,9 +68,9 @@ const Graph = (props: { label: string, deviceType: string, measurements : Device
         if (graphData.length === 0) {
             return
         }
-        
-        let labels : string[] = [];
-        let data : (number|null)[] = [];
+
+        let labels: string[] = [];
+        let data: (number | null)[] = [];
         for (let value of graphData) {
             if (value.value === null) {
                 labels.push("")

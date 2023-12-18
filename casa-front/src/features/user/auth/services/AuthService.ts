@@ -46,6 +46,7 @@ export const AuthService = {
   },
 
   logout: () => {
+    console.log("Usao")
     localStorage.removeItem("token")
   },
 

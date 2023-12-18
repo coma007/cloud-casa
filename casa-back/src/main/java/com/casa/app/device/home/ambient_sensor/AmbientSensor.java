@@ -5,7 +5,6 @@ import com.casa.app.device.home.ambient_sensor.dto.AmbientSensorDetailsDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data

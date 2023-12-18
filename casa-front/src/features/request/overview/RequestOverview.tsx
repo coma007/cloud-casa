@@ -8,7 +8,7 @@ const EstateOverview = () => {
   const [estates, setEstates] = useState<RealEstate[]>();
 
   useEffect(() => {
-    RequestService.getAll().then((value) => { setEstates(value); console.log(value) })
+    RequestService.getAllUnresolved().then((value) => { setEstates(value); console.log(value) })
   }, [])
 
   return (

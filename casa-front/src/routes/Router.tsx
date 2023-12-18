@@ -26,14 +26,17 @@ const Router = () => {
                 <Route element={<AdminAuthGuard />}>
                     <Route path="/" element={<RequestOverviewPage />} />
                     <Route path="/requests" element={<RequestOverviewPage />} />
+                    <Route path="/logout/admin" element={<Logout />} />
                 </Route>
                 <Route element={<SuperAdminAuthGuard />}>
                     <Route path="/register/admin" element={<RegisterAdminPage />} />
                     <Route path="/" element={<RegisterAdminPage />} />
+                    <Route path="/logout/super-admin" element={<Logout />} />
                 </Route>
                 <Route element={<SuperAdminInitAuthGuard />}>
                     <Route path="/init/register/admin" element={<RegisterAdminPage />} />
                     <Route path="/" element={<RegisterAdminPage />} />
+                    <Route path="/logout/super-admin-init" element={<Logout />} />
                 </Route>
                 <Route element={<RegularUserAuthGuard />}>
                     <Route path="/" element={<EstateOverviewPage />} />

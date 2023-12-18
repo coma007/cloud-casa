@@ -1,17 +1,12 @@
 package com.casa.app.device.home.air_conditioning;
 
 import com.casa.app.device.Device;
-import com.casa.app.device.dto.DeviceDetailsDTO;
 import com.casa.app.device.home.air_conditioning.dto.AirConditioningDetailsDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 import java.util.ArrayList;
 import java.util.List;
