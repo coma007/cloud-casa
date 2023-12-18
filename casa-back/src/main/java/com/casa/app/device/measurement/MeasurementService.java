@@ -112,19 +112,20 @@ public class MeasurementService {
                 );
             case (MeasurementType.vehicleGateLicencePlates):
                 return new VehicleGateLicencePlatesMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("licence_plates"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateCommand):
                 return new VehicleGateCommandMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Boolean) record.getValueByKey("is_open"),
+                        (String) record.getValueByKey("user"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateMode):
                 return new VehicleGateModeMeasurement(
-                        (Long) record.getValueByKey("id"),
+                        Long.valueOf((String) record.getValueByKey("id")),
                         (Boolean) record.getValueByKey("is_private"),
                         (String) record.getValueByKey("user"),
                         record.getTime()

@@ -22,23 +22,27 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
         setToggleIsOn(props.device.Status === 'ONLINE');
     }, [props.device.Status]);
 
-    const handleIsOnClick = () => {
+    const handleIsOnClick = async () => {
         if (props.deviceType === "solar_panel_system") {
             (async function () {
                 try {
                     await DeviceService.toggleSolarPanelSystem(props.device.Id);
-                    setToggleIsOn(!toggleIsOn);
                     // const fetchedDevices = [{} as RealEstate]
                 } catch (error) {
                     console.error(error);
                 }
             })()
-        } else {
-            setToggleIsOn(!toggleIsOn);
+        } else if (props.deviceType == "lamp_brightness") {
+            await DeviceService.lampManager(props.device.Id);
         }
+        setToggleIsOn(!toggleIsOn);
+
     };
 
-    const handleIsOpenClick = () => {
+    const handleIsOpenClick = async () => {
+        if (props.deviceType == "vehicle_gate") {
+            await DeviceService.gateManager(props.device.Id, "open");
+        }
         setToggleIsOpen(!toggleIsOpen);
 
     };
@@ -85,6 +89,9 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
 
     const handleIsPrivateClick = () => {
+        if (props.deviceType == "vehicle_gate") {
+            DeviceService.gateManager(props.device.Id, "mode");
+        }
         setToggleIsPrivate(!toggleIsPrivate);
     };
 
@@ -169,8 +176,8 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
             case 'vehicle_gate':
                 return (
                     <div className={DeviceManagerCSS.row}>
-                        <Button text={toggleIsOn ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
-                        <Button text={toggleIsOn ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleIsPrivateClick} submit={undefined} />
+                        <Button text={toggleIsOpen ? 'CLOSE' : 'OPEN'} onClick={handleIsOpenClick} submit={undefined} />
+                        <Button text={toggleIsPrivate ? 'Set to PUBLIC' : 'Set to PRIVATE'} onClick={handleIsPrivateClick} submit={undefined} />
                     </div>
                 );
 
@@ -182,7 +189,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                     </div>
                 );
 
-            case 'lamp':
+            case 'lamp_brightness':
                 return (
                     <div>
                         <p>

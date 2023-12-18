@@ -25,14 +25,14 @@ public class RealEstateRequestController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<RealEstateDTO>> getAll(@RequestParam(required = false) Boolean approved) throws MessagingException, UnsupportedEncodingException {
-        List<RealEstateDTO> requests;
-        if (approved == null) {
-            requests = realEstateRequestService.getAllRealEstate();
-        }
-        else {
-            requests = realEstateRequestService.getAllRealEstate(approved);
-        }
+    public ResponseEntity<List<RealEstateDTO>> getAll() throws MessagingException, UnsupportedEncodingException {
+        List<RealEstateDTO> requests = realEstateRequestService.getAllRealEstate();
+
+        return new ResponseEntity<>(requests, HttpStatus.OK);
+    }
+    @GetMapping("/getAllUnresolved")
+    public ResponseEntity<List<RealEstateDTO>> getAllUnresolved() throws MessagingException, UnsupportedEncodingException {
+        List<RealEstateDTO> requests = realEstateRequestService.getAllUnresolvedRealEstate();
         return new ResponseEntity<>(requests, HttpStatus.OK);
     }
 }

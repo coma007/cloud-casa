@@ -33,7 +33,7 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
+        options.setServerURIs(new String[] {"tcp://localhost:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -123,13 +123,16 @@ public class MqttBeans {
                         lampService.brightnessHandler(id, content);
                         break;
                     case (MeasurementType.lampCommand):
-                        lampService.commandHandler(id, content, "SIMULATION");
+                        lampService.commandHandler(id, content);
                         break;
                     case (MeasurementType.sprinklerSystem):
                         // call service handler here
                         break;
                     case (MeasurementType.vehicleGateLicencePlates):
                         vehicleGateService.licencePlatesHandler(id, content);
+                        break;
+                    case (MeasurementType.vehicleGateMode):
+                        vehicleGateService.modeHandler(id, content);
                         break;
                     case (MeasurementType.vehicleGateCommand):
                         vehicleGateService.commandHandler(id, content);

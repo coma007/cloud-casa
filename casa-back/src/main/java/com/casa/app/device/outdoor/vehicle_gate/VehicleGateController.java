@@ -1,11 +1,14 @@
 package com.casa.app.device.outdoor.vehicle_gate;
 
+import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +24,19 @@ public class VehicleGateController {
     @GetMapping("/public/simulation/getAll")
     public ResponseEntity<List<VehicleGateSimulationDTO>> getAll() {
         return new ResponseEntity<>(vehicleGateService.getAllSimulation(), HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/open/{id}")
+    public ResponseEntity<?> toggleOn(@PathVariable Long id) throws NotFoundException, UserNotFoundException {
+        vehicleGateService.toggle(id, "OPEN");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/mode/{id}")
+    public ResponseEntity<?> toggleMode(@PathVariable Long id) throws NotFoundException, UserNotFoundException {
+        vehicleGateService.toggle(id, "MODE");
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
