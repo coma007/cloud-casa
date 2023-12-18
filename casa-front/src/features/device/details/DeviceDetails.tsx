@@ -192,7 +192,7 @@ const DeviceDetails = () => {
     let [username, setUsername] = useState('');
 
     const handleUsernameFilterClick = () => {
-        // console.log(username);
+        console.log(username);
         setCurrentPage(1);
         (async () => {
             const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
@@ -201,7 +201,7 @@ const DeviceDetails = () => {
         (async () => {            
             const fetchedMeasuremenets = await DeviceService.filter(dev.Id, dev.measurementTopic, fromDate, toDate, username, 1);
             setMeasurements(fetchedMeasuremenets)
-        })()
+        })();
     }
 
     const [fromDate, setFromDate] = useState('');

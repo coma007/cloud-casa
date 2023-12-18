@@ -51,7 +51,7 @@ public class InfluxDBService {
     }
 
 
-    public MeasurementList query(String measurement, Device device, Instant from, Instant to, User user) {
+    public MeasurementList query(String measurement, Device device, Instant from, Instant to, User user, boolean findUser) {
 
         if (from == null || to == null) {
             to = Instant.now();
@@ -63,7 +63,7 @@ public class InfluxDBService {
         String fromString = from.toString();
         String toString = to.toString();
 
-        String flux = buildFluxQuery(measurement, device, user, fromString, toString);
+        String flux = buildFluxQuery(measurement, device, user, fromString, toString, findUser);
         QueryApi queryApi = client.getQueryApi();
 
         List<FluxTable> tables = queryApi.query(flux);
@@ -80,17 +80,17 @@ public class InfluxDBService {
         return measurements;
     }
 
-    private String buildFluxQuery(String measurement, Device device, User user, String fromString, String toString) {
+    private String buildFluxQuery(String measurement, Device device, User user, String fromString, String toString, boolean findUser) {
         String flux = String.format(
                 "from(bucket:\"%s\") " +
                         "|> range(start: %s, stop: %s)" +
-                        "|> filter(fn: (r) => r[\"_measurement\"] == \"%s\" and r[\"id\"] == \"%s\" %s)   " +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"%s\" and r[\"id\"] == \"%s\")   " +
                         "|> sort(columns: [\"_time\"]) "  +
-                        "|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")",
+                        "|> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") %s",
                 config.bucket,
                 fromString, toString,
                 measurement, device.getId(),
-                user != null ? String.format(" and r[\"user_id\"] == \"%s\"", user.getUsername()) : "");
+                findUser ? (user != null ? String.format("|> filter(fn: (r) => r[\"user\"] == \"%s\")", user.getUsername()) : String.format("|> filter(fn: (r) => r[\"user\"] == \"%s\")", "")) : "");
         return flux;
     }
 

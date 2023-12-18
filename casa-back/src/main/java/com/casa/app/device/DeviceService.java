@@ -173,8 +173,12 @@ public class DeviceService {
         if (!to.equals("")) {
             toDate = Instant.parse(to);
         }
+        boolean findUser = true;
+        if (username.equals("")) {
+            findUser = false;
+        }
         User user = userService.getByUsername(username);
-        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
+        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user, findUser);
         if (data.getMeasurements().size() != 0) {
             Collections.reverse(data.getMeasurements());
             int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
@@ -195,8 +199,12 @@ public class DeviceService {
         if (!to.equals("")) {
             toDate = Instant.parse(to);
         }
+        boolean findUser = true;
+        if (username.equals("")) {
+            findUser = false;
+        }
         User user = userService.getByUsername(username);
-        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user);
+        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user, findUser);
         return (data.getMeasurements().size() == 0) ? 0 : (data.getMeasurements().size() / 10) + 1;
     }
 }
