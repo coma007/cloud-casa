@@ -358,9 +358,28 @@ const DeviceDetails = () => {
                         <Button text={"Reset filters"} onClick={resetFilters} submit={undefined} ></Button>
                     </div>
                     {isFilterVisible && (<div>
-                        <hr></hr>
-                        <FilterDate fromDate={fromDate} toDate={toDate} handleSubmit={handleDateFilterClick} handleFromDateChange={handleFromDateChange} toDateMin={toDateMin} setToDate={setToDate}></FilterDate>
-                        <hr></hr>
+                        {(["ambient_sensor"].includes(dev.type) && 
+                                      <>
+                                      <input
+                                      type="datetime-local"
+                                      id="scheduleStart"
+                                      name="from"
+                                      value={fromDate}
+                                      onChange={handleFromDateChange} />
+                                      <input
+                                      type="datetime-local"
+                                      id="scheduleEnd"
+                                      name="from"
+                                      value={toDate}
+                                      onChange={(e) => setToDate(e.target.value)} />
+                                      </>
+                        ) ||
+                        <>
+                            <hr></hr>
+                            <FilterDate fromDate={fromDate} toDate={toDate} handleSubmit={handleDateFilterClick} handleFromDateChange={handleFromDateChange} toDateMin={toDateMin} setToDate={setToDate}></FilterDate>
+                            <hr></hr>
+                        </>
+                        }
                         {
                             (!["ambient_sensor", "lamp"].includes(dev.type)) &&
                             <>
