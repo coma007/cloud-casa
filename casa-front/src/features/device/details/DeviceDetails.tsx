@@ -126,6 +126,23 @@ const DeviceDetails = () => {
                 
             })
         }
+
+        else if (fetchedDevice.type === "air_conditioning") {
+            WebSocketService.createSocket("/topic/air_conditioning_commands/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, attachment : message.attachment}, ...measurements.measurements]
+                if (newMeasurements.length > 10) {
+                   newMeasurements = newMeasurements.slice(0, 10)
+                }
+                setMeasurements({
+                    deviceType : measurements.deviceType,
+                    deviceId : measurements.deviceId,
+                    from : measurements.from,
+                    to : measurements.to,
+                    measurements : newMeasurements,
+                })
+                
+            })
+        }
     }
 
     useEffect(() => {
@@ -199,6 +216,26 @@ const DeviceDetails = () => {
                 console.log(measurements)
                 if (currentPage == 1) {
                     let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, temperature : message.attachment.temperature, humidity : message.attachment.humidity}, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                       newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType : measurements.deviceType,
+                        deviceId : measurements.deviceId,
+                        from : measurements.from,
+                        to : measurements.to,
+                        measurements : newMeasurements,
+                    })
+                }
+            })
+        }
+
+        else if (dev.type === "air_conditioning") {    
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/air_conditioning_commands/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+                console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, attachment : message.attachment}, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                        newMeasurements = newMeasurements.slice(0, 10)
                     }
@@ -522,10 +559,9 @@ const DeviceDetails = () => {
                     </div>)}
                     {
                         // (["solar_panel_system"].includes(dev.type)) &&
-                        (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning"].includes(dev.type)) &&
                         (
                             <>
-
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />
                                 <div>
                                     <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />

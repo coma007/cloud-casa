@@ -1,6 +1,7 @@
 package com.casa.app.device.home.air_conditioning;
 
 import com.casa.app.device.Device;
+import com.casa.app.device.DeviceController;
 import com.casa.app.device.DeviceRepository;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionModeDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
@@ -10,6 +11,7 @@ import com.casa.app.device.home.air_conditioning.measurements.commands.*;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionModeExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
+import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.notifications.Notification;
 import com.casa.app.notifications.NotificationRepository;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
@@ -27,6 +29,8 @@ import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
+import com.casa.app.websocket.SocketMessage;
+import com.casa.app.websocket.WebSocketController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -65,6 +69,8 @@ public class AirConditioningService {
     private AirConditionScheduleRepository airConditionScheduleRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private WebSocketController webSocketController;
 
     public List<AirConditioningSimulationDTO> getAllSimulation() {
         List<AirConditioning> airConditioners = airConditioningRepository.findAll();
@@ -130,7 +136,8 @@ public class AirConditioningService {
 //            device.setWorking(working);
             notificationService.makeNotification(user,
                     "Setting air condition " + (working ? "ON" : "OFF") + ", was " + (exec ? "successful" : "failure") );
-            AirConditionWorkingExecution result = new AirConditionWorkingExecution(device.getId(), tokens[0], executed, username, Instant.now());
+            AirConditionWorkingExecution result = new AirConditionWorkingExecution(device.getId(), tokens[1], executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<AirConditionWorkingExecution>("air_conditioning_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
@@ -158,6 +165,7 @@ public class AirConditioningService {
             notificationService.makeNotification(user, "Setting air condition temperature to "
                     + temperature + ", was " + (exec ? "successful" : "failure") );
             AirConditionTemperatureExecution result = new AirConditionTemperatureExecution(device.getId(), temperature, executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<AirConditionTemperatureExecution>("air_conditioning_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
@@ -185,6 +193,7 @@ public class AirConditioningService {
             notificationService.makeNotification(user, "Setting air condition mode to "
                     + mode + ", was " + (exec ? "successful" : "failure"));
             AirConditionModeExecution result = new AirConditionModeExecution(device.getId(), mode, executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<AirConditionModeExecution>("air_conditioning_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
