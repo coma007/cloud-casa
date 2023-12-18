@@ -27,7 +27,7 @@ const DeviceDetails = () => {
     const location = useLocation();
 
     useEffect(() => {
-        const receivedProps : {id : number, type : string} = location.state;
+        const receivedProps: { id: number, type: string } = location.state;
         // console.log(receivedProps);
         setDeviceType(receivedProps.type);
         setDeviceId(receivedProps.id);
@@ -47,41 +47,80 @@ const DeviceDetails = () => {
         })()
     }, [deviceId]);
 
-    const createWebSocket = (fetchedDevice : any, measurements : any) => {
+    const createWebSocket = (fetchedDevice: any, measurements: any) => {
+
+        console.log(fetchedDevice.type)
         if (fetchedDevice.type === "house_battery") {
-            WebSocketService.createSocket("/topic/house-battery-power-usage/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
-                let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, power : message.attachment.power}, ...measurements.measurements]
+            WebSocketService.createSocket("/topic/house-battery-power-usage/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, power: message.attachment.power }, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
-                   newMeasurements = newMeasurements.slice(0, 10)
+                    newMeasurements = newMeasurements.slice(0, 10)
                 }
                 setMeasurements({
-                    deviceType : measurements.deviceType,
-                    deviceId : measurements.deviceId,
-                    from : measurements.from,
-                    to : measurements.to,
-                    measurements : newMeasurements,
+                    deviceType: measurements.deviceType,
+                    deviceId: measurements.deviceId,
+                    from: measurements.from,
+                    to: measurements.to,
+                    measurements: newMeasurements,
                 })
-                
+
+            })
+        }
+        else if (fetchedDevice.type === "lamp_brightness") {
+            WebSocketService.createSocket("/topic/lamp_brightness/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                // console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, brightness: message.attachment.brightness }, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                        newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
+                    })
+                }
             })
         }
     }
 
     useEffect(() => {
-        if (dev.type === "house_battery") {    
+        if (dev.type === "house_battery") {
             WebSocketService.unsubscribe()
-            WebSocketService.openSocket("/topic/house-battery-power-usage/"+deviceId, (message: {topic : string, message : string, fromId : string, toId : string, attachment : any}) => {
+            WebSocketService.openSocket("/topic/house-battery-power-usage/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
                 // console.log(measurements)
                 if (currentPage == 1) {
-                    let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, power : message.attachment.power}, ...measurements.measurements]
+                    let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, power: message.attachment.power }, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
-                       newMeasurements = newMeasurements.slice(0, 10)
+                        newMeasurements = newMeasurements.slice(0, 10)
                     }
                     setMeasurements({
-                        deviceType : measurements.deviceType,
-                        deviceId : measurements.deviceId,
-                        from : measurements.from,
-                        to : measurements.to,
-                        measurements : newMeasurements,
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
+                    })
+                }
+            })
+        }
+        else if (dev.type === "lamp_brightness") {
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/lamp_brightness/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                // console.log(measurements)
+                if (currentPage == 1) {
+                    let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, brightness: message.attachment.brightness }, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                        newMeasurements = newMeasurements.slice(0, 10)
+                    }
+                    setMeasurements({
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
                     })
                 }
             })
@@ -198,7 +237,7 @@ const DeviceDetails = () => {
             const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
             setNumberOfPages(fetchedNumberOfPages);
         })();
-        (async () => {            
+        (async () => {
             const fetchedMeasuremenets = await DeviceService.filter(dev.Id, dev.measurementTopic, fromDate, toDate, username, 1);
             setMeasurements(fetchedMeasuremenets)
         })()
@@ -223,7 +262,7 @@ const DeviceDetails = () => {
         setToDate(to);
         setCurrentPage(1);
         (async () => {
-            const fetchedNumberOfPages = await DeviceService.getPageNumber(deviceId, dev.measurementTopic, fromDate, toDate, username);
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
             setNumberOfPages(fetchedNumberOfPages);
         })();
         (async () => {
@@ -278,7 +317,7 @@ const DeviceDetails = () => {
         })()
     }
 
-    const changePage = (pageNumber : number) => {
+    const changePage = (pageNumber: number) => {
         setCurrentPage(pageNumber)
     }
 
@@ -327,25 +366,25 @@ const DeviceDetails = () => {
                         (["solar_panel_system"].includes(dev.type)) &&
                         // (["solar_panel_system", "vehicle_gate"].includes(dev.type)) &&
                         (
-                        <>
-                            <DetailsTable measurements={measurements} deviceType={deviceType} />
-                            <div>
-                                <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
-                            </div>
-                        </>)
+                            <>
+                                <DetailsTable measurements={measurements} deviceType={deviceType} />
+                                <div>
+                                    <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
+                                </div>
+                            </>)
                     }
-                    {   
+                    {
                         // (["house_battery"].includes(dev.type)) &&
                         (["house_battery", "lamp_brightness"].includes(dev.type)) &&
                         (
-                        <>
-                            <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} />
-                            <div>
-                                <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
-                            </div>
-                        </>
+                            <>
+                                <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} />
+                                <div>
+                                    <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
+                                </div>
+                            </>
                         )
-                        
+
                     }
                 </div>
             </div>

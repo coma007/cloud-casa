@@ -38,7 +38,7 @@ public class LampService {
     public void brightnessHandler(Long id, String message) {
         Double brightness = Double.parseDouble(message);
         LampBrightnessMeasurement lamp = new LampBrightnessMeasurement( id, brightness, Instant.now());
-        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampBrightness, message, id.toString(), id.toString(), null));
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampBrightness, message, id.toString(), id.toString(), lamp));
         influxDBService.write(lamp);
     }
 
@@ -47,7 +47,7 @@ public class LampService {
         Boolean isOn = Boolean.parseBoolean(message.split("|")[0]);
         LampCommandMeasurement lamp = new LampCommandMeasurement( id, isOn, user, Instant.now());
         if (user.equals("SIMULATION")) {
-            webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampCommand, message, id.toString(), id.toString(), null));
+            webSocketController.sendMessage(new SocketMessage<>(MeasurementType.lampCommand, message, id.toString(), id.toString(), lamp));
         }
         influxDBService.write(lamp);
     }
