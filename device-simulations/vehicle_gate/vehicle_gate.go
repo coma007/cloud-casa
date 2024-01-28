@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"slices"
+	//"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -64,7 +64,7 @@ func (gate *VehicleGate) ToggleOpen() {
 }
 
 func (gate *VehicleGate) ToggleMode() {
-	if (gate.CurrentMode == PRIVATE) {
+	if gate.CurrentMode == PRIVATE {
 		gate.CurrentMode = PUBLIC
 	} else {
 		gate.CurrentMode = PRIVATE
@@ -100,7 +100,8 @@ func (gate *VehicleGate) CanPass(licencePlates string) bool {
 	if gate.CurrentMode == PUBLIC {
 		return true
 	}
-	return slices.Contains(gate.AllowedVehicles, licencePlates)
+	return false
+	//return slices.Contains(gate.AllowedVehicles, licencePlates)
 }
 
 func (gate *VehicleGate) DetectObject() bool {

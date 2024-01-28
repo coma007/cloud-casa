@@ -3,6 +3,7 @@ package main
 import (
 	"device-simulations/air_conditioning"
 	"device-simulations/ambient_sensor"
+	"device-simulations/electric_vehicle_charger"
 	"device-simulations/house_battery"
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
@@ -19,31 +20,43 @@ type Device interface {
 }
 
 func main() {
-	solarPanels := fetchDevices[solar_panels.SolarPanel]("solarPanelSystem/")
-	houseBatteries := fetchDevices[house_battery.HouseBattery]("houseBattery/")
-	lamps := fetchDevices[lamp.Lamp]("lamp/")
-	gates := fetchDevices[vehicle_gate.AuxVehicleGate]("vehicleGate/")
-	airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
-	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
+	//solarPanels := fetchDevices[solar_panels.SolarPanel]("solarPanelSystem/")
+	//houseBatteries := fetchDevices[house_battery.HouseBattery]("houseBattery/")
+	//lamps := fetchDevices[lamp.Lamp]("lamp/")
+	//gates := fetchDevices[vehicle_gate.AuxVehicleGate]("vehicleGate/")
+	//airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
+	//sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
+	//
+	//for _, item := range solarPanels {
+	//	go solar_panels.StartSimulation(item)
+	//}
+	//for _, item := range houseBatteries {
+	//	go house_battery.StartSimulation(item)
+	//}
+	//for _, item := range lamps {
+	//	go lamp.StartSimulation(item)
+	//}
+	//for _, item := range gates {
+	//	go vehicle_gate.StartSimulation(item.ToModel())
+	//}
+	//for _, item := range airConditioners {
+	//	go air_conditioning.StartSimulation(item.ToModel())
+	//}
+	//for _, item := range sensors {
+	//	go ambient_sensor.StartSimulation(item)
+	//}
 
-	for _, item := range solarPanels {
-		go solar_panels.StartSimulation(item)
-	}
-	for _, item := range houseBatteries {
-		go house_battery.StartSimulation(item)
-	}
-	for _, item := range lamps {
-		go lamp.StartSimulation(item)
-	}
-	for _, item := range gates {
-		go vehicle_gate.StartSimulation(item.ToModel())
-	}
-	for _, item := range airConditioners {
-		go air_conditioning.StartSimulation(item.ToModel())
-	}
-	for _, item := range sensors {
-		go ambient_sensor.StartSimulation(item)
-	}
+	go electric_vehicle_charger.StartSimulation(electric_vehicle_charger.ElectricVehicleCharger{
+		Id:          0,
+		ChargePower: 20,
+		NumOfSlots:  3,
+		Exported:    0,
+		Imported:    0,
+		PowerUsage:  0,
+		TakenSlots:  nil,
+		Slots:       nil,
+	})
+
 	for {
 		time.Sleep(1 * time.Second)
 	}

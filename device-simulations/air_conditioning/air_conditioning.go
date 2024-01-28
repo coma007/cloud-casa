@@ -6,7 +6,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	wr "github.com/mroth/weightedrand"
 	"math/rand"
-	"slices"
+	//"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -202,9 +202,9 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 	for i, mode := range conditioner.SupportedModes {
 		stringArray[i] = ToString(mode)
 	}
-	if !slices.Contains(stringArray, contentTokens[1]) {
-		result = FAILURE
-	}
+	//if !slices.Contains(stringArray, contentTokens[1]) {
+	//	result = FAILURE
+	//}
 
 	if result == SUCCESS {
 		switch contentTokens[1] {
