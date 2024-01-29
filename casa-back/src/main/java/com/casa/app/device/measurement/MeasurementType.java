@@ -1,6 +1,7 @@
 package com.casa.app.device.measurement;
 
 public class MeasurementType {
+    public final static String online = "online";
     public final static String airConditioningWorkingAck = "air_conditioning_working_ack";
     public final static String airConditioningTemperatureAck = "air_conditioning_temperature_ack";
     public final static String airConditioningModeAck = "air_conditioning_mode_ack";
