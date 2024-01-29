@@ -61,9 +61,6 @@ public class DeviceStatusService {
 //                    System.out.println("Pobegulja");
                     d.setStatus(DeviceStatus.OFFLINE);
                     deviceRepository.save(d);
-                    
-                    OnlineMeasurement online = new OnlineMeasurement( d.getId(), false, Instant.now());
-                    influxDBService.write(online);
                 }
             }
         }
