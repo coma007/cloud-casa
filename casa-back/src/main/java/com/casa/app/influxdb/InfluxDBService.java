@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class InfluxDBService {
@@ -80,6 +80,45 @@ public class InfluxDBService {
         return measurements;
     }
 
+    public OnlineMeasurementList queryActivity(Device device, Instant from, Instant to) {
+
+        if (from == null || to == null) {
+            to = Instant.now();
+            from = to.minus(24, ChronoUnit.HOURS);
+        }
+        else if (Duration.between(from, to).toDays() > 30) {
+            from = to.minus(1, ChronoUnit.MONTHS);
+        }
+        String fromString = from.toString();
+        String toString = to.toString();
+
+        boolean hourly = true;
+        if (Duration.between(from, to).toDays() > 2) {
+            hourly = false;
+        }
+
+        String flux = buildFluxActivityQuery(device, fromString, toString, hourly);
+        QueryApi queryApi = client.getQueryApi();
+
+        List<FluxTable> tables = queryApi.query(flux);
+
+        HashMap<String, String> counts = tables.stream()
+                .flatMap(table -> table.getRecords().stream())  // Flatten the records
+                .map(FluxRecord::getValues)
+                .map(values -> {
+                    String timeValue = String.valueOf(values.get("_time"));
+                    String valueValue = String.valueOf(values.get("_value"));
+                    return Map.entry(timeValue, valueValue);
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (existing, replacement) -> existing, HashMap::new));
+
+        Long maxCount = (60L / 15L) * 60L;
+        if (!hourly) {
+            maxCount *= 24L;
+        }
+        return new OnlineMeasurementList(device.getId(), from, to, new TreeMap<>(counts), hourly, maxCount, 15L);
+    }
+
     private String buildFluxQuery(String measurement, Device device, User user, String fromString, String toString, boolean findUser) {
         String flux = String.format(
                 "from(bucket:\"%s\") " +
@@ -93,6 +132,24 @@ public class InfluxDBService {
                 findUser ? (user != null ? String.format("|> filter(fn: (r) => r[\"user\"] == \"%s\")", user.getUsername()) : String.format("|> filter(fn: (r) => r[\"user\"] == \"%s\")", "")) : "");
         return flux;
     }
+
+    private String buildFluxActivityQuery(Device device,String fromString, String toString, boolean hourly) {
+        String flux = String.format(
+                "import \"date\"" +
+                        "from(bucket:\"%s\") " +
+                        "|> range(start: %s, stop: %s)" +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"online\" and r[\"id\"] == \"%s\" and r._field == \"is_online\")  " +
+                        "|> aggregateWindow(every: 1%s, fn: count, createEmpty: true)" +
+                        "|> map(fn: (r) => ({ r with _time: date.truncate(t: r._time, unit: 1%s) }))" +
+                        "|> sort(columns: [\"_time\"])",
+                config.bucket,
+                fromString, toString,
+                device.getId(),
+                hourly ? "h" : "d",
+                hourly ? "h" : "d");
+        return flux;
+    }
+
 
 
 }
