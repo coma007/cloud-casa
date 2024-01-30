@@ -2,7 +2,6 @@ package com.casa.app.device.large_electric.electric_vehicle_charger;
 
 
 import com.casa.app.device.large_electric.electric_vehicle_charger.dto.ElectricVehicleChargerSimulationDTO;
-import com.casa.app.device.large_electric.house_battery.dto.HouseBatterySimulationDTO;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

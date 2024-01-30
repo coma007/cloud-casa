@@ -1,4 +1,4 @@
-package com.casa.app.device.large_electric.electric_vehicle_charger;
+package com.casa.app.device.large_electric.electric_vehicle_charger.measurement;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,14 +10,19 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.electricVehicleCharger)
+@Measurement(name = MeasurementType.electricVehicleChargerPowerUsage)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ElectricVehicleChargerMeasurement extends AbstractMeasurement {
-
+public class ElectricVehicleChargerPowerUsageMeasurement extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
+
+    @Column
+    double power;
+
+    @Column
+    int slotNum;
 
     // add your custom columns
 

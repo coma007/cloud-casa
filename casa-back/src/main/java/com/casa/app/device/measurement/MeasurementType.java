@@ -9,7 +9,8 @@ public class MeasurementType {
     public final static String airConditioningWorkingCommand = "air_conditioning_working_command";
     public final static String ambientSensor = "ambient_sensor";
     public final static String washingMachine = "washing_machine";
-    public final static String electricVehicleCharger = "electric_vehicle_charger";
+    public final static String electricVehicleChargerCommand = "electric_vehicle_charger_command";
+    public final static String electricVehicleChargerPowerUsage = "electric_vehicle_charger_power_usage";
     public final static String houseBatteryImportExport = "house_battery_import_export";
     public final static String houseBatteryState = "house_battery_state";
     public final static String houseBatteryPowerUsage = "house_battery_power_usage";

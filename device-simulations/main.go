@@ -50,11 +50,10 @@ func main() {
 		Id:          0,
 		ChargePower: 20,
 		NumOfSlots:  3,
-		Exported:    0,
-		Imported:    0,
-		PowerUsage:  0,
+		PowerUsage:  nil,
 		TakenSlots:  nil,
 		Slots:       nil,
+		Client:      nil,
 	})
 
 	for {
