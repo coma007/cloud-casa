@@ -1,4 +1,4 @@
-package air_conditioning
+package utils
 
 import "time"
 

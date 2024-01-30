@@ -4,14 +4,15 @@ import (
 	"device-simulations/utils"
 	"encoding/json"
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
-	wr "github.com/mroth/weightedrand"
 	"math/rand"
 	"os"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	wr "github.com/mroth/weightedrand"
 )
 
 type AuxAirConditioningMode string
@@ -118,8 +119,8 @@ type AirConditioning struct {
 	CurrentTemperature float64
 	TargetTemperature  float64
 	CurrentMode        AuxAirConditioningMode
-	Schedules          []AirConditioningSchedule
-	currentSchedule    AirConditioningSchedule
+	Schedules          []utils.AirConditioningSchedule
+	currentSchedule    utils.AirConditioningSchedule
 }
 
 func (conditioner *AirConditioning) handleScheduleCommand(client mqtt.Client, msg mqtt.Message) {
@@ -128,7 +129,7 @@ func (conditioner *AirConditioning) handleScheduleCommand(client mqtt.Client, ms
 	tokens := strings.Split(message, "~")
 	content := tokens[1]
 	contentTokens := strings.Split(content, "|")
-	var newSchedule AirConditioningSchedule
+	var newSchedule utils.AirConditioningSchedule
 	err := json.Unmarshal([]byte(contentTokens[1]), &newSchedule)
 
 	result := "SUCCESS"
@@ -166,9 +167,9 @@ func (conditioner *AirConditioning) handleScheduleCommand(client mqtt.Client, ms
 	utils.SendComplexMessage(client, "air_conditioning_new_schedule_ack", conditioner.Id, data)
 }
 
-func (conditioner *AirConditioning) getCurrentSchedule() *AirConditioningSchedule {
+func (conditioner *AirConditioning) getCurrentSchedule() *utils.AirConditioningSchedule {
 	for _, schedule := range conditioner.Schedules {
-		if schedule.Activated && !schedule.Override && TimeIsBetween(time.Now(), schedule.StartTime.Time, schedule.EndTime.Time) {
+		if schedule.Activated && !schedule.Override && utils.TimeIsBetween(time.Now(), schedule.StartTime.Time, schedule.EndTime.Time) {
 			return &schedule
 		}
 	}
@@ -387,7 +388,7 @@ func (conditioner *AirConditioning) findIncrement() float64 {
 	return increment
 }
 
-func (conditioner *AirConditioning) existsOverlapping(newSchedule AirConditioningSchedule) bool {
+func (conditioner *AirConditioning) existsOverlapping(newSchedule utils.AirConditioningSchedule) bool {
 	for _, schedule := range conditioner.Schedules {
 		if !schedule.Override &&
 			newSchedule.StartTime.Time.Before(schedule.EndTime.Time) &&
