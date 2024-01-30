@@ -13,6 +13,8 @@ import { useLocation } from 'react-router-dom'
 import DetailsTable from './inspect/table/DetailsTable'
 import Pagination from '../../../components/tables/Pagination/Pagination'
 import { WebSocketService } from '../../../api/websocket/WebSocketService'
+import ActivityChart from './inspect/graph/ActivityChart'
+import { OnlineMeasurementList } from '../OnlineMeasurementList'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -25,6 +27,8 @@ const DeviceDetails = () => {
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [socket, setSocket] = useState(null);
     const location = useLocation();
+
+
 
     useEffect(() => {
         const receivedProps: { id: number, type: string } = location.state;
@@ -531,6 +535,49 @@ const DeviceDetails = () => {
         dev.measurementTopic = mode;
     }
 
+
+
+    const [showActivity, setShowActivity] = useState(false);
+    const [activityData, setActivityData] = useState<OnlineMeasurementList | undefined>();
+    const handleShowActivity = (e) => {
+        if (!showActivity) {
+            (async () => {
+                if (Object.keys(dev).length > 0) {
+                    let from = fromDate;
+                    let to = toDate;
+                    if (from != "") {
+                        from = new Date(fromDate).toISOString();
+                    }
+                    if (to != "") {
+                        to = new Date(toDate).toISOString();
+                    }
+                    const activity = await DeviceService.filterActivity(dev.Id, from, to);
+                    setActivityData(activity);
+                }
+            })();
+        }
+        setShowActivity(!showActivity);
+    }
+
+    useEffect(() => {
+        if (showActivity) {
+            (async () => {
+                if (Object.keys(dev).length > 0) {
+                    let from = fromDate;
+                    let to = toDate;
+                    if (from != "") {
+                        from = new Date(fromDate).toISOString();
+                    }
+                    if (to != "") {
+                        to = new Date(toDate).toISOString();
+                    }
+                    const activity = await DeviceService.filterActivity(dev.Id, from, to);
+                    setActivityData(activity);
+                }
+            })();
+        }
+    }, [fromDate, toDate])
+
     return (
         <div>
             <Menu admin={false} />
@@ -538,7 +585,7 @@ const DeviceDetails = () => {
             <div className={DeviceDetailsCSS.wrapper}>
                 <PageTitle title="Device details" description="Manage and inspect your device." />
                 <div className={DeviceDetailsCSS.right}>
-                    <Button text={'Show availability'} onClick={undefined} submit={undefined}></Button>
+                    <Button text={!showActivity ? 'Show activity' : 'Hide activity'} onClick={handleShowActivity} submit={undefined}></Button>
                 </div>
             </div>
 
@@ -598,12 +645,12 @@ const DeviceDetails = () => {
                         ) ||
                             <>
                                 <hr></hr>
-                                <FilterDate fromDate={fromDate} toDate={toDate} handleSubmit={handleDateFilterClick} handleFromDateChange={handleFromDateChange} toDateMin={toDateMin} setToDate={setToDate}></FilterDate>
+                                <FilterDate showActivity={showActivity} fromDate={fromDate} toDate={toDate} handleSubmit={handleDateFilterClick} handleFromDateChange={handleFromDateChange} toDateMin={toDateMin} setToDate={setToDate}></FilterDate>
                                 <hr></hr>
                             </>
                         }
                         {
-                            (!["ambient_sensor", "lamp"].includes(dev.type)) &&
+                            (!["ambient_sensor", "lamp"].includes(dev.type)) && !showActivity &&
                             <>
                                 <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleUsernameFilterClick}></FilterUser>
                                 <hr></hr>
@@ -611,8 +658,7 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        // (["solar_panel_system"].includes(dev.type)) &&
-                        (["solar_panel_system", "vehicle_gate", "air_conditioning"].includes(dev.type)) &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />
@@ -622,7 +668,7 @@ const DeviceDetails = () => {
                             </>)
                     }
                     {
-                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) &&
+                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
@@ -633,10 +679,16 @@ const DeviceDetails = () => {
                         )
 
                     }
+                    {
+                        showActivity &&
+                        <ActivityChart data={activityData} />
+
+
+                    }
 
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

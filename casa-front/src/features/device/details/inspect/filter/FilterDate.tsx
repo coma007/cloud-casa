@@ -3,8 +3,8 @@ import FilterCSS from './Filter.module.scss'
 import Button from '../../../../../components/forms/Button/Button';
 import { DeviceService } from '../../../DeviceService';
 
-const FilterDate = (props: { handleSubmit: any, handleFromDateChange : any, fromDate : string, toDate : string, toDateMin: string, setToDate : any }) => {
-  
+const FilterDate = (props: { handleSubmit: any, handleFromDateChange: any, fromDate: string, toDate: string, toDateMin: string, setToDate: any, showActivity: boolean }) => {
+
 
   return (
     <div>
@@ -26,14 +26,29 @@ const FilterDate = (props: { handleSubmit: any, handleFromDateChange : any, from
             min={props.toDateMin}
           />
         </span>
-        <Button text={'Filter'} onClick={() => props.handleSubmit(props.fromDate, props.toDate)} submit={undefined} />
+        {!props.showActivity &&
+          <Button text={'Filter'} onClick={() => props.handleSubmit(props.fromDate, props.toDate)} submit={undefined} />
+        }
       </div>
       <div>
         <small><i>or select a quick filter:</i></small>
+
         <button className={FilterCSS.smallButton}
           onClick={() => props.handleSubmit((new Date(new Date().getTime() - 60 * 60 * 1000)).toISOString(), (new Date()).toISOString())}>
           last hour
         </button>
+        {props.showActivity &&
+          <button className={FilterCSS.smallButton}
+            onClick={() => props.handleSubmit((new Date(new Date().getTime() - 2 * 60 * 60 * 1000)).toISOString(), (new Date()).toISOString())}>
+            last 3 hours
+          </button>
+        }
+        {props.showActivity &&
+          <button className={FilterCSS.smallButton}
+            onClick={() => props.handleSubmit((new Date(new Date().getTime() - 6 * 60 * 60 * 1000)).toISOString(), (new Date()).toISOString())}>
+            last 6 hours
+          </button>
+        }
         <button className={FilterCSS.smallButton}
           onClick={() => props.handleSubmit((new Date(new Date().getTime() - 12 * 60 * 60 * 1000)).toISOString(), (new Date()).toISOString())}>
           last 12 hours

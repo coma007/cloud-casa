@@ -1,8 +1,9 @@
 import axios from "axios";
-import { AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER } from "../../api";
+import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
 import { DeviceCreate, DeviceDetails, ModeCommand, Schedule, TemperatureCommand, WorkingCommand } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
+import { OnlineMeasurementList } from "./OnlineMeasurementList";
 
 export const DeviceService = {
     register: async function (formData: DeviceCreate): Promise<DeviceCreate> {
@@ -11,11 +12,18 @@ export const DeviceService = {
         return response.data;
     },
 
-    filter: async function (id: number, measurement: string, from: string, to: string, username: string, page : number): Promise<DeviceMeasurementList> {
+    filter: async function (id: number, measurement: string, from: string, to: string, username: string, page: number): Promise<DeviceMeasurementList> {
         let response: ServiceResponse<DeviceMeasurementList> = await axios.get(DEVICE_FILTER(id, measurement, from, to, username, page));
 
         return response.data;
     },
+
+    filterActivity: async function (id: number, from: string, to: string): Promise<OnlineMeasurementList> {
+        let response: ServiceResponse<OnlineMeasurementList> = await axios.get(ACTIVITY_FILTER(id, from, to));
+
+        return response.data;
+    },
+
 
     getPageNumber: async function (id: number, measurement: string, from: string, to: string, username: string): Promise<number> {
         let response: ServiceResponse<number> = await axios.get(DEVICE_GET_PAGE_NUMBER(id, measurement, from, to, username));
@@ -35,7 +43,7 @@ export const DeviceService = {
         return response.data;
     },
 
-    getDeviceDetails: async function (deviceId : number): Promise<any> {
+    getDeviceDetails: async function (deviceId: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(DEVICE_GET_DETAILS(deviceId));
 
         return response.data;
@@ -88,7 +96,7 @@ export const DeviceService = {
             console.error(error);
         }
     },
-    toggleSolarPanelSystem: async function (deviceId : number): Promise<any> {
+    toggleSolarPanelSystem: async function (deviceId: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.post(DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM(deviceId));
         return response.data;
     },

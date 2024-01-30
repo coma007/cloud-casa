@@ -19,5 +19,4 @@ public class OnlineMeasurementList {
     private Boolean hourly;
     private Long maxCount;
     private Long delay;
-
 }
