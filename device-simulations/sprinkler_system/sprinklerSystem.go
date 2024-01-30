@@ -1,4 +1,4 @@
-package lamp
+package sprinkler_system
 
 import (
 	"device-simulations/utils"
@@ -61,6 +61,7 @@ func (sprinkler *Sprinkler) messageHandler(client mqtt.Client, msg mqtt.Message)
 		message := strconv.FormatBool(sprinkler.SprinklerOn) + "|" + tokens[2]
 		utils.SendMessage(client, "sprinkler_command", sprinkler.Id, message)
 	} else if tokens[1] == "SCHEDULE" {
+		fmt.Printf("Device %s changed SCHEDULE: %t\n", sprinkler.Id)
 		processMessage(tokens[2])
 		sprinkler.Schedule()
 	}

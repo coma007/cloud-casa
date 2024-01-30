@@ -6,6 +6,7 @@ import (
 	"device-simulations/house_battery"
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
+	"device-simulations/sprinkler_system"
 	"device-simulations/vehicle_gate"
 	"encoding/json"
 	"fmt"
@@ -17,7 +18,7 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
-		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor
+		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | sprinkler_system.Sprinkler
 }
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	gates := fetchDevices[vehicle_gate.AuxVehicleGate]("vehicleGate/")
 	airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
 	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
+	sprinklers := fetchDevices[sprinkler_system.Sprinkler]("sprinklerSystem/")
 
 	for _, item := range solarPanels {
 		go solar_panels.StartSimulation(item)
@@ -51,6 +53,9 @@ func main() {
 	}
 	for _, item := range sensors {
 		go ambient_sensor.StartSimulation(item)
+	}
+	for _, item := range sprinklers {
+		go sprinkler_system.StartSimulation(item)
 	}
 	for {
 		time.Sleep(1 * time.Second)
