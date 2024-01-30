@@ -64,14 +64,15 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/schedule")
-    public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException {
+    public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException {
         if(dto.isRepeating() && dto.getRepeatingDaysIncrement() == null){
             return ResponseEntity.badRequest().body("Repeat is set but increment is not, try setting increment");
         }
         if(dto.getRepeatingDaysIncrement() <= 0){
             return ResponseEntity.badRequest().body("Increment must be whole number greater than 0");
         }
-        airConditioningService.setSchedule(dto);
+        RegularUser currentUser = regularUserService.getUserByToken();
+        airConditioningService.setSchedule(dto, currentUser);
         return ResponseEntity.ok().build();
     }
 }

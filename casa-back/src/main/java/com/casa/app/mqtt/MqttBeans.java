@@ -99,6 +99,9 @@ public class MqttBeans {
                     case (MeasurementType.airConditioningTemperatureAck):
                         airConditioningService.handleTemperatureAckMessage(id, content);
                         break;
+                    case (MeasurementType.airConditioningNewScheduleAck):
+                        airConditioningService.handleNewScheduleAckMessage(id, content);
+                        break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
                         break;
