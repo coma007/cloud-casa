@@ -10,32 +10,39 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-type Sprinkler struct {
-	Id          int64 `json:"id"`
-	SprinklerOn bool  `json:"sprinklerOn"`
-	ForceQuit   bool  `json:"forceQuit"`
+type SprinklerSystem struct {
+	Id          int64                   `json:"id"`
+	SprinklerOn bool                    `json:"sprinklerOn"`
+	ForceQuit   bool                    `json:"forceQuit"`
+	Schedule    SprinklerSystemSchedule `json:"schedule"`
 }
 
-func (sprinkler *Sprinkler) ToggleWorking(working bool) {
+type SprinklerSystemSchedule struct {
+	StartTime     time.Time `json:"startTime"`
+	EndTime       time.Time `json:"endTime"`
+	ScheduledDays []bool    `json:"scheduledDays"`
+}
+
+func (sprinkler *SprinklerSystem) ToggleWorking(working bool) {
 	if sprinkler.ShouldWorkNow() && working == false {
 		sprinkler.ForceQuit = true
 	}
 	sprinkler.SprinklerOn = working
 }
 
-func (sprinkler *Sprinkler) Schedule() {
+func (sprinkler *SprinklerSystem) ScheduleWork() {
 
 }
 
-func (sprinkler *Sprinkler) ShouldWorkToday() bool {
+func (sprinkler *SprinklerSystem) ShouldWorkToday() bool {
 	return true
 }
 
-func (sprinkler *Sprinkler) ShouldWorkThisHour() bool {
+func (sprinkler *SprinklerSystem) ShouldWorkThisHour() bool {
 	return true
 }
 
-func (sprinkler *Sprinkler) ShouldWorkNow() bool {
+func (sprinkler *SprinklerSystem) ShouldWorkNow() bool {
 	if sprinkler.ShouldWorkToday() {
 		if sprinkler.ShouldWorkThisHour() {
 			return !sprinkler.ForceQuit
@@ -52,7 +59,7 @@ func processMessage(message string) {
 	fmt.Println(message)
 }
 
-func (sprinkler *Sprinkler) messageHandler(client mqtt.Client, msg mqtt.Message) {
+func (sprinkler *SprinklerSystem) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	if tokens[1] == "ON" {
@@ -63,11 +70,11 @@ func (sprinkler *Sprinkler) messageHandler(client mqtt.Client, msg mqtt.Message)
 	} else if tokens[1] == "SCHEDULE" {
 		fmt.Printf("Device %s changed SCHEDULE: %t\n", sprinkler.Id)
 		processMessage(tokens[2])
-		sprinkler.Schedule()
+		sprinkler.ScheduleWork()
 	}
 }
 
-func StartSimulation(device Sprinkler) {
+func StartSimulation(device SprinklerSystem) {
 	device.SprinklerOn = false
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
