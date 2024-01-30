@@ -2,17 +2,22 @@ package com.casa.app.device.outdoor.sprinkler_system;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.outdoor.sprinkler_system.dto.SprinklerSystemDetailsDTO;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id")
 public class SprinklerSystem extends Device {
+
+    @Embedded
+    private SprinklerSystemSchedule schedule;
 
     @Override public SprinklerSystemDetailsDTO toDetailsDTO() {
         SprinklerSystemDetailsDTO detailsDTO = new SprinklerSystemDetailsDTO();
@@ -22,6 +27,7 @@ public class SprinklerSystem extends Device {
         detailsDTO.setEnergyConsumption(this.getEnergyConsumption());
         detailsDTO.setPowerSupplyType(this.getPowerSupplyType().toString());
         detailsDTO.setRealEstateName(this.getRealEstate().getName());
+        detailsDTO.setSchedule(this.getSchedule());
         return detailsDTO;
     }
 }

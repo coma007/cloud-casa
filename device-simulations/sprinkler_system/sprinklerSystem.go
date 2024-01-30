@@ -78,6 +78,9 @@ func StartSimulation(device SprinklerSystem) {
 	device.SprinklerOn = false
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
+	fmt.Printf(device.Schedule.StartTime.GoString())
+	fmt.Printf(device.Schedule.EndTime.GoString())
+	fmt.Printf("%v", device.Schedule.ScheduledDays)
 	counter := 1
 	for {
 		if counter%4 == 0 {
