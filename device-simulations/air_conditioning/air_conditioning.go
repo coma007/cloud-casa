@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -400,10 +399,6 @@ func (conditioner *AirConditioning) existsOverlapping(newSchedule utils.AirCondi
 }
 
 func StartSimulation(device AirConditioning) {
-	err := os.Setenv("TZ", "Europe/Belgrade")
-	if err != nil {
-		fmt.Println(err)
-	}
 	client := utils.MqttSetup(device.Id, device.redirectCommand)
 	defer client.Disconnect(250)
 	rand.Seed(time.Now().UTC().UnixNano())

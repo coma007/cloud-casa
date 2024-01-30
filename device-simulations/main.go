@@ -8,8 +8,10 @@ import (
 	"device-simulations/solar_panels"
 	"device-simulations/vehicle_gate"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -19,6 +21,12 @@ type Device interface {
 }
 
 func main() {
+
+	err := os.Setenv("TZ", "Europe/Belgrade")
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	solarPanels := fetchDevices[solar_panels.SolarPanel]("solarPanelSystem/")
 	houseBatteries := fetchDevices[house_battery.HouseBattery]("houseBattery/")
 	lamps := fetchDevices[lamp.Lamp]("lamp/")
