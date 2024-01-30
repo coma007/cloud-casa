@@ -23,4 +23,6 @@ public class HouseBatteryController {
     public ResponseEntity<List<HouseBatterySimulationDTO>> getAll() {
         return new ResponseEntity<>(houseBatteryService.getAllSimulation(), HttpStatus.OK);
     }
+
+    
 }
