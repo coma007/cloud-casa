@@ -9,10 +9,7 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,7 +29,14 @@ public class SprinklerSystemController {
     @PermitAll
     @GetMapping("/turnOn/{id}")
     public ResponseEntity<?> toggleOn(@PathVariable Long id) throws NotFoundException, UserNotFoundException {
-//        sprinklerSystemService.toggleOn(id);
+        sprinklerSystemService.toggleOn(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/setSchedule/{id}")
+    public ResponseEntity<?> toggleOn(@PathVariable Long id, @RequestBody SprinklerSystemSchedule schedule) throws NotFoundException, UserNotFoundException {
+        sprinklerSystemService.setSchedule(id, schedule);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }
