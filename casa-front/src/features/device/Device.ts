@@ -27,11 +27,11 @@ export interface ModeCommand {
     id: number
 }
 
-export interface Schedule {
+export interface AirConditionerSchedule {
     startTime: string;
     endTime: string;
     deviceId: number;
-    
+
     working: boolean;
     mode: string | undefined;
     temperature: number | undefined;
@@ -41,4 +41,9 @@ export interface Schedule {
 }
 
 
+export interface SprinklerSchedule {
+    startTime: string;
+    endTime: string;
+    days: boolean[];
+}
 

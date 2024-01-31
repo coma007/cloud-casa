@@ -15,16 +15,17 @@ export const REQUEST_GET_ALL_UNRESOLVED = () => url + "/realEstateRequest/getAll
 
 export const DEVICE_REGISTER = () => url + "/device/register"
 export const DEVICE_GET_ALL_BY_OWNER = () => url + "/device/getAllByOwner"
-export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id : number) => url + "/device/getAllByRealEstate/" + id
-export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id : number) => url + "/solarPanelSystem/toggleStatus/" + id 
-export const DEVICE_GET_DETAILS = (id : number) => url + "/device/getDeviceDetails/" + id
+export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id: number) => url + "/device/getAllByRealEstate/" + id
+export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id: number) => url + "/solarPanelSystem/toggleStatus/" + id
+export const DEVICE_GET_DETAILS = (id: number) => url + "/device/getDeviceDetails/" + id
 
 export const AIR_CONDITION_TEMPERATURE = () => url + "/airConditioning/simulation/temperature"
 export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
 export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"
 export const AIR_CONDITION_SCHEDULE = () => url + "/airConditioning/simulation/schedule"
+export const SPRINKLER_SCHEDULE = (deviceId) => url + "/airConditioning/simulation/schedule/" + deviceId;
 
-export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page : number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
+export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page: number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
 export const ACTIVITY_FILTER = (id: number, from: string, to: string) => url + "/device/filterActivity?" + `id=${id}&` + `from=${from}&` + `to=${to}&`;
 export const DEVICE_GET_PAGE_NUMBER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filterPages?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
 export const LOCATION_CITIES = (country) => url + "/location/getAllCities/" + country;
