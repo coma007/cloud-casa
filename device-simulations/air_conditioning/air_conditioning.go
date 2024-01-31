@@ -4,7 +4,9 @@ import (
 	"device-simulations/utils"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"slices"
 	"strconv"
 	"strings"
@@ -137,15 +139,7 @@ func (conditioner *AirConditioning) handleScheduleCommand(client mqtt.Client, ms
 		return
 	}
 
-	loc := utils.GetTimezoneLocation()
-	newSchedule.StartTime.Time = time.Date(newSchedule.StartTime.Time.Year(),
-		newSchedule.StartTime.Time.Month(), newSchedule.StartTime.Time.Day(),
-		newSchedule.StartTime.Time.Hour(), newSchedule.StartTime.Time.Minute(),
-		newSchedule.StartTime.Time.Second(), newSchedule.StartTime.Time.Nanosecond(), loc)
-	newSchedule.EndTime.Time = time.Date(newSchedule.EndTime.Time.Year(),
-		newSchedule.EndTime.Time.Month(), newSchedule.EndTime.Time.Day(),
-		newSchedule.EndTime.Time.Hour(), newSchedule.EndTime.Time.Minute(),
-		newSchedule.EndTime.Time.Second(), newSchedule.EndTime.Time.Nanosecond(), loc)
+	newSchedule.FixTimezone()
 
 	now := time.Now()
 	if newSchedule.EndTime.Time.Before(newSchedule.StartTime.Time) ||
@@ -390,12 +384,40 @@ func (conditioner *AirConditioning) findIncrement() float64 {
 func (conditioner *AirConditioning) existsOverlapping(newSchedule utils.AirConditioningSchedule) bool {
 	for _, schedule := range conditioner.Schedules {
 		if !schedule.Override &&
-			newSchedule.StartTime.Time.Before(schedule.EndTime.Time) &&
-			schedule.StartTime.Time.Before(newSchedule.EndTime.Time) {
+			(newSchedule.StartTime.Time.Before(schedule.EndTime.Time) || newSchedule.StartTime.Time.Equal(schedule.EndTime.Time)) &&
+			(schedule.StartTime.Time.Before(newSchedule.EndTime.Time) || schedule.StartTime.Time.Equal(newSchedule.EndTime.Time)) {
 			return true
 		}
 	}
 	return false
+}
+
+func fetchDSchedules(id int64) []utils.AirConditioningSchedule {
+	url := "http://localhost:8080/api/airConditioning/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
+	var resp *http.Response
+	var err error
+
+	for {
+		resp, err = http.Get(url)
+		if err == nil {
+			break
+		}
+		time.Sleep(5 * time.Second)
+	}
+	defer resp.Body.Close()
+	responseBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var schedules []utils.AirConditioningSchedule
+
+	err = json.Unmarshal(responseBody, &schedules)
+	if err != nil {
+		panic(err)
+	}
+
+	return schedules
 }
 
 func StartSimulation(device AirConditioning) {
@@ -405,6 +427,10 @@ func StartSimulation(device AirConditioning) {
 	minTemp := device.MinTemperature
 	maxTemp := device.MaxTemperature
 	device.CurrentTemperature = minTemp + rand.Float64()*(maxTemp-minTemp)
+	device.Schedules = fetchDSchedules(device.Id)
+	for i, _ := range device.Schedules {
+		device.Schedules[i].FixTimezone()
+	}
 
 	for {
 		device.checkSchedule()

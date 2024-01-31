@@ -28,6 +28,7 @@ public class AirConditionSchedule {
     private boolean override;
     private boolean activated;
 
+
     @ManyToOne
     @JsonIgnore
     private AirConditioning airConditioning;

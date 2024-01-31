@@ -3,7 +3,8 @@ package utils
 import "time"
 
 type AirConditioningSchedule struct {
-	id int64
+	Id             int64 `json:"id"`
+	AirConditionId int64 `json:"airConditionId"`
 
 	StartTime CustomTime `json:"startTime"`
 	EndTime   CustomTime `json:"endTime"`
@@ -17,6 +18,18 @@ type AirConditioningSchedule struct {
 
 	Repeating              bool  `json:"repeating"`
 	RepeatingDaysIncrement int64 `json:"repeatingDaysIncrement"`
+}
+
+func (schedule *AirConditioningSchedule) FixTimezone() {
+	loc := GetTimezoneLocation()
+	schedule.StartTime.Time = time.Date(schedule.StartTime.Time.Year(),
+		schedule.StartTime.Time.Month(), schedule.StartTime.Time.Day(),
+		schedule.StartTime.Time.Hour(), schedule.StartTime.Time.Minute(),
+		schedule.StartTime.Time.Second(), schedule.StartTime.Time.Nanosecond(), loc)
+	schedule.EndTime.Time = time.Date(schedule.EndTime.Time.Year(),
+		schedule.EndTime.Time.Month(), schedule.EndTime.Time.Day(),
+		schedule.EndTime.Time.Hour(), schedule.EndTime.Time.Minute(),
+		schedule.EndTime.Time.Second(), schedule.EndTime.Time.Nanosecond(), loc)
 }
 
 type CustomTime struct {
@@ -35,8 +48,5 @@ func (t *CustomTime) UnmarshalJSON(b []byte) (err error) {
 }
 
 func TimeIsBetween(t, min, max time.Time) bool {
-	if min.After(max) {
-		min, max = max, min
-	}
 	return (t.Equal(min) || t.After(min)) && (t.Equal(max) || t.Before(max))
 }
