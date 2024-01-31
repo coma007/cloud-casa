@@ -3,6 +3,7 @@ package com.casa.app.device.large_electric.house_battery;
 import com.casa.app.device.large_electric.house_battery.dto.CityPowerUsageDTO;
 import com.casa.app.device.large_electric.house_battery.dto.HouseBatterySimulationDTO;
 import com.casa.app.device.large_electric.house_battery.dto.RealEstatePowerUsageDTO;
+import com.casa.app.exceptions.NotFoundException;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,10 +39,9 @@ public class HouseBatteryController {
 
     @PreAuthorize("hasAnyAuthority('admin')")
     @GetMapping("/powerUsageForCity")
-    public ResponseEntity<CityPowerUsageDTO> getPowerUsage(@RequestParam String from,
-                                           @RequestParam String to,
-                                           @RequestParam String cityName) {
-        CityPowerUsageDTO city = houseBatteryService.powerUsageByCity(from, to, cityName);
-        return new ResponseEntity<>(city, HttpStatus.OK);
+    public ResponseEntity<List<CityPowerUsageDTO>> getCityPowerUsage(@RequestParam String from,
+                                           @RequestParam String to) {
+        List<CityPowerUsageDTO> cities = houseBatteryService.powerUsageByCity(from, to);
+        return new ResponseEntity<>(cities, HttpStatus.OK);
     }
 }

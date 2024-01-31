@@ -17,6 +17,7 @@ import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.estate.RealEstate;
 import com.casa.app.estate.RealEstateRepository;
+import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.location.City;
 import com.casa.app.location.CityRepository;
@@ -122,34 +123,38 @@ public class HouseBatteryService {
         return estatesPowerUsage;
     }
 
-    public CityPowerUsageDTO powerUsageByCity(String from, String to, String cityName) {
-        City city = cityRepository.getCityByName(cityName);
-        List<RealEstate> estates = realEstateRepository.findAllByCity(city);
-        double power = 0;
-        double production = 0;
-        for (RealEstate e : estates) {
-            List<HouseBattery> batteries = houseBatteryRepository.findAllByRealEstate(e);
-            for (HouseBattery b : batteries) {
-                int pages = deviceService.queryNumOfPages(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
-                for (int i = 1; i <= pages; i++) {
-                    MeasurementList measurements = deviceService.queryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "", i);
-                    for (AbstractMeasurement m : measurements.getMeasurements()) {
-                        power += ((HouseBatteryPowerUsageMeasurement)m).getPower();
+    public List<CityPowerUsageDTO> powerUsageByCity(String from, String to){
+        List<City> cities = cityRepository.findAll();
+        List<CityPowerUsageDTO> cityPowerUsageDTOS = new ArrayList<>();
+        for (City c : cities) {
+            List<RealEstate> estates = realEstateRepository.findAllByCity(c);
+            double power = 0;
+            double production = 0;
+            for (RealEstate e : estates) {
+                List<HouseBattery> batteries = houseBatteryRepository.findAllByRealEstate(e);
+                for (HouseBattery b : batteries) {
+                    int pages = deviceService.queryNumOfPages(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
+                    for (int i = 1; i <= pages; i++) {
+                        MeasurementList measurements = deviceService.queryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "", i);
+                        for (AbstractMeasurement m : measurements.getMeasurements()) {
+                            power += ((HouseBatteryPowerUsageMeasurement) m).getPower();
+                        }
+                    }
+                }
+                List<SolarPanelSystem> systems = solarPanelSystemRepository.findAllByRealEstate(e);
+                for (SolarPanelSystem s : systems) {
+                    int pages = deviceService.queryNumOfPages(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
+                    for (int i = 1; i <= pages; i++) {
+                        MeasurementList measurements = deviceService.queryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "", i);
+                        for (AbstractMeasurement m : measurements.getMeasurements()) {
+                            production += ((SolarPanelSystemPowerMeasurement) m).getPower();
+                        }
                     }
                 }
             }
-            List<SolarPanelSystem> systems = solarPanelSystemRepository.findAllByRealEstate(e);
-            for (SolarPanelSystem s : systems) {
-                int pages = deviceService.queryNumOfPages(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
-                for (int i = 1; i <= pages; i++) {
-                    MeasurementList measurements = deviceService.queryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "", i);
-                    for (AbstractMeasurement m : measurements.getMeasurements()) {
-                        production += ((SolarPanelSystemPowerMeasurement)m).getPower();
-                    }
-                }
-            }
+            cityPowerUsageDTOS.add(new CityPowerUsageDTO(c.getName(), power, production));
         }
-        return new CityPowerUsageDTO(city.getName(), power, production);
+        return cityPowerUsageDTOS;
     }
 
     public void handleBatteryState(Long id, String message) {

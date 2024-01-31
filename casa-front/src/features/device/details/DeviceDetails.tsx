@@ -13,6 +13,7 @@ import { useLocation } from 'react-router-dom'
 import DetailsTable from './inspect/table/DetailsTable'
 import Pagination from '../../../components/tables/Pagination/Pagination'
 import { WebSocketService } from '../../../api/websocket/WebSocketService'
+import GraphPagination from '../../../components/tables/GraphPagination/GraphPagination'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -55,6 +56,9 @@ const DeviceDetails = () => {
                 let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, power: message.attachment.power }, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
                     newMeasurements = newMeasurements.slice(0, 10)
+                    if (numberOfPages == 1) {
+                        setNumberOfPages(numberOfPages + 1);
+                    }
                 }
                 setMeasurements({
                     deviceType: measurements.deviceType,
@@ -73,6 +77,9 @@ const DeviceDetails = () => {
                     let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, brightness: message.attachment.brightness }, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType: measurements.deviceType,
@@ -99,6 +106,9 @@ const DeviceDetails = () => {
                     }
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType: measurements.deviceType,
@@ -115,6 +125,9 @@ const DeviceDetails = () => {
                 let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, temperature : message.attachment.temperature, humidity: message.attachment.humidity}, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
                    newMeasurements = newMeasurements.slice(0, 10)
+                    if (numberOfPages == 1) {
+                        setNumberOfPages(numberOfPages + 1);
+                    }
                 }
                 setMeasurements({
                     deviceType : measurements.deviceType,
@@ -134,6 +147,9 @@ const DeviceDetails = () => {
                 let newMeasurements = [{ ...message.attachment, id : message.attachment.id}, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
                    newMeasurements = newMeasurements.slice(0, 10)
+                    if (numberOfPages == 1) {
+                        setNumberOfPages(numberOfPages + 1);
+                    }
                 }
                 setMeasurements({
                     deviceType : measurements.deviceType,
@@ -156,6 +172,9 @@ const DeviceDetails = () => {
                     let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, power: message.attachment.power }, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType: measurements.deviceType,
@@ -175,6 +194,9 @@ const DeviceDetails = () => {
                     let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, brightness: message.attachment.brightness }, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType: measurements.deviceType,
@@ -201,6 +223,9 @@ const DeviceDetails = () => {
                     }
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType: measurements.deviceType,
@@ -219,7 +244,10 @@ const DeviceDetails = () => {
                 if (currentPage == 1) {
                     let newMeasurements = [{id : message.attachment.id, timestamp : (new Date(message.attachment.timestamp)).getTime() / 1000, temperature : message.attachment.temperature, humidity : message.attachment.humidity}, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
-                       newMeasurements = newMeasurements.slice(0, 10)
+                        newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType : measurements.deviceType,
@@ -241,7 +269,10 @@ const DeviceDetails = () => {
                     message.attachment.timestamp = tstp;
                     let newMeasurements = [{ ...message.attachment, id : message.attachment.id}, ...measurements.measurements]
                     if (newMeasurements.length > 10) {
-                       newMeasurements = newMeasurements.slice(0, 10)
+                        newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
                     }
                     setMeasurements({
                         deviceType : measurements.deviceType,
@@ -619,10 +650,10 @@ const DeviceDetails = () => {
                         (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) &&
                         (
                         <>
-                            <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
-                            <div>
-                                <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} />
-                            </div>
+                            <GraphPagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage}>
+                                <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
+                            </GraphPagination>
+                                {/* <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} /> */}
                         </>
                         )
 

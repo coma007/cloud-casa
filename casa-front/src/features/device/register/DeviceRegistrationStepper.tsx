@@ -105,6 +105,7 @@ const StepperForm = () => {
 
   const nextStep = () => {
     console.log(formData)
+    console.log(step)
     if (formData.deviceType === "AmbientSensor" || formData.deviceType === "Lamp" || formData.deviceType === "SprinklerSystem") {
         register()
     } else {
