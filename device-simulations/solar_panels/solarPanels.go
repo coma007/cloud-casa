@@ -61,6 +61,7 @@ func (panel *SolarPanel) messageHandler(client mqtt.Client, msg mqtt.Message) {
 }
 
 func StartSimulation(device SolarPanel) {
+	//fmt.Println("Started simulation for: " + strconv.FormatInt(device.Id, 10))
 	device.Working = true
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)

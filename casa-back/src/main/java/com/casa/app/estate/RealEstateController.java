@@ -28,4 +28,10 @@ public class RealEstateController {
     public ResponseEntity<List<RealEstateDTO>> getAllByOwner() throws UserNotFoundException {
         return new ResponseEntity<>(realEstateService.getAllByOwner(), HttpStatus.OK);
     }
+
+    @GetMapping("/getAllApprovedByOwner")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<List<RealEstateDTO>> getAllApprovedByOwner() throws UserNotFoundException {
+        return new ResponseEntity<>(realEstateService.getAllApprovedByOwner(), HttpStatus.OK);
+    }
 }

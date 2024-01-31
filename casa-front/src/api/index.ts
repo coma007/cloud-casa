@@ -8,6 +8,7 @@ export const SUPER_AND_INIT = () => url + "/user/init";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
+export const ESTATE_GET_ALL_APPROVED_BY_OWNER = () => url + "/realEstate/getAllApprovedByOwner";
 
 export const REQUEST_MANAGE = () => url + "/realEstateRequest/manage";
 export const REQUEST_GET_ALL = () => url + "/realEstateRequest/getAll";
