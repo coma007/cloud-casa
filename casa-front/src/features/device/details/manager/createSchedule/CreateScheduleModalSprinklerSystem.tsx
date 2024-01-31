@@ -1,5 +1,5 @@
 import { FormikProps, FormikValues } from 'formik';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import InputField from '../../../../../components/forms/InputField/InputField';
 import ModalWindow from '../../../../../components/view/Modal/ModalWindow';
 import { DeviceService } from '../../../DeviceService';
@@ -12,8 +12,21 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
 
-    const [days, setDays] = useState([false, false, false, false, false, false, false]);
+    const [days, setDays] = useState(props.device.schedule.scheduledDays);
 
+    useEffect(() => {
+        if (props.device.schedule.startTime && props.device.schedule.endTime) {
+            const startDateTime = new Date(props.device.schedule.startTime * 1000);
+            const endDateTime = new Date(props.device.schedule.endTime * 1000);
+
+            const startTimeString = `${String(startDateTime.getHours()).padStart(2, '0')}:${String(startDateTime.getMinutes()).padStart(2, '0')}`;
+            const endTimeString = `${String(endDateTime.getHours()).padStart(2, '0')}:${String(endDateTime.getMinutes()).padStart(2, '0')}`;
+
+
+            setStartTime(startTimeString);
+            setEndTime(endTimeString);
+        }
+    }, []);
 
 
     const handleSubmit = () => {

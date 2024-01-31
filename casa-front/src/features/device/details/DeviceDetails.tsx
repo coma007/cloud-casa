@@ -353,6 +353,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     type: 'sprinkler_system',
                     measurementTopic: 'sprinkler_system',
+                    schedule: device.schedule
                 })
                 break;
             default:

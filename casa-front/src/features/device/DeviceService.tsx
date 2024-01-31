@@ -45,7 +45,6 @@ export const DeviceService = {
 
     getDeviceDetails: async function (deviceId: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(DEVICE_GET_DETAILS(deviceId));
-
         return response.data;
     },
 

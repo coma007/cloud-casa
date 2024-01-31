@@ -10,6 +10,7 @@ export interface DeviceDetails {
     powerSupplyType: string
     energyConsumption: number,
     type: string,
+    schedule?: SprinklerSchedule
 }
 
 export interface TemperatureCommand {
