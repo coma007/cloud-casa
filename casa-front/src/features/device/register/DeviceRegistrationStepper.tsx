@@ -39,7 +39,7 @@ const StepperForm = () => {
   useEffect(() => {
       (async function () {
           try {
-              const fetchedEstates = await EstateService.getAllByOwner();
+              const fetchedEstates = await EstateService.getAllApprovedByOwner();
               setRealEstates(fetchedEstates);
               setFormData({
                 deviceName: '',
