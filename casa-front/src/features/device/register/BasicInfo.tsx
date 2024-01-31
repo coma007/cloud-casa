@@ -74,7 +74,7 @@ const BasicInfo = ({ formData, handleChange, handleNameChange, estates , nextSte
                 <option value="ElectricVehicleCharger">Electric Vehicle Charger</option>
             </select>
             <div className={`${DeviceRegistrationStepperCSS.button} ${DeviceRegistrationStepperCSS.marginTop}`}>
-                <Button text={'Next'} onClick={nextStep} submit={undefined} />
+                <Button text={'Next'} onClick={handleNext} submit={undefined} />
             </div>
         </form>
     </div>

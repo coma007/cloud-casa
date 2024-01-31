@@ -4,6 +4,8 @@ import com.casa.app.exceptions.InvalidCredentialsException;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.user.dtos.NewPasswordDTO;
 import com.casa.app.user.dtos.UserDTO;
+import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import com.casa.app.user.superuser.SuperAdminService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 //@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
@@ -19,6 +23,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RegularUserService regularUserService;
 
     @Autowired
     private SuperAdminService superAdminService;
@@ -28,6 +34,13 @@ public class UserController {
     @GetMapping("/public/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id){
         UserDTO u = userService.getById(id);
+        return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/public")
+    public ResponseEntity<List<RegularUserDTO>> getAll(){
+        List<RegularUserDTO> u = regularUserService.getAll();
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
 

@@ -49,7 +49,7 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
 
     return (
         <ModalWindow
-            height="35%"
+            height="45%"
             width='40%'
             isOpen={props.show}
             closeWithdrawalModal={closeModal}
@@ -58,19 +58,24 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
             formId='NULL VALUE'
             buttonText="Change" >
             <div className={CreateScheduleModalCSS.row}>
-                <input
-                    type="time"
-                    id="scheduleStart"
-                    name="from"
-                    value={startTime}
-                    onChange={handleFromChange} />
-
-                <input
-                    type="time"
-                    id="scheduleEnd"
-                    name="to"
-                    onChange={handleToChange}
-                    value={endTime} />
+                <span>
+                    <label htmlFor="scheduleStart">Select start time</label>
+                    <input
+                        type="time"
+                        id="scheduleStart"
+                        name="from"
+                        value={startTime}
+                        onChange={handleFromChange} />
+                </span>
+                <span>
+                    <label htmlFor="scheduleStart">Select end time</label>
+                    <input
+                        type="time"
+                        id="scheduleEnd"
+                        name="to"
+                        onChange={handleToChange}
+                        value={endTime} />
+                </span>
             </div>
             <div className={CreateScheduleModalCSS.row}>
                 {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (

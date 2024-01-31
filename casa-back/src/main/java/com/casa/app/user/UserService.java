@@ -59,6 +59,7 @@ public class UserService {
         return UserDTO.toDto(userRepository.getReferenceById(id));
     }
 
+
     public User getUserByToken(){
         SecurityContext context = SecurityContextHolder.getContext();
         User user = (User) context.getAuthentication().getPrincipal();

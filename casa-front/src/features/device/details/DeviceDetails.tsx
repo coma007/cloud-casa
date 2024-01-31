@@ -650,7 +650,7 @@ const DeviceDetails = () => {
                             </>
                         }
                         {
-                            (!["ambient_sensor", "lamp"].includes(dev.type)) && !showActivity &&
+                            (!["ambient_sensor", "lamp_brightness"].includes(dev.type)) && !showActivity &&
                             <>
                                 <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleUsernameFilterClick}></FilterUser>
                                 <hr></hr>
@@ -668,7 +668,7 @@ const DeviceDetails = () => {
                             </>)
                     }
                     {
-                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) && !showActivity &&
+                        (["house_battery", "lamp_brightness", "ambient_sensor"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
