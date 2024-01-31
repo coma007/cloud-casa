@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	//"slices"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -100,8 +100,7 @@ func (gate *VehicleGate) CanPass(licencePlates string) bool {
 	if gate.CurrentMode == PUBLIC {
 		return true
 	}
-	return false
-	//return slices.Contains(gate.AllowedVehicles, licencePlates)
+	return slices.Contains(gate.AllowedVehicles, licencePlates)
 }
 
 func (gate *VehicleGate) DetectObject() bool {
