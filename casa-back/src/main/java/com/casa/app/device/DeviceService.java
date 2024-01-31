@@ -16,6 +16,7 @@ import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystem;
 import com.casa.app.device.large_electric.solar_panel_system.dto.SolarPanelSystemDetailsDTO;
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementList;
+import com.casa.app.device.measurement.OnlineMeasurementList;
 import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.device.outdoor.lamp.dto.LampDetailsDTO;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystem;
@@ -33,9 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.min;
 
@@ -206,5 +205,18 @@ public class DeviceService {
         User user = userService.getByUsername(username);
         MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user, findUser);
         return (data.getMeasurements().size() == 0) ? 0 : (data.getMeasurements().size() / 10) + 1;
+    }
+
+    public OnlineMeasurementList queryActivity(Long id, String from, String to) {
+        Device device = deviceRepository.getReferenceById(id);
+        Instant fromDate = null;
+        if (!from.equals("")) {
+            fromDate = Instant.parse(from);
+        }
+        Instant toDate = null;
+        if (!to.equals("")) {
+            toDate = Instant.parse(to);
+        }
+        return influxDBService.queryActivity(device, fromDate, toDate);
     }
 }

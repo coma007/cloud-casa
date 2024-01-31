@@ -1,12 +1,15 @@
 package com.casa.app.device.measurement;
 
 public class MeasurementType {
+    public final static String online = "online";
     public final static String airConditioningWorkingAck = "air_conditioning_working_ack";
+    public final static String airConditioningNewScheduleAck = "air_conditioning_new_schedule_ack";
     public final static String airConditioningTemperatureAck = "air_conditioning_temperature_ack";
     public final static String airConditioningModeAck = "air_conditioning_mode_ack";
     public final static String airConditioningModeCommand = "air_conditioning_mode_command";
     public final static String airConditioningTemperatureCommand = "air_conditioning_temperature_command";
     public final static String airConditioningWorkingCommand = "air_conditioning_working_command";
+    public final static String airConditioningNewScheduleCommand = "air_conditioning_new_schedule_command";
     public final static String ambientSensor = "ambient_sensor";
     public final static String washingMachine = "washing_machine";
     public final static String electricVehicleChargerCommand = "electric_vehicle_charger_command";

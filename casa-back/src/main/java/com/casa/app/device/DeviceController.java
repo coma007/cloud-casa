@@ -4,6 +4,7 @@ import com.casa.app.device.dto.DeviceDetailsDTO;
 import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
+import com.casa.app.device.measurement.OnlineMeasurementList;
 import com.casa.app.estate.RealEstateDTO;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.websocket.SocketMessage;
@@ -14,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/device")
@@ -61,6 +65,15 @@ public class DeviceController {
                                               @RequestParam String username) {
         int numOfPages = service.queryNumOfPages(id, measurement, from, to, username);
         return new ResponseEntity<>(numOfPages, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/filterActivity")
+    public ResponseEntity<OnlineMeasurementList> queryActivity(@RequestParam Long id,
+                                              @RequestParam String from,
+                                              @RequestParam String to) {
+        OnlineMeasurementList activity = service.queryActivity(id, from, to);
+        return new ResponseEntity<>(activity, HttpStatus.OK);
     }
 
     @GetMapping("/getAllByOwner")

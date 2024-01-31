@@ -2,14 +2,18 @@ package air_conditioning
 
 import (
 	"device-simulations/utils"
+	"encoding/json"
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
-	wr "github.com/mroth/weightedrand"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	wr "github.com/mroth/weightedrand"
 )
 
 type AuxAirConditioningMode string
@@ -57,9 +61,10 @@ const (
 )
 
 const (
-	TEMPERATURE_COMMAND = "temperature command"
-	MODE_COMMAND        = "mode command"
-	WORKING_COMMAND     = "working command"
+	TEMPERATURE_COMMAND  = "temperature command"
+	MODE_COMMAND         = "mode command"
+	WORKING_COMMAND      = "working command"
+	NEW_SCHEDULE_COMMAND = "new schedule command"
 )
 
 type AuxAirConditioning struct {
@@ -115,10 +120,97 @@ type AirConditioning struct {
 	CurrentTemperature float64
 	TargetTemperature  float64
 	CurrentMode        AuxAirConditioningMode
+	Schedules          []utils.AirConditioningSchedule
+	currentSchedule    utils.AirConditioningSchedule
+}
+
+func (conditioner *AirConditioning) handleScheduleCommand(client mqtt.Client, msg mqtt.Message) {
+
+	message := string(msg.Payload())
+	tokens := strings.Split(message, "~")
+	content := tokens[1]
+	contentTokens := strings.Split(content, "|")
+	var newSchedule utils.AirConditioningSchedule
+	err := json.Unmarshal([]byte(contentTokens[1]), &newSchedule)
+
+	result := "SUCCESS"
+	if err != nil {
+		result = "FAILURE"
+		return
+	}
+
+	newSchedule.FixTimezone()
+
+	now := time.Now()
+	if newSchedule.EndTime.Time.Before(newSchedule.StartTime.Time) ||
+		newSchedule.EndTime.Time.Before(now) ||
+		newSchedule.StartTime.Time.Before(now) ||
+		conditioner.existsOverlapping(newSchedule) {
+		result = "FAILURE"
+	}
+	overlap := conditioner.existsOverlapping(newSchedule)
+	fmt.Println(overlap)
+
+	if result != "FAILURE" {
+		conditioner.Schedules = append(conditioner.Schedules, newSchedule)
+	}
+
+	data := append(contentTokens, result)
+	fmt.Println("HANDLING Scheduling COMMAND")
+	utils.SendComplexMessage(client, "air_conditioning_new_schedule_ack", conditioner.Id, data)
+}
+
+func (conditioner *AirConditioning) getCurrentSchedule() *utils.AirConditioningSchedule {
+	for _, schedule := range conditioner.Schedules {
+		if schedule.Activated && !schedule.Override && utils.TimeIsBetween(time.Now(), schedule.StartTime.Time, schedule.EndTime.Time) {
+			return &schedule
+		}
+	}
+	return nil
+}
+
+func (conditioner *AirConditioning) overrideIfNeeded() {
+	current := conditioner.getCurrentSchedule()
+	if current != nil {
+		current.Override = true
+	}
+}
+
+func (conditioner *AirConditioning) checkSchedule() {
+	//        reset repeating schedules
+	for _, schedule := range conditioner.Schedules {
+		if schedule.EndTime.After(time.Now()) && schedule.Repeating {
+			schedule.Override = false
+			schedule.Activated = false
+			schedule.EndTime.Time.AddDate(0, 0, int(schedule.RepeatingDaysIncrement))
+			schedule.StartTime.Time.AddDate(0, 0, int(schedule.RepeatingDaysIncrement))
+		}
+	}
+
+	//        check for current schedules
+	for _, schedule := range conditioner.Schedules {
+		now := time.Now()
+		isBefore := schedule.StartTime.Time.Before(now) || schedule.StartTime.Time.Equal(now)
+
+		if isBefore && !schedule.Activated && !schedule.Override {
+			if conditioner.Working {
+				conditioner.currentSchedule = schedule
+				if schedule.Mode != nil {
+					conditioner.setMode(*schedule.Mode)
+				}
+				if schedule.Temperature != nil {
+					conditioner.setTemperature(fmt.Sprintf("%f", *schedule.Temperature))
+				}
+
+			}
+
+			schedule.Activated = true
+		}
+	}
 }
 
 func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg mqtt.Message) {
-
+	conditioner.overrideIfNeeded()
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	content := tokens[1]
@@ -140,6 +232,7 @@ func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg
 		} else {
 			result = FAILURE
 		}
+
 	} else {
 		result = FAILURE
 	}
@@ -150,11 +243,20 @@ func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg
 }
 
 func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client, msg mqtt.Message) {
+	conditioner.overrideIfNeeded()
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	content := tokens[1]
 	contentTokens := strings.Split(content, "|")
 
+	result := conditioner.setTemperature(contentTokens[1])
+
+	data := append(contentTokens, result)
+	fmt.Println("HANDLING Temperature COMMAND")
+	utils.SendComplexMessage(client, "air_conditioning_temperature_ack", conditioner.Id, data)
+}
+
+func (conditioner *AirConditioning) setTemperature(tempStr string) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	chooser, _ := wr.NewChooser(
@@ -162,7 +264,7 @@ func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client,
 		wr.Choice{Item: "FAILURE", Weight: 2},
 	)
 	result := chooser.Pick().(string)
-	targetTemperature, err := strconv.ParseFloat(contentTokens[1], 64)
+	targetTemperature, err := strconv.ParseFloat(tempStr, 64)
 	if err != nil {
 		result = FAILURE
 	}
@@ -174,18 +276,23 @@ func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client,
 	} else {
 
 	}
-
-	data := append(contentTokens, result)
-	fmt.Println("HANDLING Temperature COMMAND")
-	utils.SendComplexMessage(client, "air_conditioning_temperature_ack", conditioner.Id, data)
+	return result
 }
 
 func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mqtt.Message) {
+	conditioner.overrideIfNeeded()
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	content := tokens[1]
 	contentTokens := strings.Split(content, "|")
+	result := conditioner.setMode(contentTokens[1])
 
+	data := append(contentTokens, result)
+	fmt.Println("HANDLING Mode COMMAND")
+	utils.SendComplexMessage(client, "air_conditioning_mode_ack", conditioner.Id, data)
+}
+
+func (conditioner *AirConditioning) setMode(modeStr string) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	chooser, _ := wr.NewChooser(
@@ -193,8 +300,8 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 		wr.Choice{Item: FAILURE, Weight: 2},
 	)
 	result := chooser.Pick().(string)
-	if contentTokens[1] != "COOLING" && contentTokens[1] != "HEATING" &&
-		contentTokens[1] != "VENTILATION" && contentTokens[1] != "AUTO" {
+	if modeStr != "COOLING" && modeStr != "HEATING" &&
+		modeStr != "VENTILATION" && modeStr != "AUTO" {
 		result = FAILURE
 	}
 
@@ -202,12 +309,12 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 	for i, mode := range conditioner.SupportedModes {
 		stringArray[i] = ToString(mode)
 	}
-	if !slices.Contains(stringArray, contentTokens[1]) {
+	if !slices.Contains(stringArray, modeStr) {
 		result = FAILURE
 	}
 
 	if result == SUCCESS {
-		switch contentTokens[1] {
+		switch modeStr {
 		case "COOLING":
 			{
 				conditioner.CurrentMode = COOLING_STRING
@@ -229,9 +336,7 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 
 	}
 
-	data := append(contentTokens, result)
-	fmt.Println("HANDLING Mode COMMAND")
-	utils.SendComplexMessage(client, "air_conditioning_mode_ack", conditioner.Id, data)
+	return result
 }
 
 func (conditioner *AirConditioning) redirectCommand(client mqtt.Client, msg mqtt.Message) {
@@ -253,6 +358,10 @@ func (conditioner *AirConditioning) redirectCommand(client mqtt.Client, msg mqtt
 		{
 			conditioner.handleWorkingCommand(client, msg)
 		}
+	case NEW_SCHEDULE_COMMAND:
+		{
+			conditioner.handleScheduleCommand(client, msg)
+		}
 	}
 }
 
@@ -272,6 +381,45 @@ func (conditioner *AirConditioning) findIncrement() float64 {
 	return increment
 }
 
+func (conditioner *AirConditioning) existsOverlapping(newSchedule utils.AirConditioningSchedule) bool {
+	for _, schedule := range conditioner.Schedules {
+		if !schedule.Override &&
+			(newSchedule.StartTime.Time.Before(schedule.EndTime.Time) || newSchedule.StartTime.Time.Equal(schedule.EndTime.Time)) &&
+			(schedule.StartTime.Time.Before(newSchedule.EndTime.Time) || schedule.StartTime.Time.Equal(newSchedule.EndTime.Time)) {
+			return true
+		}
+	}
+	return false
+}
+
+func fetchDSchedules(id int64) []utils.AirConditioningSchedule {
+	url := "http://localhost:8080/api/airConditioning/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
+	var resp *http.Response
+	var err error
+
+	for {
+		resp, err = http.Get(url)
+		if err == nil {
+			break
+		}
+		time.Sleep(5 * time.Second)
+	}
+	defer resp.Body.Close()
+	responseBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	var schedules []utils.AirConditioningSchedule
+
+	err = json.Unmarshal(responseBody, &schedules)
+	if err != nil {
+		panic(err)
+	}
+
+	return schedules
+}
+
 func StartSimulation(device AirConditioning) {
 	client := utils.MqttSetup(device.Id, device.redirectCommand)
 	defer client.Disconnect(250)
@@ -279,8 +427,13 @@ func StartSimulation(device AirConditioning) {
 	minTemp := device.MinTemperature
 	maxTemp := device.MaxTemperature
 	device.CurrentTemperature = minTemp + rand.Float64()*(maxTemp-minTemp)
+	device.Schedules = fetchDSchedules(device.Id)
+	for i, _ := range device.Schedules {
+		device.Schedules[i].FixTimezone()
+	}
 
 	for {
+		device.checkSchedule()
 		fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
 		fmt.Printf("MODE: %s\n", device.CurrentMode)
 		fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)

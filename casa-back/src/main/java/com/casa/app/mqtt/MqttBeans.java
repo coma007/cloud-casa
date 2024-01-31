@@ -9,6 +9,7 @@ import com.casa.app.device.outdoor.lamp.LampService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
+import com.casa.app.influxdb.InfluxDBService;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -101,6 +102,9 @@ public class MqttBeans {
                         break;
                     case (MeasurementType.airConditioningTemperatureAck):
                         airConditioningService.handleTemperatureAckMessage(id, content);
+                        break;
+                    case (MeasurementType.airConditioningNewScheduleAck):
+                        airConditioningService.handleNewScheduleAckMessage(id, content);
                         break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);

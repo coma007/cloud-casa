@@ -3,6 +3,7 @@ package com.casa.app.device.home.air_conditioning.schedule;
 import com.casa.app.device.Device;
 import com.casa.app.device.home.air_conditioning.AirConditioning;
 import com.casa.app.device.home.air_conditioning.AirConditioningMode;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,9 @@ public class AirConditionSchedule {
     private boolean override;
     private boolean activated;
 
+
     @ManyToOne
+    @JsonIgnore
     private AirConditioning airConditioning;
 
     private boolean working;

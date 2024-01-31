@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -55,4 +56,12 @@ func SendComplexMessage(client mqtt.Client, topic string, deviceId int64, messag
 	}
 	token := client.Publish(topic, 0, false, strconv.FormatInt(deviceId, 10)+"~"+messagesSeparated)
 	token.Wait()
+}
+
+func GetTimezoneLocation() *time.Location {
+	loc, err := time.LoadLocation("Europe/Belgrade")
+	if err != nil {
+		fmt.Println(err)
+	}
+	return loc
 }

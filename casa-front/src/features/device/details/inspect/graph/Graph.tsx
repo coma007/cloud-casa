@@ -11,14 +11,13 @@ import { Card } from 'react-bootstrap';
 Chart.register(...registerables);
 
 
-const Graph = (props: { label: string, deviceType: string, measurements : DeviceMeasurementList, ambientMeasurement?: string }) => {
+const Graph = (props: { label: string, deviceType: string, measurements: DeviceMeasurementList, ambientMeasurement?: string }) => {
     const [data, setData] = useState<{ labels: any, datasets: any } | undefined>(undefined);
     const [graphData, setGraphData] = useState<({ value: number | null, timestamp: string | null })[]>([])
     const [tagName, setTagName] = useState<string>("");
     const [showGraph, setShowGraph] = useState(false)
-
-
-	useEffect(() => {
+   
+    useEffect(() => {
         console.log(props.deviceType)
         if (Object.keys(props.measurements).length > 0) {
             let newData: ({ value: number | null, timestamp: string | null })[] = []
