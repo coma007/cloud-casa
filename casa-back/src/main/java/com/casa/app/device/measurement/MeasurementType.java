@@ -24,4 +24,10 @@ public class MeasurementType {
     public final static String vehicleGateLicencePlates = "vehicle_gate_licence_plates";
     public final static String vehicleGateCommand = "vehicle_gate_command";
     public final static String vehicleGateMode = "vehicle_gate_mode";
+    public final static String washingMachineModeCommand = "washing_machine_mode_command";
+    public final static String washingMachineNewScheduleCommand = "washing_machine_new_schedule_command";
+    public final static String washingMachineWorkingCommand ="washing_machine_working_command";
+    public final static String washingMachineModeAck = "washing_machine_mode_ack";
+    public final static String washingMachineNewScheduleAck = "washing_machine_new_schedule_ack";
+    public final static String washingMachineWorkingAck = "washing_machine_working_ack";
 }

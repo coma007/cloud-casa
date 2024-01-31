@@ -3,6 +3,7 @@ package com.casa.app.mqtt;
 import com.casa.app.device.DeviceStatusService;
 import com.casa.app.device.home.air_conditioning.AirConditioningService;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
+import com.casa.app.device.home.washing_machine.WashingMachineService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
@@ -78,6 +79,8 @@ public class MqttBeans {
             private AmbientSensorService ambientSensorService;
             @Autowired
             private AirConditioningService airConditioningService;
+            @Autowired
+            private WashingMachineService washingMachineService;
 
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
@@ -96,11 +99,20 @@ public class MqttBeans {
                     case (MeasurementType.airConditioningModeAck):
                         airConditioningService.handleModeAckMessage(id, content);
                         break;
+                    case (MeasurementType.washingMachineWorkingAck):
+                        washingMachineService.handleWorkingAckMessage(id, content);
+                        break;
+                    case (MeasurementType.washingMachineModeAck):
+                        washingMachineService.handleModeAckMessage(id, content);
+                        break;
                     case (MeasurementType.airConditioningTemperatureAck):
                         airConditioningService.handleTemperatureAckMessage(id, content);
                         break;
                     case (MeasurementType.airConditioningNewScheduleAck):
                         airConditioningService.handleNewScheduleAckMessage(id, content);
+                        break;
+                    case (MeasurementType.washingMachineNewScheduleAck):
+                        washingMachineService.handleNewScheduleAckMessage(id, content);
                         break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
