@@ -33,8 +33,6 @@ func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.
 
 func Ping(deviceId int64, client mqtt.Client) {
 	SendMessage(client, "ping", deviceId, "PING")
-
-	//fmt.Printf("Published message: %s to topic: %s\n", message, "ping")
 }
 
 func SendMessage(client mqtt.Client, topic string, deviceId int64, message string) {

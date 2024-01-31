@@ -11,7 +11,6 @@ import java.time.Instant;
 
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
 public class SprinklerSystemSchedule {
@@ -19,5 +18,11 @@ public class SprinklerSystemSchedule {
     private Instant startTime;
     private Instant endTime;
     private boolean[] scheduledDays;
+
+    public SprinklerSystemSchedule() {
+        startTime = Instant.now();
+        endTime = Instant.now();
+        scheduledDays = new boolean[]{false, false, false, false, false, false, false};
+    }
 
 }

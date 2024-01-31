@@ -12,5 +12,6 @@ public class SprinklerSystemSimulationDTO {
     private Long id;
     private boolean sprinklerOn;
     private boolean forceQuit;
+    private boolean forceStart;
     private SprinklerSystemSchedule schedule;
 }

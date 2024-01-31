@@ -10,15 +10,20 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.sprinklerSystem)
+@Measurement(name = MeasurementType.sprinklerCommand)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SprinklerSystemMeasurement extends AbstractMeasurement {
+public class SprinklerSystemCommandMeasurement extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+
+    @Column
+    Boolean is_on;
+
+    @Column
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;

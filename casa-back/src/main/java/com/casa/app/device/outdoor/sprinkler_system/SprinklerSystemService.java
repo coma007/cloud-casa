@@ -1,9 +1,7 @@
 package com.casa.app.device.outdoor.sprinkler_system;
 
 import com.casa.app.device.DeviceStatus;
-import com.casa.app.device.outdoor.lamp.Lamp;
-import com.casa.app.device.outdoor.lamp.LampRepository;
-import com.casa.app.device.outdoor.lamp.dto.LampSimulationDTO;
+import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.sprinkler_system.dto.SprinklerSystemSimulationDTO;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
@@ -11,14 +9,15 @@ import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +35,22 @@ public class SprinklerSystemService {
     private MqttGateway mqttGateway;
     @Autowired
     private RegularUserService regularUserService;
+
+    public void commandHandler(Long id, String message) {
+        String user = message.split("|")[1];
+        Boolean isOn = Boolean.parseBoolean(message.split("|")[0]);
+        SprinklerSystemCommandMeasurement sprinkler = new SprinklerSystemCommandMeasurement( id, isOn, user, Instant.now());
+        if (user.equals("SIMULATION")) {
+            webSocketController.sendMessage(new SocketMessage<>(MeasurementType.sprinklerCommand, message, id.toString(), id.toString(), sprinkler));
+        }
+        influxDBService.write(sprinkler);
+    }
+
+    public void scheduleHandler(Long id, String message) {
+        String user = message;
+        SprinklerSystemScheduleMeasurement sprinkler = new SprinklerSystemScheduleMeasurement( id, user, Instant.now());
+        influxDBService.write(sprinkler);
+    }
 
     public void toggleOn(Long id) throws NotFoundException, UserNotFoundException {
         RegularUser currentUser = regularUserService.getUserByToken();
@@ -62,7 +77,7 @@ public class SprinklerSystemService {
         List<SprinklerSystem> sprinklers = sprinklerSystemRepository.findAll();
         List<SprinklerSystemSimulationDTO> sprinklersDTOS = new ArrayList<>();
         for (SprinklerSystem s : sprinklers) {
-            sprinklersDTOS.add(new SprinklerSystemSimulationDTO(s.getId(), s.getStatus() == DeviceStatus.ONLINE, false, new SprinklerSystemSchedule(null, null, new boolean[]{false, false, false, false, false, false, false})));
+            sprinklersDTOS.add(new SprinklerSystemSimulationDTO(s.getId(), s.getStatus() == DeviceStatus.ONLINE, false, false, s.getSchedule()));
         }
         return sprinklersDTOS;
     }
@@ -70,7 +85,7 @@ public class SprinklerSystemService {
     private static String getSprinklerJson(SprinklerSystemSchedule schedule) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        objectMapper.disable(SerializationFeature.WRITE_DATES);
         String scheduleJson;
         try {
             scheduleJson = objectMapper.writeValueAsString(schedule);

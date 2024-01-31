@@ -5,6 +5,7 @@ import com.casa.app.device.home.air_conditioning.AirConditioningService;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
@@ -71,6 +72,8 @@ public class MqttBeans {
             @Autowired
             private VehicleGateService vehicleGateService;
             @Autowired
+            private SprinklerSystemService sprinklerSystemService;
+            @Autowired
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
@@ -129,8 +132,11 @@ public class MqttBeans {
                     case (MeasurementType.lampCommand):
                         lampService.commandHandler(id, content);
                         break;
-                    case (MeasurementType.sprinklerSystem):
-                        // call service handler here
+                    case (MeasurementType.sprinklerCommand):
+                        sprinklerSystemService.commandHandler(id, content);
+                        break;
+                    case (MeasurementType.sprinklerSchedule):
+                        sprinklerSystemService.scheduleHandler(id, content);
                         break;
                     case (MeasurementType.vehicleGateLicencePlates):
                         vehicleGateService.licencePlatesHandler(id, content);

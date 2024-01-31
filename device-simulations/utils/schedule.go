@@ -24,6 +24,9 @@ type CustomTime struct {
 }
 
 func (t *CustomTime) UnmarshalJSON(b []byte) (err error) {
+	if string(b) == "null" {
+		return nil
+	}
 	date, err := time.Parse(`"2006-01-02T15:04:05"`, string(b))
 	if err != nil {
 		return err
