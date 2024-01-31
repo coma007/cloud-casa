@@ -20,6 +20,10 @@ export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id : number) => url + "/device/get
 export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id : number) => url + "/solarPanelSystem/toggleStatus/" + id 
 export const DEVICE_GET_DETAILS = (id : number) => url + "/device/getDeviceDetails/" + id
 
+export const CHARGER_START_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/startCharging/" + id + "/" + slot 
+export const CHARGER_END_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/endCharging/" + id + "/" + slot 
+export const CHARGER_SET_MAX_PERCENTAGE = (id : number, slot : number, max : number) => url + "/electricVehicleCharger/setMaxPercentage/" + id + "/" + slot + "/" + max
+
 export const AIR_CONDITION_TEMPERATURE = () => url + "/airConditioning/simulation/temperature"
 export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
 export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"

@@ -27,15 +27,17 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
     }
     useEffect(() => {
         if (props.measurements.measurements !== undefined) {
-            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType=="air_conditioning") {
+            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType=="air_conditioning" || props.deviceType === "electric_vehicle_charger") {
                 let command = "Command";
-                let width = [40, 40, 40]
+                let width = [40, 40, 40];
 
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
                     command = "Status"
                     width = [50, 35, 25]
-                }
-                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
+                } else if (props.deviceType == "electric_vehicle_charger") {
+                    console.log(props.measurements)
+                    width = [35, 70, 45]
+                } else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
                     command = "Mode"
                     width = [53, 53, 33]
                 }
@@ -105,6 +107,8 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
+
+                    console.log(width)
                     if(props.deviceType == 'air_conditioning'){
                         
                         data.push({
