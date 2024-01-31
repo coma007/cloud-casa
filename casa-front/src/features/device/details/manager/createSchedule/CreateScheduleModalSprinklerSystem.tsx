@@ -5,6 +5,7 @@ import ModalWindow from '../../../../../components/view/Modal/ModalWindow';
 import { DeviceService } from '../../../DeviceService';
 import CreateScheduleModalCSS from "./CreateScheduleModal.module.scss"
 import { Form } from 'react-router-dom';
+import TimePicker from 'react-time-picker';
 
 const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, device: any }) => {
 
@@ -16,8 +17,16 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
 
 
     const handleSubmit = () => {
+        let now = new Date();
+
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const startDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+
+        const [endHours, endMinutes] = endTime.split(':').map(Number);
+        const endDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHours, endMinutes, 0);
+
         try {
-            DeviceService.createSprinklerSchedule(props.device.Id, { startTime: startTime, endTime: endTime, days: days });
+            DeviceService.createSprinklerSchedule(props.device.Id, { startTime: startDateTime, endTime: endDateTime, scheduledDays: days });
         } catch (error) {
             console.error(error);
         }
@@ -27,13 +36,11 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
     const handleFromChange = (e) => {
         let time = e.target['value'];
         setStartTime(time);
-        console.log(time);
     }
 
     const handleToChange = (e) => {
         let time = e.target['value'];
         setEndTime(time);
-        console.log(time);
     }
 
     const handleDayChange = (index) => {
@@ -49,15 +56,15 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
 
     return (
         <ModalWindow
-            height="45%"
-            width='40%'
+            height="50%"
+            width='46%'
             isOpen={props.show}
             closeWithdrawalModal={closeModal}
             okWithdrawalModal={handleSubmit}
             title="Schedule Sprinkler System"
             formId='NULL VALUE'
             buttonText="Change" >
-            <div className={CreateScheduleModalCSS.row}>
+            <div className={CreateScheduleModalCSS.rowTime}>
                 <span>
                     <label htmlFor="scheduleStart">Select start time</label>
                     <input
@@ -77,17 +84,18 @@ const CreateScheduleModalSprinklerSystem = (props: { show: any, setShow: any, de
                         value={endTime} />
                 </span>
             </div>
+            <label>Select days</label>
             <div className={CreateScheduleModalCSS.row}>
-                {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, index) => (
-                    <>
+                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day, index) => (
+                    <label key={index.toString()} style={{ background: days[index] ? '#32f0da' : '#32f0da21' }} className={CreateScheduleModalCSS.dayLabel}>
                         <input
-                            key={index.toString()}
                             type="checkbox"
+                            style={{ display: 'none' }} // Hide the checkbox
                             checked={days[index]}
                             onChange={() => handleDayChange(index)}
                         />
-                        <label htmlFor={index.toString()}>{day}</label>
-                    </>
+                        {day}
+                    </label>
                 ))}
             </div>
         </ModalWindow>

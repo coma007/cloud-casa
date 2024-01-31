@@ -34,7 +34,7 @@ public class SprinklerSystemController {
     }
 
     @PermitAll
-    @GetMapping("/setSchedule/{id}")
+    @PostMapping("/setSchedule/{id}")
     public ResponseEntity<?> toggleOn(@PathVariable Long id, @RequestBody SprinklerSystemSchedule schedule) throws NotFoundException, UserNotFoundException {
         sprinklerSystemService.setSchedule(id, schedule);
         return new ResponseEntity<>(null, HttpStatus.OK);

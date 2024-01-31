@@ -42,8 +42,8 @@ export interface AirConditionerSchedule {
 
 
 export interface SprinklerSchedule {
-    startTime: string;
-    endTime: string;
-    days: boolean[];
+    startTime: Date;
+    endTime: Date;
+    scheduledDays: boolean[];
 }
 

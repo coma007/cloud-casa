@@ -33,6 +33,7 @@
     "react-scripts": "5.0.1",
     "react-search-autocomplete": "^8.5.2",
     "react-select": "^5.8.0",
+    "react-time-picker": "^6.6.0",
     "sass": "^1.59.3",
     "scss": "^0.2.4",
     "sockjs-client": "^1.6.1",
