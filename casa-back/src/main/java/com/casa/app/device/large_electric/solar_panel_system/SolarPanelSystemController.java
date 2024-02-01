@@ -2,7 +2,9 @@ package com.casa.app.device.large_electric.solar_panel_system;
 
 import com.casa.app.device.DeviceStatus;
 import com.casa.app.device.large_electric.solar_panel_system.dto.SolarPanelSystemSimulationDTO;
+import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.permission.PermissionService;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
@@ -22,10 +24,13 @@ public class SolarPanelSystemController {
 
     @Autowired
     private WebSocketController webSocketController;
+    @Autowired
+    private PermissionService permissionService;
 
     @PermitAll
     @PostMapping("/toggleStatus/{id}")
-    public ResponseEntity<?> toggleStatus(@PathVariable Long id) throws UserNotFoundException {
+    public ResponseEntity<?> toggleStatus(@PathVariable Long id) throws UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
         DeviceStatus newStatus;
         if ((newStatus = solarPanelSystemService.toggleStatus(id)) != null) {
             webSocketController.sendMessage(new SocketMessage<>("solar-panel-system-status", newStatus.toString(), null, id.toString(), null));

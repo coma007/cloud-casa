@@ -5,10 +5,7 @@ import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionTemperatureDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionWorkingDTO;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
-import com.casa.app.exceptions.DeviceNotFoundException;
-import com.casa.app.exceptions.InvalidDateException;
-import com.casa.app.exceptions.ScheduleOverlappingException;
-import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.exceptions.*;
 import com.casa.app.permission.PermissionService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
@@ -50,10 +47,9 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/working")
-    public ResponseEntity<?> setWorking(@RequestBody AirConditionWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setWorking(@RequestBody AirConditionWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException, UnauthorizedWriteException {
         RegularUser currentUser = regularUserService.getUserByToken();
-        if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
+        permissionService.canWrite(dto.getId());
 
         airConditioningService.sendWorkingCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -74,10 +70,9 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/temperature")
-    public ResponseEntity<?> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException, UnauthorizedWriteException {
         RegularUser currentUser = regularUserService.getUserByToken();
-        if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
+        permissionService.canWrite(dto.getId());
 
         airConditioningService.sendTemperatureCommand(dto, currentUser);
         return ResponseEntity.ok().build();
@@ -85,10 +80,9 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/mode")
-    public ResponseEntity<?> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException, UnauthorizedWriteException {
         RegularUser currentUser = regularUserService.getUserByToken();
-        if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
+        permissionService.canWrite(dto.getId());
 
         if(dto.getMode().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Mode field must be filled");
@@ -99,10 +93,9 @@ public class AirConditioningController {
 
     @PermitAll
     @PostMapping("/simulation/schedule")
-    public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException {
+    public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException, UnauthorizedWriteException {
         RegularUser currentUser = regularUserService.getUserByToken();
-        if(!permissionService.canWriteDevice(dto.getDeviceId(), currentUser.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
+        permissionService.canWrite(dto.getDeviceId());
 
         if(dto.isRepeating() && dto.getRepeatingDaysIncrement() == null){
             return ResponseEntity.badRequest().body("Repeat is set but increment is not, try setting increment");

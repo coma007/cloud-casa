@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -53,8 +52,13 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body("Invalid date/dates given");
     }
 
-    @ExceptionHandler(value = {UnathorizedException.class})
-    public ResponseEntity<Object> handleUnauthorizedException(Exception ex, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unathorized");
+    @ExceptionHandler(value = {UnathorizedReadException.class})
+    public ResponseEntity<Object> handleUnauthorizedReadException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unathorized read");
+    }
+
+    @ExceptionHandler(value = {UnauthorizedWriteException.class})
+    public ResponseEntity<Object> handleUnauthorizedWriteException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unathorized write");
     }
 }

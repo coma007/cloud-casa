@@ -1,21 +1,25 @@
 package com.casa.app.permission;
 
 
-import com.casa.app.estate.RealEstateDTO;
+import com.casa.app.device.Device;
 import com.casa.app.estate.RealEstateService;
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UnathorizedReadException;
+import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.permission.device_permission.DevicePermission;
 import com.casa.app.permission.device_permission.DevicePermissionRepository;
 import com.casa.app.permission.dto.NewPermissionDTO;
 import com.casa.app.permission.real_estate_permission.RealEstatePermission;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionRepository;
-import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.casa.app.estate.RealEstate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PermissionService {
@@ -70,5 +74,35 @@ public class PermissionService {
         }
         else throw new NotFoundException();
         return dto;
+    }
+
+    public List<Device> filterReadDevices(List<Device> devices) throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        return devices
+                .parallelStream()
+                .filter(d->canReadDevice(d.getId(), currentUser.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Device> filterWriteDevices(List<Device> devices) throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        return devices
+                .parallelStream()
+                .filter(d->canWriteDevice(d.getId(), currentUser.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public void canRead(long deviceId) throws UserNotFoundException, UnathorizedReadException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        if(!canReadDevice(deviceId, currentUser.getId()))
+           throw new UnathorizedReadException();
+
+    }
+
+    public void canWrite(long deviceId) throws UserNotFoundException, UnauthorizedWriteException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        if(!canWriteDevice(deviceId, currentUser.getId()))
+            throw new UnauthorizedWriteException();
+
     }
 }

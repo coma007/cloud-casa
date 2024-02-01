@@ -12,7 +12,7 @@ import (
 func MqttSetup(deviceId int64, messageHandler func(client mqtt.Client, msg mqtt.Message)) mqtt.Client {
 	//TODO
 	//opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883")
-	opts := mqtt.NewClientOptions().AddBroker("tcp://mqtt-broker:1883")
+	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883")
 	opts.SetClientID(strconv.FormatInt(deviceId, 10))
 	//opts.SetClientID("mytopic")
 	opts.SetUsername("admin")

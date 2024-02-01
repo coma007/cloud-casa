@@ -5,9 +5,9 @@ import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.measurement.OnlineMeasurementList;
-import com.casa.app.estate.RealEstateDTO;
-import com.casa.app.exceptions.UnathorizedException;
+import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.permission.PermissionService;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
@@ -17,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/device")
@@ -30,6 +28,8 @@ public class DeviceController {
 
     @Autowired
     private DeviceService service;
+    @Autowired
+    private PermissionService permissionService;
 
     @PermitAll
     @PostMapping("/register")
@@ -99,7 +99,7 @@ public class DeviceController {
 
     @GetMapping("/getDeviceDetails/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException, UnathorizedException {
+    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException, UnathorizedReadException {
         return new ResponseEntity<>(service.getDeviceDetails(id), HttpStatus.OK);
     }
 

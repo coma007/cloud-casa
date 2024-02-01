@@ -1,8 +1,10 @@
 package com.casa.app.device.outdoor.vehicle_gate;
 
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
+import com.casa.app.permission.PermissionService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ public class VehicleGateController {
 
     @Autowired
     private VehicleGateService vehicleGateService;
+    @Autowired
+    private PermissionService permissionService;
+
     @PermitAll
     @GetMapping("/public/simulation/getAll")
     public ResponseEntity<List<VehicleGateSimulationDTO>> getAll() {
@@ -28,14 +33,16 @@ public class VehicleGateController {
 
     @PermitAll
     @GetMapping("/open/{id}")
-    public ResponseEntity<?> toggleOn(@PathVariable Long id) throws NotFoundException, UserNotFoundException {
+    public ResponseEntity<?> toggleOn(@PathVariable Long id) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
         vehicleGateService.toggle(id, "OPEN");
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PermitAll
     @GetMapping("/mode/{id}")
-    public ResponseEntity<?> toggleMode(@PathVariable Long id) throws NotFoundException, UserNotFoundException {
+    public ResponseEntity<?> toggleMode(@PathVariable Long id) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
         vehicleGateService.toggle(id, "MODE");
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
