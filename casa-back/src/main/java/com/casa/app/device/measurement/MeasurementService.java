@@ -17,6 +17,7 @@ import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemCommandMeasur
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateVehicleMeasurement;
 import com.influxdb.query.FluxRecord;
 import org.springframework.stereotype.Service;
 
@@ -127,6 +128,14 @@ public class MeasurementService {
                 return new VehicleGateLicencePlatesMeasurement(
                         Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("licence_plates"),
+                        record.getTime()
+                );
+            case (MeasurementType.vehicleGateVehicles):
+                return new VehicleGateVehicleMeasurement(
+                        Long.valueOf((String) record.getValueByKey("id")),
+                        (Boolean) record.getValueByKey("adding"),
+                        (String) record.getValueByKey("vehicle"),
+                        (String) record.getValueByKey("user"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateCommand):

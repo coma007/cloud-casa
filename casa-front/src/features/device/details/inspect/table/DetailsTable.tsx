@@ -26,7 +26,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
         return rowData;
     }
     useEffect(() => {
-        console.log(props.measurements.measurements)
+        console.log("AAAAAA", props.measurements.measurements)
         if (props.measurements.measurements !== undefined) {
             if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system") {
                 let command = "Command";
@@ -34,10 +34,16 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
 
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
                     command = "Status"
-                    width = [50, 35, 25]
+                    width = [40, 40, 25]
                 }
                 else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
                     command = "Mode"
+                    width = [53, 53, 33]
+                }
+                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                    width = [53, 53]
+                }
+                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_vehicles") {
                     width = [53, 53, 33]
                 }
                 header = {
@@ -49,7 +55,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                     onClick: undefined
                 }
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
-                    command = "Licence Plates"
+                    command = "Scanned Licence Plates"
                     header = {
                         rowData: [
                             { content: "Time", widthPercentage: 50 },
@@ -105,15 +111,17 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             content = "PUBLIC"
                         }
                     }
-                    if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_vehicles") {
+                        content = "remove "
+                        if (m.adding) {
+                            content = "add "
+                        }
+                        content += m.vehicle
+                    }
+
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
                         content = m.licence_plates
-                        data.push({
-                            rowData: [
-                                { content: formattedTime, widthPercentage: 60 },
-                                { content: content, widthPercentage: 50 },
-                            ],
-                            onClick: undefined
-                        })
+
                     }
                     if (props.deviceType == 'air_conditioning') {
 
@@ -122,7 +130,15 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
-
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                        data.push({
+                            rowData: [
+                                { content: formattedTime, widthPercentage: 60 },
+                                { content: content, widthPercentage: 50 },
+                            ],
+                            onClick: undefined
+                        })
+                    }
                     else {
                         data.push({
                             rowData: [

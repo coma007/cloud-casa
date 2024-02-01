@@ -26,6 +26,7 @@ public class MeasurementType {
     public final static String vehicleGateLicencePlates = "vehicle_gate_licence_plates";
     public final static String vehicleGateCommand = "vehicle_gate_command";
     public final static String vehicleGateMode = "vehicle_gate_mode";
+    public final static String vehicleGateVehicles = "vehicle_gate_vehicles";
     public final static String washingMachineModeCommand = "washing_machine_mode_command";
     public final static String washingMachineNewScheduleCommand = "washing_machine_new_schedule_command";
     public final static String washingMachineWorkingCommand ="washing_machine_working_command";
