@@ -4,7 +4,6 @@ import com.casa.app.device.home.air_conditioning.measurements.execution.AirCondi
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
-import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.measurement.ElectricVehicleChargerCommandMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.measurement.ElectricVehicleChargerPowerUsageMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
@@ -56,10 +55,6 @@ public class MeasurementService {
                         (Double) record.getValueByKey("temperature"),
                         (Double) record.getValueByKey("humidity"),
                         record.getTime()
-                );
-            case (MeasurementType.washingMachine):
-                return new WashingMachineMeasurement(
-                        // add values from record
                 );
             case (MeasurementType.electricVehicleChargerCommand):
                 return new ElectricVehicleChargerCommandMeasurement(

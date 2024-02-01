@@ -1,21 +1,14 @@
 package com.casa.app.influxdb;
 
 import com.casa.app.device.Device;
-import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
-import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.measurement.*;
-import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.user.User;
-import com.casa.app.user.regular_user.RegularUser;
 import com.influxdb.client.*;
 import com.influxdb.client.domain.WritePrecision;
 import com.influxdb.exceptions.InfluxException;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
-import io.reactivex.BackpressureOverflowStrategy;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;

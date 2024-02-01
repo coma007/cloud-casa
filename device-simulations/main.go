@@ -8,6 +8,7 @@ import (
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
 	"device-simulations/vehicle_gate"
+	washing_machine "device-simulations/washing-machine"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -18,7 +19,7 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
-		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor |
+		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | washing_machine.AuxWashingMachine |
 		electric_vehicle_charger.ElectricVehicleCharger
 }
 
@@ -35,6 +36,7 @@ func main() {
 	gates := fetchDevices[vehicle_gate.AuxVehicleGate]("vehicleGate/")
 	airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
 	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
+	washingMachines := fetchDevices[washing_machine.AuxWashingMachine]("washingMachine/")
 	chargers := fetchDevices[electric_vehicle_charger.ElectricVehicleCharger]("electricVehicleCharger/")
 
 	for _, item := range solarPanels {
@@ -54,6 +56,9 @@ func main() {
 	}
 	for _, item := range sensors {
 		go ambient_sensor.StartSimulation(item)
+	}
+	for _, item := range washingMachines {
+		go washing_machine.StartSimulation(item.ToModel())
 	}
 	for _, item := range chargers {
 		go electric_vehicle_charger.StartSimulation(item)
