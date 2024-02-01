@@ -1,4 +1,4 @@
-package com.casa.app.device.home.washing_machine;
+package com.casa.app.device.home.washing_machine.measuraments.execution;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,25 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.washingMachine)
+@Measurement(name = MeasurementType.washingMachineModeAck)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WashingMachineMeasurement extends AbstractMeasurement {
+public class WashingMachineModeExecution extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+    @Column
+    String mode;
+
+    @Column
+    String executed;
+
+    @Column
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;
+
+
 }

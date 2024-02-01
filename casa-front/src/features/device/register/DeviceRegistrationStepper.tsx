@@ -39,7 +39,7 @@ const StepperForm = () => {
   useEffect(() => {
       (async function () {
           try {
-              const fetchedEstates = await EstateService.getAllByOwner();
+              const fetchedEstates = await EstateService.getAllApprovedByOwner();
               setRealEstates(fetchedEstates);
               setFormData({
                 deviceName: '',
@@ -105,6 +105,7 @@ const StepperForm = () => {
 
   const nextStep = () => {
     console.log(formData)
+    console.log(step)
     if (formData.deviceType === "AmbientSensor" || formData.deviceType === "Lamp" || formData.deviceType === "SprinklerSystem") {
         register()
     } else {

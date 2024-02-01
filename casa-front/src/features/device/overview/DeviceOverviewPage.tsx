@@ -93,7 +93,7 @@ const DeviceOverviewPage = () => {
                         { content: device.realEstateName, widthPercentage: 30},
                         { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
                         { content: device.energyConsumption, widthPercentage: 30},
-                        { content: deviceType, widthPercentage: 30},
+                        { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
                     ],
                     onClick: () => {showDetails(device.id, device.type)}
                 });

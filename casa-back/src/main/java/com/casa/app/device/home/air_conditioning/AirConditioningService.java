@@ -12,6 +12,7 @@ import com.casa.app.device.home.air_conditioning.measurements.execution.AirCondi
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionNewScheduleExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
+import com.casa.app.device.home.air_conditioning.schedule.AirConditioningScheduleRepository;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
 import com.casa.app.notifications.Notification;
 import com.casa.app.notifications.NotificationRepository;
@@ -29,6 +30,7 @@ import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
+import com.casa.app.util.email.JSONUtil;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -76,6 +79,8 @@ public class AirConditioningService {
     private NotificationService notificationService;
     @Autowired
     private WebSocketController webSocketController;
+    @Autowired
+    private AirConditioningScheduleRepository airConditioningScheduleRepository;
 
     public List<AirConditioningSimulationDTO> getAllSimulation() {
         List<AirConditioning> airConditioners = airConditioningRepository.findAll();
@@ -211,7 +216,12 @@ public class AirConditioningService {
             return;
         }
         try {
-//            device.setMode(mode);
+            if(exec){
+                AirConditionSchedule sch = JSONUtil.readAirCon(schedule);
+                sch.setAirConditioning(device);
+                airConditioningScheduleRepository.save(sch);
+            }
+
             notificationService.makeNotification(user, "Setting schedule was " + (exec ? "successful" : "failure"));
             AirConditionNewScheduleExecution result = new AirConditionNewScheduleExecution(device.getId(), schedule, executed, username, Instant.now());
             webSocketController.sendMessage(new SocketMessage<AirConditionNewScheduleExecution>("air_conditioning_commands", "New value", null, id.toString(), result));
@@ -219,6 +229,8 @@ public class AirConditioningService {
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
             return;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -245,17 +257,11 @@ public class AirConditioningService {
             schedule.setRepeating(dto.isRepeating());
             schedule.setRepeatingDaysIncrement(dto.getRepeatingDaysIncrement());
 
-            ObjectMapper ow = new ObjectMapper();
-            ow.registerModule(new JavaTimeModule());
-            ow.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String json = ow.writeValueAsString(schedule);
-//            String json = "";
-//            StringWriter sw = new StringWriter();
-//            ow.writer().writeValue(sw, json);
-//            String result = sw.toString();
+            String json = JSONUtil.getJsonWithDate(schedule);
 
             AirConditionNewScheduleCommand command = new AirConditionNewScheduleCommand(dto.getDeviceId(), CommandType.NEW_SCHEDULE, json,  currentUser.getUsername(), Instant.now());
             sendCommand(dto.getDeviceId(), command);
+
 
         }catch (NullPointerException e){
             throw new InvalidDateException();
@@ -266,4 +272,7 @@ public class AirConditioningService {
     }
 
 
+    public List<AirConditionSchedule> getSchedules(Long deviceId) {
+        return airConditioningScheduleRepository.findByAirConditioning_Id(deviceId);
+    }
 }

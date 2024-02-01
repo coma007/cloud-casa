@@ -4,6 +4,7 @@ import com.casa.app.device.home.air_conditioning.dtos.AirConditionModeDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionTemperatureDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionWorkingDTO;
+import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
 import com.casa.app.exceptions.DeviceNotFoundException;
 import com.casa.app.exceptions.InvalidDateException;
 import com.casa.app.exceptions.ScheduleOverlappingException;
@@ -11,6 +12,8 @@ import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
+import com.casa.app.util.email.JSONUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,6 +44,18 @@ public class AirConditioningController {
         RegularUser currentUser = regularUserService.getUserByToken();
         airConditioningService.sendWorkingCommand(dto, currentUser);
         return ResponseEntity.ok().build();
+    }
+
+    @PermitAll
+    @GetMapping(value="/public/simulation/schedules",
+            produces="application/json")
+    public ResponseEntity<String> getSchedules(@RequestParam Long deviceId) {
+        List<AirConditionSchedule> schedules = airConditioningService.getSchedules(deviceId);
+        try {
+            return ResponseEntity.ok(JSONUtil.getJsonWithDate(schedules));
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.internalServerError().body("Error parsing JSON");
+        }
     }
 
     @PermitAll

@@ -14,6 +14,7 @@ import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +53,19 @@ public class RealEstateService {
 
         List<RealEstate> estates = realEstateRepository.getAllByOwnerUser(currentUser);
         return estates.stream().map(estate->new RealEstateDTO(estate)).collect(Collectors.toList());
+    }
+
+    public List<RealEstateDTO> getAllApprovedByOwner() throws UserNotFoundException {
+
+        RegularUser currentUser = regularUserService.getUserByToken();
+
+        List<RealEstate> estates = realEstateRepository.getAllByOwnerUser(currentUser);
+        List<RealEstate> approvedEstates = new ArrayList<>();
+        for (RealEstate e : estates) {
+            if (e.getRequest().isApproved()) approvedEstates.add(e);
+        }
+
+        return approvedEstates.stream().map(RealEstateDTO::new).collect(Collectors.toList());
     }
 
     public RealEstate getByName(String name) {

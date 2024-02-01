@@ -64,7 +64,7 @@ func (gate *VehicleGate) ToggleOpen() {
 }
 
 func (gate *VehicleGate) ToggleMode() {
-	if (gate.CurrentMode == PRIVATE) {
+	if gate.CurrentMode == PRIVATE {
 		gate.CurrentMode = PUBLIC
 	} else {
 		gate.CurrentMode = PRIVATE
