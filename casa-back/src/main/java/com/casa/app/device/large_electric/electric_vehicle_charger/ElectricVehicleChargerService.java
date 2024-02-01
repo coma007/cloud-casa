@@ -30,10 +30,12 @@ public class ElectricVehicleChargerService {
     private MqttGateway mqttGateway;
     @Autowired
     private InfluxDBService influxDBService;
+    @Autowired
+    private RegularUserService regularUserService;
 
 
     public void command(Long id, String command, String slot, String maxPercentage) throws UserNotFoundException, NotFoundException {
-        User user = userService.getUserByToken();
+        RegularUser user = regularUserService.getUserByToken();
         Optional<ElectricVehicleCharger> charger = electricVehicleChargerRepository.findById(id);
         if (charger.isEmpty()) {
             throw new NotFoundException();

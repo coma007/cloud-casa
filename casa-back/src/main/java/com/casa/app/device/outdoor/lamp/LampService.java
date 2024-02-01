@@ -56,7 +56,7 @@ public class LampService {
     }
 
     public void toggleOn(Long id) throws NotFoundException, UserNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         Optional<Lamp> lamp = lampRepository.findById(id);
         if (lamp.isEmpty()) {
             throw new NotFoundException();

@@ -38,6 +38,8 @@ public class VehicleGateService {
     private WebSocketController webSocketController;
     @Autowired
     private UserService userService;
+    @Autowired
+    private RegularUserService regularUserService;
 
     public void licencePlatesHandler(Long id, String message) {
         String licencePlate = message;
@@ -63,7 +65,7 @@ public class VehicleGateService {
     }
 
     public void toggle(Long id, String what) throws NotFoundException, UserNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         Optional<VehicleGate> gate = vehicleGateRepository.findById(id);
         if (gate.isEmpty()) {
             throw new NotFoundException();

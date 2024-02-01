@@ -29,6 +29,7 @@ import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
+import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,8 @@ public class DeviceService {
     public List<DeviceDetailsDTO> getAllByOwner() throws UserNotFoundException {
         List<Device> devices;
         try {
-            devices = deviceRepository.findAllByOwner(regularUserService.getUserByToken());
+            RegularUser currentUser = regularUserService.getUserByToken();
+            devices = deviceRepository.findAllByOwner(currentUser);
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException();
         }

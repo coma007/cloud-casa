@@ -37,10 +37,12 @@ public class SolarPanelSystemService {
     private MqttGateway mqttGateway;
     @Autowired
     private InfluxDBService influxDBService;
+    @Autowired
+    private RegularUserService regularUserService;
 
     public DeviceStatus toggleStatus(Long id) throws UserNotFoundException {
         Device device = deviceRepository.findById(id).orElse(null);
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         if (device == null) {
             return null;
         }
