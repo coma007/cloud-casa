@@ -9,12 +9,14 @@ import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
+import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.casa.app.user.User;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,9 +35,9 @@ public class VehicleGateService {
     @Autowired
     private MqttGateway mqttGateway;
     @Autowired
-    private RegularUserService regularUserService;
-    @Autowired
     private WebSocketController webSocketController;
+    @Autowired
+    private UserService userService;
 
     public void licencePlatesHandler(Long id, String message) {
         String licencePlate = message;
@@ -61,7 +63,7 @@ public class VehicleGateService {
     }
 
     public void toggle(Long id, String what) throws NotFoundException, UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
+        User currentUser = userService.getUserByToken();
         Optional<VehicleGate> gate = vehicleGateRepository.findById(id);
         if (gate.isEmpty()) {
             throw new NotFoundException();

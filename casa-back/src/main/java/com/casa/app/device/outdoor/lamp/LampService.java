@@ -8,6 +8,7 @@ import com.casa.app.device.outdoor.lamp.dto.LampSimulationDTO;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.user.User;
+import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.websocket.SocketMessage;
@@ -34,6 +35,8 @@ public class LampService {
     private MqttGateway mqttGateway;
     @Autowired
     private RegularUserService regularUserService;
+    @Autowired
+    private UserService userService;
 
     public void brightnessHandler(Long id, String message) {
         Double brightness = Double.parseDouble(message);
@@ -53,7 +56,7 @@ public class LampService {
     }
 
     public void toggleOn(Long id) throws NotFoundException, UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
+        User currentUser = userService.getUserByToken();
         Optional<Lamp> lamp = lampRepository.findById(id);
         if (lamp.isEmpty()) {
             throw new NotFoundException();

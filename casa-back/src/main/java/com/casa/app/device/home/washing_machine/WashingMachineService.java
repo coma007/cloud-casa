@@ -21,7 +21,6 @@ import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.notifications.NotificationService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserRepository;
-import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.util.email.JSONUtil;
@@ -36,7 +35,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 @Service
 public class WashingMachineService {
@@ -86,12 +84,12 @@ public class WashingMachineService {
         mqttGateway.sendToMqtt(device.getId()+"~" + command.toMessage(), device.getId().toString());
     }
 
-    public void sendWorkingCommand(WashingMachineWorkingDTO dto, RegularUser currentUser) throws DeviceNotFoundException {
+    public void sendWorkingCommand(WashingMachineWorkingDTO dto, User currentUser) throws DeviceNotFoundException {
         WashingMachineWorkingCommand command = new WashingMachineWorkingCommand(dto.getId(), CommandType.WORKING, dto.isWorking() ? "TURN ON" : "TURN OFF", currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
     
-    public void sendModeCommand(WashingMachineModeDTO dto, RegularUser currentUser) throws DeviceNotFoundException {
+    public void sendModeCommand(WashingMachineModeDTO dto, User currentUser) throws DeviceNotFoundException {
         WashingMachineModeCommand command = new WashingMachineModeCommand(dto.getId(), CommandType.MODE, dto.getMode(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }

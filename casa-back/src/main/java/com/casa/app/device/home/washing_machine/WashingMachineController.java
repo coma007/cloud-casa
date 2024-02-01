@@ -9,6 +9,7 @@ import com.casa.app.exceptions.DeviceNotFoundException;
 import com.casa.app.exceptions.InvalidDateException;
 import com.casa.app.exceptions.ScheduleOverlappingException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.user.User;
 import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
@@ -30,6 +31,8 @@ public class WashingMachineController {
     private RegularUserService regularUserService;
     @Autowired
     private WashingMachineService washingMachineService;
+    @Autowired
+    private UserService userService;
 
     @PermitAll
     @GetMapping("/public/simulation/getAll")
@@ -43,24 +46,24 @@ public class WashingMachineController {
         if(dto.getMode().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Mode field must be filled");
         }
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.sendModeCommand(dto, currentUser);
+        User user = userService.getUserByToken();
+        washingMachineService.sendModeCommand(dto, user);
         return ResponseEntity.ok().build();
     }
 
     @PermitAll
     @PostMapping("/simulation/working")
     public ResponseEntity<Boolean> setWorking(@RequestBody WashingMachineWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.sendWorkingCommand(dto, currentUser);
+        User user = userService.getUserByToken();
+        washingMachineService.sendWorkingCommand(dto, user);
         return ResponseEntity.ok().build();
     }
 
     @PermitAll
     @PostMapping("/simulation/schedule")
     public ResponseEntity<?> setSchedule(@RequestBody WashingMachineScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.setSchedule(dto, currentUser);
+        User user = userService.getUserByToken();
+        washingMachineService.setSchedule(dto, user);
         return ResponseEntity.ok().build();
     }
 

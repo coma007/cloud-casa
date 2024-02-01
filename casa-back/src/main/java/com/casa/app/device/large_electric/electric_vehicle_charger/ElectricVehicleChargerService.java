@@ -7,6 +7,8 @@ import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
+import com.casa.app.user.User;
+import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class ElectricVehicleChargerService {
     @Autowired
     private ElectricVehicleChargerRepository electricVehicleChargerRepository;
     @Autowired
-    private RegularUserService regularUserService;
+    private UserService userService;
     @Autowired
     private MqttGateway mqttGateway;
     @Autowired
@@ -31,7 +33,7 @@ public class ElectricVehicleChargerService {
 
 
     public void command(Long id, String command, String slot, String maxPercentage) throws UserNotFoundException, NotFoundException {
-        RegularUser user = regularUserService.getUserByToken();
+        User user = userService.getUserByToken();
         Optional<ElectricVehicleCharger> charger = electricVehicleChargerRepository.findById(id);
         if (charger.isEmpty()) {
             throw new NotFoundException();

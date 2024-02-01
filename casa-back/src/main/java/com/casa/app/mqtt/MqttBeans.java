@@ -36,8 +36,8 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-//        options.setServerURIs(new String[] {"tcp://localhost:1883"});
-        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
+        options.setServerURIs(new String[] {"tcp://localhost:1883"});
+//        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -120,9 +120,6 @@ public class MqttBeans {
                         break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
-                        break;
-                    case (MeasurementType.washingMachine):
-                        // call service handler here
                         break;
                     case (MeasurementType.electricVehicleChargerCommand):
                         electricVehicleChargerService.commandHandler(id, content);
