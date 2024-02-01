@@ -29,6 +29,9 @@ export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
 export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"
 export const AIR_CONDITION_SCHEDULE = () => url + "/airConditioning/simulation/schedule"
 
+export const POWER_USAGE_FOR_CITY = (from: string, to: string) => url + "/houseBattery/powerUsageForCity?" + `from=${from}&` + `to=${to}`;
+export const POWER_USAGE_FOR_ESTATE = (from: string, to: string) => url + "/houseBattery/powerUsage?" + `from=${from}&` + `to=${to}`;
+
 export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page : number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
 export const ACTIVITY_FILTER = (id: number, from: string, to: string) => url + "/device/filterActivity?" + `id=${id}&` + `from=${from}&` + `to=${to}&`;
 export const DEVICE_GET_PAGE_NUMBER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filterPages?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
