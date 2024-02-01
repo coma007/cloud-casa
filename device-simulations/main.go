@@ -57,11 +57,9 @@ func main() {
 	for _, item := range sensors {
 		go ambient_sensor.StartSimulation(item)
 	}
-<<<<<<< device-simulations/main.go
 	for _, item := range washingMachines {
 		go washing_machine.StartSimulation(item.ToModel())
 	}
-=======
 	for _, item := range chargers {
 		go electric_vehicle_charger.StartSimulation(item)
 	}
@@ -76,7 +74,6 @@ func main() {
 	//	Client:      nil,
 	//})
 
->>>>>>> device-simulations/main.go
 	for {
 		time.Sleep(1 * time.Second)
 	}
