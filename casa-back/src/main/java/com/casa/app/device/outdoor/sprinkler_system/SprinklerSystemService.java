@@ -37,9 +37,9 @@ public class SprinklerSystemService {
     private RegularUserService regularUserService;
 
     public void commandHandler(Long id, String message) {
-        String user = message.split("|")[1];
-        Boolean isOn = Boolean.parseBoolean(message.split("|")[0]);
-        SprinklerSystemCommandMeasurement sprinkler = new SprinklerSystemCommandMeasurement( id, isOn, user, Instant.now());
+        String user = message.split("\\|")[1];
+        Boolean isOn = Boolean.parseBoolean(message.split("\\|")[0]);
+        SprinklerSystemCommandMeasurement sprinkler = new SprinklerSystemCommandMeasurement( id, isOn, false, user, Instant.now());
         if (user.equals("SIMULATION")) {
             webSocketController.sendMessage(new SocketMessage<>(MeasurementType.sprinklerCommand, message, id.toString(), id.toString(), sprinkler));
         }
@@ -48,7 +48,7 @@ public class SprinklerSystemService {
 
     public void scheduleHandler(Long id, String message) {
         String user = message;
-        SprinklerSystemScheduleMeasurement sprinkler = new SprinklerSystemScheduleMeasurement( id, user, Instant.now());
+        SprinklerSystemCommandMeasurement sprinkler = new SprinklerSystemCommandMeasurement( id, false, true, user, Instant.now());
         influxDBService.write(sprinkler);
     }
 

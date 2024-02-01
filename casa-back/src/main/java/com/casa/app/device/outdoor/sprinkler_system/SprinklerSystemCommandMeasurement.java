@@ -18,9 +18,11 @@ public class SprinklerSystemCommandMeasurement extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-
     @Column
     Boolean is_on;
+
+    @Column
+    Boolean is_schedule;
 
     @Column
     String user;
