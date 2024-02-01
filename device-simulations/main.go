@@ -7,6 +7,7 @@ import (
 	"device-simulations/house_battery"
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
+	"device-simulations/utils"
 	"device-simulations/vehicle_gate"
 	washing_machine "device-simulations/washing-machine"
 	"encoding/json"
@@ -94,7 +95,7 @@ func fetchDevices[D Device](devicesUrl string) []D {
 
 func fetchData(deviceTypeUrl string) []byte {
 	//TODO
-	url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	url := "http://" + utils.URL_DOMAIN + ":8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	//url := "http://localhost:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	var resp *http.Response
 	var err error
