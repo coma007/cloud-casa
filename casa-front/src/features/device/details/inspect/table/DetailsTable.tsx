@@ -94,7 +94,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             content = "OFF"
                         }
                         if (m.is_schedule) {
-                            content = "SCHEDULE"
+                            content = "SCHEDULE CHANGE"
                         }
                     }
                     else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
