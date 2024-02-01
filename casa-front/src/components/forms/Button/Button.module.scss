@@ -13,3 +13,14 @@
 .button:hover {
     background-color: var(--primary-color-transparent);
 }
+
+.disabled {
+    display: inline-block;
+    height: 40px;
+    width: 170px;
+    border: 0px;
+    border-radius: 10px;
+    background-color: var(--primary-color-transparent);
+    color: black;
+    font-weight: 400;
+}

@@ -75,6 +75,7 @@ func (battery *HouseBattery) getCurrentState() float64 {
 }
 
 func StartSimulation(device HouseBattery) {
+	//fmt.Println("Started simulation for: " + strconv.FormatInt(device.Id, 10))
 	client := utils.MqttSetup(device.Id, device.messageHandler)
 	defer client.Disconnect(250)
 	counter := 1

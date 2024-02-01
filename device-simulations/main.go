@@ -3,6 +3,7 @@ package main
 import (
 	"device-simulations/air_conditioning"
 	"device-simulations/ambient_sensor"
+	"device-simulations/electric_vehicle_charger"
 	"device-simulations/house_battery"
 	"device-simulations/lamp"
 	"device-simulations/solar_panels"
@@ -18,7 +19,8 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
-		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | washing_machine.AuxWashingMachine
+		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | washing_machine.AuxWashingMachine |
+		electric_vehicle_charger.ElectricVehicleCharger
 }
 
 func main() {
@@ -35,6 +37,7 @@ func main() {
 	airConditioners := fetchDevices[air_conditioning.AuxAirConditioning]("airConditioning/")
 	sensors := fetchDevices[ambient_sensor.AmbientSensor]("ambientSensor/")
 	washingMachines := fetchDevices[washing_machine.AuxWashingMachine]("washingMachine/")
+	chargers := fetchDevices[electric_vehicle_charger.ElectricVehicleCharger]("electricVehicleCharger/")
 
 	for _, item := range solarPanels {
 		go solar_panels.StartSimulation(item)
@@ -54,9 +57,26 @@ func main() {
 	for _, item := range sensors {
 		go ambient_sensor.StartSimulation(item)
 	}
+<<<<<<< device-simulations/main.go
 	for _, item := range washingMachines {
 		go washing_machine.StartSimulation(item.ToModel())
 	}
+=======
+	for _, item := range chargers {
+		go electric_vehicle_charger.StartSimulation(item)
+	}
+
+	//go electric_vehicle_charger.StartSimulation(electric_vehicle_charger.ElectricVehicleCharger{
+	//	Id:          0,
+	//	ChargePower: 20,
+	//	NumOfSlots:  3,
+	//	PowerUsage:  nil,
+	//	TakenSlots:  nil,
+	//	Slots:       nil,
+	//	Client:      nil,
+	//})
+
+>>>>>>> device-simulations/main.go
 	for {
 		time.Sleep(1 * time.Second)
 	}
@@ -77,8 +97,8 @@ func fetchDevices[D Device](devicesUrl string) []D {
 
 func fetchData(deviceTypeUrl string) []byte {
 	//TODO
-	// url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
-	url := "http://localhost:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	url := "http://casa-back:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
+	//url := "http://localhost:8080/api/" + deviceTypeUrl + "public/simulation/getAll"
 	var resp *http.Response
 	var err error
 

@@ -4,6 +4,7 @@ import com.casa.app.device.DeviceStatusService;
 import com.casa.app.device.home.air_conditioning.AirConditioningService;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
 import com.casa.app.device.home.washing_machine.WashingMachineService;
+import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
@@ -35,7 +36,8 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        options.setServerURIs(new String[] {"tcp://localhost:1883"});
+//        options.setServerURIs(new String[] {"tcp://localhost:1883"});
+        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -75,6 +77,8 @@ public class MqttBeans {
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
+            @Autowired
+            private ElectricVehicleChargerService electricVehicleChargerService;
             @Autowired
             private AmbientSensorService ambientSensorService;
             @Autowired
@@ -120,8 +124,11 @@ public class MqttBeans {
                     case (MeasurementType.washingMachine):
                         // call service handler here
                         break;
-                    case (MeasurementType.electricVehicleCharger):
-                        // call service handler here
+                    case (MeasurementType.electricVehicleChargerCommand):
+                        electricVehicleChargerService.commandHandler(id, content);
+                        break;
+                    case (MeasurementType.electricVehicleChargerPowerUsage):
+                        electricVehicleChargerService.powerUsageHandler(id, content);
                         break;
                     case (MeasurementType.houseBatteryState):
                         houseBatteryService.handleBatteryState(id, content);
