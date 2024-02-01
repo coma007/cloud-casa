@@ -14,7 +14,6 @@ import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPa
 import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemCommandMeasurement;
-import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemScheduleMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
@@ -120,12 +119,7 @@ public class MeasurementService {
                 return new SprinklerSystemCommandMeasurement(
                         Long.valueOf((String) record.getValueByKey("id")),
                         (Boolean) record.getValueByKey("is_on"),
-                        (String) record.getValueByKey("user"),
-                        record.getTime()
-                );
-            case (MeasurementType.sprinklerSchedule):
-                return new SprinklerSystemScheduleMeasurement(
-                        Long.valueOf((String) record.getValueByKey("id")),
+                        (Boolean) record.getValueByKey("is_schedule"),
                         (String) record.getValueByKey("user"),
                         record.getTime()
                 );

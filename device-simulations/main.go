@@ -21,8 +21,8 @@ import (
 
 type Device interface {
 	solar_panels.SolarPanel | house_battery.HouseBattery | lamp.Lamp | vehicle_gate.AuxVehicleGate |
-		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | sprinkler_system.SprinklerSystem
-		| washing_machine.AuxWashingMachine |
+		air_conditioning.AuxAirConditioning | ambient_sensor.AmbientSensor | sprinkler_system.SprinklerSystem |
+		washing_machine.AuxWashingMachine |
 		electric_vehicle_charger.ElectricVehicleCharger
 }
 

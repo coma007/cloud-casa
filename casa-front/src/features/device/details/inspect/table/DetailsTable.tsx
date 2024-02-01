@@ -6,12 +6,12 @@ import DeviceTableCSS from './DetailsTable.module.scss'
 const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasurementList, topic?: string }) => {
     let header, data;
 
-    const parseAirConditioningCommand = (measurement) =>{
+    const parseAirConditioningCommand = (measurement) => {
         let result = measurement.executed;
         let command = "";
-        if("working" in measurement) command = measurement.working;
-        if("temperature" in measurement) command = "SET TEMPERATURE TO " + measurement.temperature;
-        if("mode" in measurement) command = "SET MODE TO " + measurement.mode;
+        if ("working" in measurement) command = measurement.working;
+        if ("temperature" in measurement) command = "SET TEMPERATURE TO " + measurement.temperature;
+        if ("mode" in measurement) command = "SET MODE TO " + measurement.mode;
 
         let user = measurement.user;
         const timestamp = new Date(measurement.timestamp * 1000)
@@ -26,8 +26,9 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
         return rowData;
     }
     useEffect(() => {
+        console.log(props.measurements.measurements)
         if (props.measurements.measurements !== undefined) {
-            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType=="air_conditioning") {
+            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system") {
                 let command = "Command";
                 let width = [40, 40, 40]
 
@@ -60,7 +61,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                 if (props.deviceType == "air_conditioning") {
                     header = {
                         rowData: [
-                            { content: "Time", widthPercentage: 25},
+                            { content: "Time", widthPercentage: 25 },
                             { content: "Command", widthPercentage: 25 },
                             { content: "Result", widthPercentage: 25 },
                             { content: "User", widthPercentage: 25 },
@@ -75,8 +76,6 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                     const timestamp = new Date(m.timestamp * 1000)
                     const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
 
-
-
                     let content = m.command;
 
                     if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
@@ -85,6 +84,17 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         }
                         else {
                             content = "CLOSED"
+                        }
+                    }
+                    else if (props.deviceType == 'sprinkler_system') {
+                        if (m.is_on) {
+                            content = "ON"
+                        }
+                        else if (!m.is_on) {
+                            content = "OFF"
+                        }
+                        if (m.is_schedule) {
+                            content = "SCHEDULE"
                         }
                     }
                     else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
@@ -105,8 +115,8 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
-                    if(props.deviceType == 'air_conditioning'){
-                        
+                    if (props.deviceType == 'air_conditioning') {
+
                         data.push({
                             rowData: parseAirConditioningCommand(m),
                             onClick: undefined

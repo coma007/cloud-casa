@@ -383,7 +383,7 @@ const DeviceDetails = () => {
                 setDev({
                     ...baseDevice,
                     type: 'sprinkler_system',
-                    measurementTopic: 'sprinkler_system',
+                    measurementTopic: 'sprinkler_command',
                     schedule: device.schedule
                 })
                 break;
@@ -690,7 +690,7 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system", "vehicle_gate", "air_conditioning"].includes(dev.type)) && !showActivity &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />
@@ -714,8 +714,6 @@ const DeviceDetails = () => {
                     {
                         showActivity &&
                         <ActivityChart data={activityData} />
-
-
                     }
 
                 </div>
