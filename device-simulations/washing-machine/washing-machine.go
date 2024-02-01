@@ -283,7 +283,7 @@ func (machine *WashingMachine) existsOverlapping(newSchedule utils.WashingMachin
 
 func fetchDSchedules(id int64) []utils.WashingMachineSchedule {
 	//TODO check
-	url := "http://localhost:8080/api/washingMachine/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
+	url := "http://" + utils.URL_DOMAIN + ":8080/api/washingMachine/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
 	var resp *http.Response
 	var err error
 
