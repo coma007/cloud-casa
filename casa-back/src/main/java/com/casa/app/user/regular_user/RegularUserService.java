@@ -35,4 +35,8 @@ public class RegularUserService {
         User user = (User) context.getAuthentication().getPrincipal();
         return regularUserRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
     }
+
+    public RegularUser getUserById(long id){
+        return regularUserRepository.findById(id).orElse(null);
+    }
 }

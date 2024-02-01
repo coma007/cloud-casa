@@ -25,8 +25,10 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
 import com.casa.app.estate.RealEstate;
 import com.casa.app.estate.RealEstateService;
+import com.casa.app.exceptions.UnathorizedException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
+import com.casa.app.permission.PermissionService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.min;
 
@@ -54,12 +57,18 @@ public class DeviceService {
     private UserService userService;
     @Autowired
     private RegularUserService regularUserService;
+    @Autowired
+    private PermissionService permissionService;
 
     public List<DeviceDetailsDTO> getAllByOwner() throws UserNotFoundException {
         List<Device> devices;
         try {
             RegularUser currentUser = regularUserService.getUserByToken();
             devices = deviceRepository.findAllByOwner(currentUser);
+            devices = devices
+                    .parallelStream()
+                    .filter(d->permissionService.canReadDevice(d.getId(), currentUser.getId()))
+                    .collect(Collectors.toList());
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException();
         }
@@ -72,12 +81,17 @@ public class DeviceService {
         return devicesDTO;
     }
 
-    public List<DeviceDetailsDTO> getAllByRealEstate(Long realEstateId) {
+    public List<DeviceDetailsDTO> getAllByRealEstate(Long realEstateId) throws UserNotFoundException {
         RealEstate realEstate = realEstateService.getById(realEstateId);
         if (realEstate == null) {
             return null;
         }
         List<Device> devices = deviceRepository.findAllByRealEstate(realEstate);
+        RegularUser currentUser = regularUserService.getUserByToken();
+        devices = devices
+                .parallelStream()
+                .filter(d->permissionService.canReadDevice(d.getId(), currentUser.getId()))
+                .collect(Collectors.toList());
         List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             DeviceDetailsDTO dto = d.toDetailsDTO();
@@ -87,10 +101,13 @@ public class DeviceService {
         return devicesDTO;
     }
 
-    public DeviceDetailsDTO getDeviceDetails(Long deviceId) {
+    public DeviceDetailsDTO getDeviceDetails(Long deviceId) throws UserNotFoundException, UnathorizedException {
         Device device = deviceRepository.findById(deviceId).orElse(null);
-
-        return getDeviceDetailsDTO(device);
+        RegularUser currentUser = regularUserService.getUserByToken();
+        if(permissionService.canReadDevice(deviceId, currentUser.getId()))
+            return getDeviceDetailsDTO(device);
+        else
+            throw new UnathorizedException();
     }
 
     private static DeviceDetailsDTO getDeviceDetailsDTO(Device device) {
@@ -135,6 +152,21 @@ public class DeviceService {
 
     public List<DeviceSimulationDTO> getAllSimulation() {
         List<Device> devices = deviceRepository.findAll();
+        List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
+        for (Device d : devices) {
+            String type = getType(d);
+            devicesDTO.add(new DeviceSimulationDTO(d.getId(), type));
+        }
+        return devicesDTO;
+    }
+
+    public List<DeviceSimulationDTO> getAll() throws UserNotFoundException {
+        List<Device> devices = deviceRepository.findAll();
+        RegularUser currentUser = regularUserService.getUserByToken();
+        devices = devices
+                .parallelStream()
+                .filter(d->permissionService.canReadDevice(d.getId(), currentUser.getId()))
+                .collect(Collectors.toList());
         List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             String type = getType(d);

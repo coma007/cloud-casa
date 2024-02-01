@@ -52,4 +52,9 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleInvalidDateException(Exception ex, WebRequest request) {
         return ResponseEntity.badRequest().body("Invalid date/dates given");
     }
+
+    @ExceptionHandler(value = {UnathorizedException.class})
+    public ResponseEntity<Object> handleUnauthorizedException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unathorized");
+    }
 }

@@ -6,6 +6,7 @@ import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.measurement.OnlineMeasurementList;
 import com.casa.app.estate.RealEstateDTO;
+import com.casa.app.exceptions.UnathorizedException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
@@ -41,6 +42,14 @@ public class DeviceController {
     @GetMapping("/public/simulation/getAll")
     public ResponseEntity<List<DeviceSimulationDTO>> getAllDevicesForSimulation() {
         List<DeviceSimulationDTO> devices = service.getAllSimulation();
+        return new ResponseEntity<>(devices, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<List<DeviceSimulationDTO>> getAll() throws UserNotFoundException {
+        List<DeviceSimulationDTO> devices = service.getAll();
         return new ResponseEntity<>(devices, HttpStatus.OK);
     }
 
@@ -84,13 +93,13 @@ public class DeviceController {
 
     @GetMapping("/getAllByRealEstate/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) {
+    public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) throws UserNotFoundException {
         return new ResponseEntity<>(service.getAllByRealEstate(id), HttpStatus.OK);
     }
 
     @GetMapping("/getDeviceDetails/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException {
+    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException, UnathorizedException {
         return new ResponseEntity<>(service.getDeviceDetails(id), HttpStatus.OK);
     }
 
