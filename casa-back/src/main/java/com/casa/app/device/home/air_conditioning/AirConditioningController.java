@@ -34,10 +34,13 @@ public class AirConditioningController {
     private AirConditioningService airConditioningService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    PermissionService permissionService;
+    private PermissionService permissionService;
+
+    @Autowired
+    private RegularUserService regularUserService;
 
     @PermitAll
     @GetMapping("/public/simulation/getAll")
@@ -48,7 +51,7 @@ public class AirConditioningController {
     @PermitAll
     @PostMapping("/simulation/working")
     public ResponseEntity<?> setWorking(@RequestBody AirConditionWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
 
@@ -60,9 +63,6 @@ public class AirConditioningController {
     @GetMapping(value="/public/simulation/schedules",
             produces="application/json")
     public ResponseEntity<String> getSchedules(@RequestParam Long deviceId) {
-        User currentUser = userService.getUserByToken();
-        if(!permissionService.canReadDevice(deviceId, currentUser.getId()))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no read permission");
 
         List<AirConditionSchedule> schedules = airConditioningService.getSchedules(deviceId);
         try {
@@ -75,7 +75,7 @@ public class AirConditioningController {
     @PermitAll
     @PostMapping("/simulation/temperature")
     public ResponseEntity<?> setTemperature(@RequestBody AirConditionTemperatureDTO dto) throws UserNotFoundException, DeviceNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
 
@@ -86,7 +86,7 @@ public class AirConditioningController {
     @PermitAll
     @PostMapping("/simulation/mode")
     public ResponseEntity<?> setMode(@RequestBody AirConditionModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         if(!permissionService.canWriteDevice(dto.getId(), currentUser.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
 
@@ -100,7 +100,7 @@ public class AirConditioningController {
     @PermitAll
     @PostMapping("/simulation/schedule")
     public ResponseEntity<?> setSchedule(@RequestBody AirConditionScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException {
-        User currentUser = userService.getUserByToken();
+        RegularUser currentUser = regularUserService.getUserByToken();
         if(!permissionService.canWriteDevice(dto.getDeviceId(), currentUser.getId()))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Cannot access, no write permission");
 
