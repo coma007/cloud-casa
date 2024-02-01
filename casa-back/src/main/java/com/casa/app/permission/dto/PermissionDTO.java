@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
-public class NewPermissionDTO {
+public class PermissionDTO {
     private long resourceId;
     private long userId;
     private String kind;

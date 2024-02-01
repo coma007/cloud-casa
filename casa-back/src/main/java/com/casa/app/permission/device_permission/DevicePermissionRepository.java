@@ -14,4 +14,6 @@ public interface DevicePermissionRepository extends JpaRepository<DevicePermissi
             " and dp.userId = :userId ")
 
     Boolean canAccess(long deviceId, long userId);
+
+
 }

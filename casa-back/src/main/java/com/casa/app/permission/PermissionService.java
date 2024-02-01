@@ -8,8 +8,9 @@ import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.permission.device_permission.DevicePermission;
+import com.casa.app.permission.device_permission.DevicePermissionKey;
 import com.casa.app.permission.device_permission.DevicePermissionRepository;
-import com.casa.app.permission.dto.NewPermissionDTO;
+import com.casa.app.permission.dto.PermissionDTO;
 import com.casa.app.permission.real_estate_permission.RealEstatePermission;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionRepository;
 import com.casa.app.user.regular_user.RegularUser;
@@ -51,7 +52,7 @@ public class PermissionService {
         throw new NotFoundException();
     }
 
-    public NewPermissionDTO create(NewPermissionDTO dto) throws NotFoundException, UserNotFoundException {
+    public PermissionDTO create(PermissionDTO dto) throws NotFoundException, UserNotFoundException {
         RegularUser user = regularUserService.getUserById(dto.getUserId());
         if(user == null)
             throw new UserNotFoundException();
@@ -104,5 +105,28 @@ public class PermissionService {
         if(!canWriteDevice(deviceId, currentUser.getId()))
             throw new UnauthorizedWriteException();
 
+    }
+
+//TODO delete
+    public void delete(PermissionDTO dto) throws UserNotFoundException {
+        RegularUser user = regularUserService.getUserById(dto.getUserId());
+        if(user == null)
+            throw new UserNotFoundException();
+        if(dto.getKind().equalsIgnoreCase("DEVICE")){
+            DevicePermissionKey key = new DevicePermissionKey();
+            key.setDeviceId(dto.getResourceId());
+            key.setUserId(dto.getUserId());
+            DevicePermission permission = devicePermissionRepository.findById(key);
+            devicePermissionRepository.delete(permission);
+        }
+        else if(dto.getKind().equalsIgnoreCase("REAL ESTATE")){
+            RealEstate realEstate = realEstateService.getById(dto.getResourceId());
+            if (realEstate == null)
+                throw new NotFoundException();
+            RealEstatePermission permission = realEstatePermissionRepository.findById();
+            realEstatePermissionRepository.delete(permission);
+        }
+        else throw new NotFoundException();
+        return dto;
     }
 }
