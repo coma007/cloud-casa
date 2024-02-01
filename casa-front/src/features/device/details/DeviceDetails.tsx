@@ -384,6 +384,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     type: 'sprinkler_system',
                     measurementTopic: 'sprinkler_system',
+                    schedule: device.schedule
                 })
                 break;
             default:
@@ -681,7 +682,7 @@ const DeviceDetails = () => {
                             </>
                         }
                         {
-                            (!["ambient_sensor", "lamp"].includes(dev.type)) && !showActivity &&
+                            (!["ambient_sensor", "lamp_brightness"].includes(dev.type)) && !showActivity &&
                             <>
                                 <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleUsernameFilterClick}></FilterUser>
                                 <hr></hr>
@@ -699,7 +700,7 @@ const DeviceDetails = () => {
                             </>)
                     }
                     {
-                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) && !showActivity &&
+                        (["house_battery", "lamp_brightness", "ambient_sensor"].includes(dev.type)) && !showActivity &&
                         (
                         <>
                             <GraphPagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage}>

@@ -23,6 +23,7 @@ import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.device.outdoor.lamp.dto.LampDTO;
 import com.casa.app.device.outdoor.lamp.LampRepository;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystem;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemSchedule;
 import com.casa.app.device.outdoor.sprinkler_system.dto.SprinklerSystemDTO;
 import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemRepository;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
@@ -144,6 +145,7 @@ public class DeviceRegistrationService {
         SprinklerSystem newDevice = device.toModel();
         newDevice.setRealEstate(realEstateService.getById(device.getRealEstateId()));
         newDevice.setCredentials(new ConnectionCredentials());
+        newDevice.setSchedule(new SprinklerSystemSchedule());
         RegularUser currentUser = regularUserService.getUserByToken();
         newDevice.setOwner(currentUser);
         sprinklerSystemRepository.save(newDevice);

@@ -21,7 +21,8 @@ public class MeasurementType {
     public final  static String solarPanelSystemCommand = "solar_panel_system_command";
     public final  static String lampBrightness = "lamp_brightness";
     public final  static String lampCommand = "lamp_command";
-    public final static String sprinklerSystem = "sprinkler_system";
+    public final static String sprinklerCommand = "sprinkler_command";
+    public final static String sprinklerSchedule = "sprinkler_schedule";
     public final static String vehicleGateLicencePlates = "vehicle_gate_licence_plates";
     public final static String vehicleGateCommand = "vehicle_gate_command";
     public final static String vehicleGateMode = "vehicle_gate_mode";
