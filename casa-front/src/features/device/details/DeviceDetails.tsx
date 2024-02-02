@@ -108,6 +108,9 @@ const DeviceDetails = () => {
                     else if (gateMode === "vehicle_gate_mode") {
                         newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_private: message.attachment.is_private, user: message.attachment.user }, ...measurements.measurements]
                     }
+                    else if (gateMode === "vehicle_gate_vehicles") {
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, adding: message.attachment.adding, vehicle: message.attachment.vehicle, user: message.attachment.user }, ...measurements.measurements]
+                    }
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
                         if (numberOfPages == 1) {
@@ -128,7 +131,7 @@ const DeviceDetails = () => {
             WebSocketService.createSocket("/topic/ambient_sensor_reading/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
                 let newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, temperature: message.attachment.temperature, humidity: message.attachment.humidity }, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
-                   newMeasurements = newMeasurements.slice(0, 10)
+                    newMeasurements = newMeasurements.slice(0, 10)
                     if (numberOfPages == 1) {
                         setNumberOfPages(numberOfPages + 1);
                     }
@@ -150,7 +153,7 @@ const DeviceDetails = () => {
                 message.attachment.timestamp = tstp;
                 let newMeasurements = [{ ...message.attachment, id: message.attachment.id }, ...measurements.measurements]
                 if (newMeasurements.length > 10) {
-                   newMeasurements = newMeasurements.slice(0, 10)
+                    newMeasurements = newMeasurements.slice(0, 10)
                     if (numberOfPages == 1) {
                         setNumberOfPages(numberOfPages + 1);
                     }
@@ -224,6 +227,9 @@ const DeviceDetails = () => {
                     else if (gateMode === "vehicle_gate_mode") {
                         console.log(message.attachment)
                         newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, is_private: message.attachment.is_private, user: message.attachment.user }, ...measurements.measurements]
+                    }
+                    else if (gateMode === "vehicle_gate_vehicles") {
+                        newMeasurements = [{ id: message.attachment.id, timestamp: (new Date(message.attachment.timestamp)).getTime() / 1000, adding: message.attachment.adding, vehicle: message.attachment.vehicle, user: message.attachment.user }, ...measurements.measurements]
                     }
                     if (newMeasurements.length > 10) {
                         newMeasurements = newMeasurements.slice(0, 10)
@@ -361,7 +367,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     AllowedVehicles: device.allowedVehicles,
                     type: 'vehicle_gate',
-                    measurementTopic: 'vehicle_gate_licence_plates',
+                    measurementTopic: 'vehicle_gate_vehicles',
                 })
                 break;
             case "ambient_sensor":
@@ -383,7 +389,8 @@ const DeviceDetails = () => {
                 setDev({
                     ...baseDevice,
                     type: 'sprinkler_system',
-                    measurementTopic: 'sprinkler_system',
+                    measurementTopic: 'sprinkler_command',
+                    schedule: device.schedule
                 })
                 break;
             default:
@@ -559,7 +566,7 @@ const DeviceDetails = () => {
     const [ambientMeasurement, setAmbientMeasurement] = useState("temperature");
 
 
-    const [gateMode, setGateMode] = useState("vehicle_gate_licence_plates")
+    const [gateMode, setGateMode] = useState("vehicle_gate_vehicles")
 
     const handleGateModeChange = (mode: string) => {
         setGateMode(mode);
@@ -644,8 +651,9 @@ const DeviceDetails = () => {
                         <div>
                             <br></br>
                             <small>Chose a mode of querying data on the right</small> <br></br>
-                            <button onClick={() => { handleGateModeChange("vehicle_gate_licence_plates") }} className={DeviceDetailsCSS.smallButton}>license plates</button>
-                            <button onClick={() => handleGateModeChange("vehicle_gate_command")} className={DeviceDetailsCSS.smallButton}>open/close</button>
+                            <button onClick={() => { handleGateModeChange("vehicle_gate_vehicles") }} className={DeviceDetailsCSS.smallButton}>vehicles</button>
+                            <button onClick={() => handleGateModeChange("vehicle_gate_command")} className={DeviceDetailsCSS.smallButton}>open/close</button> <br></br>
+                            <button onClick={() => { handleGateModeChange("vehicle_gate_licence_plates") }} className={DeviceDetailsCSS.smallButton}>licence plates</button>
                             <button onClick={() => handleGateModeChange("vehicle_gate_mode")} className={DeviceDetailsCSS.smallButton}>public/private</button>
                         </div>}
                 </div>
@@ -681,7 +689,7 @@ const DeviceDetails = () => {
                             </>
                         }
                         {
-                            (!["ambient_sensor", "lamp"].includes(dev.type)) && !showActivity &&
+                            (!["ambient_sensor", "lamp_brightness"].includes(dev.type)) && !showActivity &&
                             <>
                                 <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleUsernameFilterClick}></FilterUser>
                                 <hr></hr>
@@ -689,7 +697,7 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "electric_vehicle_charger"].includes(dev.type)) && !showActivity &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system", "electric_vehicle_charger"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />
@@ -699,22 +707,20 @@ const DeviceDetails = () => {
                             </>)
                     }
                     {
-                        (["house_battery", "lamp", "ambient_sensor"].includes(dev.type)) && !showActivity &&
+                        (["house_battery", "lamp_brightness", "ambient_sensor"].includes(dev.type)) && !showActivity &&
                         (
-                        <>
-                            <GraphPagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage}>
-                                <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
-                            </GraphPagination>
+                            <>
+                                <GraphPagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage}>
+                                    <Graph deviceType={deviceType} measurements={measurements} label={dev.measurementLabel} ambientMeasurement={ambientMeasurement} />
+                                </GraphPagination>
                                 {/* <Pagination currentPage={currentPage} numberOfPages={numberOfPages} onClick={changePage} /> */}
-                        </>
+                            </>
                         )
 
                     }
                     {
                         showActivity &&
                         <ActivityChart data={activityData} />
-
-
                     }
 
                 </div>

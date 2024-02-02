@@ -3,9 +3,11 @@ package com.casa.app.mqtt;
 import com.casa.app.device.DeviceStatusService;
 import com.casa.app.device.home.air_conditioning.AirConditioningService;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorService;
+import com.casa.app.device.home.washing_machine.WashingMachineService;
 import com.casa.app.device.large_electric.electric_vehicle_charger.ElectricVehicleChargerService;
 import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.LampService;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemService;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateService;
 import com.casa.app.device.large_electric.house_battery.HouseBatteryService;
 import com.casa.app.device.large_electric.solar_panel_system.SolarPanelSystemService;
@@ -35,8 +37,8 @@ public class MqttBeans {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-//        options.setServerURIs(new String[] {"tcp://localhost:1883"});
-        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
+        options.setServerURIs(new String[] {"tcp://localhost:1883"});
+//        options.setServerURIs(new String[] {"tcp://mqtt-broker:1883"});
         options.setUserName("admin");
         String pass = "12345678";
         options.setPassword(pass.toCharArray());
@@ -73,6 +75,8 @@ public class MqttBeans {
             @Autowired
             private VehicleGateService vehicleGateService;
             @Autowired
+            private SprinklerSystemService sprinklerSystemService;
+            @Autowired
             private SolarPanelSystemService solarPanelSystemService;
             @Autowired
             private HouseBatteryService houseBatteryService;
@@ -82,6 +86,8 @@ public class MqttBeans {
             private AmbientSensorService ambientSensorService;
             @Autowired
             private AirConditioningService airConditioningService;
+            @Autowired
+            private WashingMachineService washingMachineService;
 
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
@@ -100,17 +106,23 @@ public class MqttBeans {
                     case (MeasurementType.airConditioningModeAck):
                         airConditioningService.handleModeAckMessage(id, content);
                         break;
+                    case (MeasurementType.washingMachineWorkingAck):
+                        washingMachineService.handleWorkingAckMessage(id, content);
+                        break;
+                    case (MeasurementType.washingMachineModeAck):
+                        washingMachineService.handleModeAckMessage(id, content);
+                        break;
                     case (MeasurementType.airConditioningTemperatureAck):
                         airConditioningService.handleTemperatureAckMessage(id, content);
                         break;
                     case (MeasurementType.airConditioningNewScheduleAck):
                         airConditioningService.handleNewScheduleAckMessage(id, content);
                         break;
+                    case (MeasurementType.washingMachineNewScheduleAck):
+                        washingMachineService.handleNewScheduleAckMessage(id, content);
+                        break;
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
-                        break;
-                    case (MeasurementType.washingMachine):
-                        // call service handler here
                         break;
                     case (MeasurementType.electricVehicleChargerCommand):
                         electricVehicleChargerService.commandHandler(id, content);
@@ -136,8 +148,11 @@ public class MqttBeans {
                     case (MeasurementType.lampCommand):
                         lampService.commandHandler(id, content);
                         break;
-                    case (MeasurementType.sprinklerSystem):
-                        // call service handler here
+                    case (MeasurementType.sprinklerCommand):
+                        sprinklerSystemService.commandHandler(id, content);
+                        break;
+                    case (MeasurementType.sprinklerSchedule):
+                        sprinklerSystemService.scheduleHandler(id, content);
                         break;
                     case (MeasurementType.vehicleGateLicencePlates):
                         vehicleGateService.licencePlatesHandler(id, content);

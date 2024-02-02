@@ -5,8 +5,9 @@ import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.measurement.OnlineMeasurementList;
-import com.casa.app.estate.RealEstateDTO;
+import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.permission.PermissionService;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import jakarta.annotation.security.PermitAll;
@@ -16,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/device")
@@ -29,6 +28,8 @@ public class DeviceController {
 
     @Autowired
     private DeviceService service;
+    @Autowired
+    private PermissionService permissionService;
 
     @PermitAll
     @PostMapping("/register")
@@ -41,6 +42,14 @@ public class DeviceController {
     @GetMapping("/public/simulation/getAll")
     public ResponseEntity<List<DeviceSimulationDTO>> getAllDevicesForSimulation() {
         List<DeviceSimulationDTO> devices = service.getAllSimulation();
+        return new ResponseEntity<>(devices, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/getAll")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<List<DeviceSimulationDTO>> getAll() throws UserNotFoundException {
+        List<DeviceSimulationDTO> devices = service.getAll();
         return new ResponseEntity<>(devices, HttpStatus.OK);
     }
 
@@ -84,13 +93,13 @@ public class DeviceController {
 
     @GetMapping("/getAllByRealEstate/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) {
+    public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) throws UserNotFoundException {
         return new ResponseEntity<>(service.getAllByRealEstate(id), HttpStatus.OK);
     }
 
     @GetMapping("/getDeviceDetails/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException {
+    public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException, UnathorizedReadException {
         return new ResponseEntity<>(service.getDeviceDetails(id), HttpStatus.OK);
     }
 

@@ -1,7 +1,6 @@
 package com.casa.app.device.home.air_conditioning;
 
 import com.casa.app.device.Device;
-import com.casa.app.device.DeviceController;
 import com.casa.app.device.DeviceRepository;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionModeDTO;
 import com.casa.app.device.home.air_conditioning.dtos.AirConditionScheduleDTO;
@@ -13,9 +12,6 @@ import com.casa.app.device.home.air_conditioning.measurements.execution.AirCondi
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditioningScheduleRepository;
-import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
-import com.casa.app.notifications.Notification;
-import com.casa.app.notifications.NotificationRepository;
 import com.casa.app.device.home.air_conditioning.schedule.AirConditionSchedule;
 import com.casa.app.exceptions.DeviceNotFoundException;
 import com.casa.app.exceptions.InvalidDateException;
@@ -26,7 +22,6 @@ import com.casa.app.mqtt.MqttGateway;
 import com.casa.app.notifications.NotificationService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserRepository;
-import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.device.home.air_conditioning.dto.AirConditioningSimulationDTO;
@@ -34,17 +29,9 @@ import com.casa.app.util.email.JSONUtil;
 import com.casa.app.websocket.SocketMessage;
 import com.casa.app.websocket.WebSocketController;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -101,17 +88,17 @@ public class AirConditioningService {
         mqttGateway.sendToMqtt(device.getId()+"~" + command.toMessage(), device.getId().toString());
     }
 
-    public void sendWorkingCommand(AirConditionWorkingDTO dto, RegularUser currentUser) throws DeviceNotFoundException {
+    public void sendWorkingCommand(AirConditionWorkingDTO dto, User currentUser) throws DeviceNotFoundException {
         AirConditioningWorkingCommand command = new AirConditioningWorkingCommand(dto.getId(), CommandType.WORKING, dto.isWorking() ? "TURN ON" : "TURN OFF", currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendTemperatureCommand(AirConditionTemperatureDTO dto, RegularUser currentUser) throws DeviceNotFoundException {
+    public void sendTemperatureCommand(AirConditionTemperatureDTO dto, User currentUser) throws DeviceNotFoundException {
         AirConditioningTemperatureCommand command = new AirConditioningTemperatureCommand(dto.getId(), CommandType.TEMPERATURE, dto.getTemperature(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }
 
-    public void sendModeCommand(AirConditionModeDTO dto, RegularUser currentUser) throws DeviceNotFoundException {
+    public void sendModeCommand(AirConditionModeDTO dto, User currentUser) throws DeviceNotFoundException {
         AirConditioningModeCommand command = new AirConditioningModeCommand(dto.getId(), CommandType.MODE, dto.getMode(), currentUser.getUsername(), Instant.now());
         sendCommand(dto.getId(), command);
     }

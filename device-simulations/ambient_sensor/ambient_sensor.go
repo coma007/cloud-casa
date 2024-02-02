@@ -4,6 +4,7 @@ import (
 	"device-simulations/utils"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -40,8 +41,10 @@ func determineSeason() string {
 	autumnStart := time.Date(now.Year(), 9, 1, 0, 0, 0, 0, time.UTC)
 	winterStart := time.Date(now.Year(), 12, 1, 0, 0, 0, 0, time.UTC)
 
+	previousWinterStart := time.Date(now.Year()-1, 12, 1, 0, 0, 0, 0, time.UTC)
 	nextYearSpringStart := time.Date(now.Year()+1, 3, 1, 0, 0, 0, 0, time.UTC)
-	if TimeIsBetween(now, winterStart, nextYearSpringStart) {
+	springStart := time.Date(now.Year(), 3, 1, 0, 0, 0, 0, time.UTC)
+	if TimeIsBetween(now, winterStart, nextYearSpringStart) || TimeIsBetween(now, previousWinterStart, springStart) {
 		return Winter
 	} else if TimeIsBetween(now, summerStart, autumnStart) {
 		return Summer
@@ -54,58 +57,92 @@ func determineSeason() string {
 
 func generateTemperature(season string) float64 {
 	rand.Seed(time.Now().UnixNano())
-	var min, max float64
+	now := time.Now()
+	var min, max, night float64
+	var isNight bool
 	switch season {
 	case Winter:
 		{
 			min = -3
 			max = 15
+			night = -6
+			isNight = now.Hour() > 17 && now.Hour() < 8
 		}
 	case Summer:
 		{
 			min = 20
 			max = 40
+			night = -3
+			isNight = now.Hour() > 21 && now.Hour() < 5
 		}
 	case Autumn:
 		{
 			min = 10
 			max = 20
+			night = -5
+			isNight = now.Hour() > 19 && now.Hour() < 7
 		}
 	default:
 		{
 			min = 15
 			max = 25
+			night = -3
+			isNight = now.Hour() > 20 && now.Hour() < 6
 		}
 	}
-	return min + rand.Float64()*(max-min)
+	temp := min + rand.Float64()*(max-min)
+	if isNight {
+		temp = temp - rand.Float64()*math.Abs(night)
+	}
+	if temp <= -10.0 {
+		return -10.0
+	}
+	if temp >= 42.0 {
+		return 42.0
+	}
+	return temp
 }
 
 func generateHumidity(season string) float64 {
 	rand.Seed(time.Now().UnixNano())
-	var min, max float64
+	now := time.Now()
+	var min, max, night float64
+	var isNight bool
 	switch season {
 	case Winter:
 		{
 			min = 5
-			max = 70
+			max = 35
+			night = -10
+			isNight = now.Hour() > 17 && now.Hour() < 8
 		}
 	case Summer:
 		{
-			min = 0
-			max = 40
+			min = 1
+			max = 45
+			night = -5
+			isNight = now.Hour() > 21 && now.Hour() < 5
 		}
 	case Autumn:
 		{
-			min = 30
-			max = 100
+			min = 10
+			max = 45
+			night = 0
+			isNight = now.Hour() > 19 && now.Hour() < 7
 		}
 	default:
 		{
-			min = 0
-			max = 100
+			min = 5
+			max = 40
+			night = -1
+			isNight = now.Hour() > 20 && now.Hour() < 6
 		}
 	}
-	return min + rand.Float64()*(max-min)
+	humidity := min + rand.Float64()*(max-min)
+	if isNight {
+		humidity = humidity - rand.Float64()*math.Abs(night)
+	}
+	return math.Min(humidity, 100)
 }
 
 func TimeIsBetween(t, min, max time.Time) bool {
@@ -150,6 +187,9 @@ func StartSimulation(device AmbientSensor) {
 		temperatureS := fmt.Sprintf("%f", temperature)
 		humidityS := fmt.Sprintf("%f", humidity)
 		data = append(data, temperatureS, humidityS)
+
+		fmt.Println("HUMIDITY: " + humidityS)
+		fmt.Println("TEMPERATURE: " + temperatureS)
 
 		utils.SendComplexMessage(client, "ambient_sensor", device.Id, data)
 		utils.Ping(device.Id, client)

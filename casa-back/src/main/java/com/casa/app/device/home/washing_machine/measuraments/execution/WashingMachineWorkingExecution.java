@@ -1,4 +1,4 @@
-package com.casa.app.device.outdoor.sprinkler_system;
+package com.casa.app.device.home.washing_machine.measuraments.execution;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,26 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.sprinklerSystem)
+
+@Measurement(name = MeasurementType.washingMachineWorkingAck)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SprinklerSystemMeasurement extends AbstractMeasurement {
+public class WashingMachineWorkingExecution extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
-    // add your custom columns
+    @Column
+    String working;
+
+    @Column
+    String executed;
+
+    @Column
+    String user;
 
     @Column(timestamp = true)
     Instant timestamp;
+
+
 }

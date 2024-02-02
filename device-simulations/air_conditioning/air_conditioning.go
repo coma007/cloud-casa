@@ -393,7 +393,7 @@ func (conditioner *AirConditioning) existsOverlapping(newSchedule utils.AirCondi
 }
 
 func fetchDSchedules(id int64) []utils.AirConditioningSchedule {
-	url := "http://localhost:8080/api/airConditioning/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
+	url := "http://" + utils.URL_DOMAIN + ":8080/api/airConditioning/public/simulation/schedules?deviceId=" + strconv.FormatInt(id, 10)
 	var resp *http.Response
 	var err error
 

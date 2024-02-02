@@ -5,6 +5,7 @@ export const REGISTER = () => url + "/register";
 export const REGISTER_ADMIN = () => url + "/admin";
 export const CHANGE_PASSWORD = () => url + "/user/change-password";
 export const SUPER_AND_INIT = () => url + "/user/init";
+export const GET_ALL_USERS = () => url + "/user/public";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
@@ -16,9 +17,9 @@ export const REQUEST_GET_ALL_UNRESOLVED = () => url + "/realEstateRequest/getAll
 
 export const DEVICE_REGISTER = () => url + "/device/register"
 export const DEVICE_GET_ALL_BY_OWNER = () => url + "/device/getAllByOwner"
-export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id : number) => url + "/device/getAllByRealEstate/" + id
-export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id : number) => url + "/solarPanelSystem/toggleStatus/" + id 
-export const DEVICE_GET_DETAILS = (id : number) => url + "/device/getDeviceDetails/" + id
+export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id: number) => url + "/device/getAllByRealEstate/" + id
+export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id: number) => url + "/solarPanelSystem/toggleStatus/" + id
+export const DEVICE_GET_DETAILS = (id: number) => url + "/device/getDeviceDetails/" + id
 
 export const CHARGER_START_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/startCharging/" + id + "/" + slot 
 export const CHARGER_END_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/endCharging/" + id + "/" + slot 
@@ -28,6 +29,7 @@ export const AIR_CONDITION_TEMPERATURE = () => url + "/airConditioning/simulatio
 export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
 export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"
 export const AIR_CONDITION_SCHEDULE = () => url + "/airConditioning/simulation/schedule"
+export const SPRINKLER_SCHEDULE = (deviceId) => url + "/sprinklerSystem/setSchedule/" + deviceId;
 
 export const POWER_USAGE_FOR_CITY = (from: string, to: string) => url + "/houseBattery/powerUsageForCity?" + `from=${from}&` + `to=${to}`;
 export const POWER_USAGE_FOR_ESTATE = (from: string, to: string) => url + "/houseBattery/powerUsage?" + `from=${from}&` + `to=${to}`;

@@ -25,10 +25,13 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
 import com.casa.app.estate.RealEstate;
 import com.casa.app.estate.RealEstateService;
+import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
+import com.casa.app.permission.PermissionService;
 import com.casa.app.user.User;
 import com.casa.app.user.UserService;
+import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,11 +56,15 @@ public class DeviceService {
     private UserService userService;
     @Autowired
     private RegularUserService regularUserService;
+    @Autowired
+    private PermissionService permissionService;
 
     public List<DeviceDetailsDTO> getAllByOwner() throws UserNotFoundException {
         List<Device> devices;
         try {
-            devices = deviceRepository.findAllByOwner(regularUserService.getUserByToken());
+            RegularUser currentUser = regularUserService.getUserByToken();
+            devices = deviceRepository.findAllByOwner(currentUser);
+            devices = permissionService.filterReadDevices(devices);
         } catch (UserNotFoundException e) {
             throw new UserNotFoundException();
         }
@@ -70,12 +77,13 @@ public class DeviceService {
         return devicesDTO;
     }
 
-    public List<DeviceDetailsDTO> getAllByRealEstate(Long realEstateId) {
+    public List<DeviceDetailsDTO> getAllByRealEstate(Long realEstateId) throws UserNotFoundException {
         RealEstate realEstate = realEstateService.getById(realEstateId);
         if (realEstate == null) {
             return null;
         }
         List<Device> devices = deviceRepository.findAllByRealEstate(realEstate);
+        permissionService.filterReadDevices(devices);
         List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             DeviceDetailsDTO dto = d.toDetailsDTO();
@@ -85,10 +93,13 @@ public class DeviceService {
         return devicesDTO;
     }
 
-    public DeviceDetailsDTO getDeviceDetails(Long deviceId) {
+    public DeviceDetailsDTO getDeviceDetails(Long deviceId) throws UserNotFoundException, UnathorizedReadException {
         Device device = deviceRepository.findById(deviceId).orElse(null);
-
-        return getDeviceDetailsDTO(device);
+        RegularUser currentUser = regularUserService.getUserByToken();
+        if(permissionService.canReadDevice(deviceId, currentUser.getId()))
+            return getDeviceDetailsDTO(device);
+        else
+            throw new UnathorizedReadException();
     }
 
     private static DeviceDetailsDTO getDeviceDetailsDTO(Device device) {
@@ -133,6 +144,17 @@ public class DeviceService {
 
     public List<DeviceSimulationDTO> getAllSimulation() {
         List<Device> devices = deviceRepository.findAll();
+        List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
+        for (Device d : devices) {
+            String type = getType(d);
+            devicesDTO.add(new DeviceSimulationDTO(d.getId(), type));
+        }
+        return devicesDTO;
+    }
+
+    public List<DeviceSimulationDTO> getAll() throws UserNotFoundException {
+        List<Device> devices = deviceRepository.findAll();
+        devices = permissionService.filterReadDevices(devices);
         List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             String type = getType(d);
@@ -223,4 +245,7 @@ public class DeviceService {
         }
         return influxDBService.queryActivity(device, fromDate, toDate);
     }
+
+
+
 }

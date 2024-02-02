@@ -10,6 +10,8 @@ import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPa
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
 import com.casa.app.mqtt.MqttGateway;
+import com.casa.app.user.User;
+import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,14 @@ public class SolarPanelSystemService {
     @Autowired
     private HouseBatteryService houseBatteryService;
     @Autowired
-    private RegularUserService regularUserService;
+    private UserService userService;
 
     @Autowired
     private MqttGateway mqttGateway;
     @Autowired
     private InfluxDBService influxDBService;
+    @Autowired
+    private RegularUserService regularUserService;
 
     public DeviceStatus toggleStatus(Long id) throws UserNotFoundException {
         Device device = deviceRepository.findById(id).orElse(null);

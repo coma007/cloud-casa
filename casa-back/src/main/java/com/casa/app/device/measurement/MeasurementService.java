@@ -4,7 +4,6 @@ import com.casa.app.device.home.air_conditioning.measurements.execution.AirCondi
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionTemperatureExecution;
 import com.casa.app.device.home.air_conditioning.measurements.execution.AirConditionWorkingExecution;
 import com.casa.app.device.home.ambient_sensor.AmbientSensorMeasurement;
-import com.casa.app.device.home.washing_machine.WashingMachineMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.measurement.ElectricVehicleChargerCommandMeasurement;
 import com.casa.app.device.large_electric.electric_vehicle_charger.measurement.ElectricVehicleChargerPowerUsageMeasurement;
 import com.casa.app.device.large_electric.house_battery.measurement.HouseBatteryCurrentStateMeasurement;
@@ -14,10 +13,11 @@ import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPa
 import com.casa.app.device.large_electric.solar_panel_system.measurement.SolarPanelSystemPowerMeasurement;
 import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
-import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemMeasurement;
+import com.casa.app.device.outdoor.sprinkler_system.SprinklerSystemCommandMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateCommandMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateLicencePlatesMeasurement;
 import com.casa.app.device.outdoor.vehicle_gate.VehicleGateModeMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.VehicleGateVehicleMeasurement;
 import com.influxdb.query.FluxRecord;
 import org.springframework.stereotype.Service;
 
@@ -56,10 +56,6 @@ public class MeasurementService {
                         (Double) record.getValueByKey("temperature"),
                         (Double) record.getValueByKey("humidity"),
                         record.getTime()
-                );
-            case (MeasurementType.washingMachine):
-                return new WashingMachineMeasurement(
-                        // add values from record
                 );
             case (MeasurementType.electricVehicleChargerCommand):
                 return new ElectricVehicleChargerCommandMeasurement(
@@ -120,14 +116,26 @@ public class MeasurementService {
                         (String) record.getValueByKey("user"),
                         record.getTime()
                 );
-            case (MeasurementType.sprinklerSystem):
-                return new SprinklerSystemMeasurement(
-                        // add values from record
+            case (MeasurementType.sprinklerCommand):
+                return new SprinklerSystemCommandMeasurement(
+                        Long.valueOf((String) record.getValueByKey("id")),
+                        (Boolean) record.getValueByKey("is_on"),
+                        (Boolean) record.getValueByKey("is_schedule"),
+                        (String) record.getValueByKey("user"),
+                        record.getTime()
                 );
             case (MeasurementType.vehicleGateLicencePlates):
                 return new VehicleGateLicencePlatesMeasurement(
                         Long.valueOf((String) record.getValueByKey("id")),
                         (String) record.getValueByKey("licence_plates"),
+                        record.getTime()
+                );
+            case (MeasurementType.vehicleGateVehicles):
+                return new VehicleGateVehicleMeasurement(
+                        Long.valueOf((String) record.getValueByKey("id")),
+                        (Boolean) record.getValueByKey("adding"),
+                        (String) record.getValueByKey("vehicle"),
+                        (String) record.getValueByKey("user"),
                         record.getTime()
                 );
             case (MeasurementType.vehicleGateCommand):
