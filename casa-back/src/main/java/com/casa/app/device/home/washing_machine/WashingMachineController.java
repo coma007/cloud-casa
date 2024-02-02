@@ -5,10 +5,9 @@ import com.casa.app.device.home.washing_machine.dto.WashingMachineScheduleDTO;
 import com.casa.app.device.home.washing_machine.dto.WashingMachineSimulationDTO;
 import com.casa.app.device.home.washing_machine.dto.WashingMachineWorkingDTO;
 import com.casa.app.device.home.washing_machine.schedule.WashingMachineSchedule;
-import com.casa.app.exceptions.DeviceNotFoundException;
-import com.casa.app.exceptions.InvalidDateException;
-import com.casa.app.exceptions.ScheduleOverlappingException;
-import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.exceptions.*;
+import com.casa.app.permission.PermissionService;
+import com.casa.app.user.User;
 import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
@@ -30,6 +29,10 @@ public class WashingMachineController {
     private RegularUserService regularUserService;
     @Autowired
     private WashingMachineService washingMachineService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private PermissionService permissionService;
 
     @PermitAll
     @GetMapping("/public/simulation/getAll")
@@ -39,28 +42,31 @@ public class WashingMachineController {
 
     @PermitAll
     @PostMapping("/simulation/mode")
-    public ResponseEntity<?> setMode(@RequestBody WashingMachineModeDTO dto) throws UserNotFoundException, DeviceNotFoundException {
+    public ResponseEntity<?> setMode(@RequestBody WashingMachineModeDTO dto) throws UserNotFoundException, DeviceNotFoundException, UnauthorizedWriteException {
         if(dto.getMode().trim().isEmpty()) {
             return ResponseEntity.badRequest().body("Mode field must be filled");
         }
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.sendModeCommand(dto, currentUser);
+        permissionService.canWrite(dto.getId());
+        User user = userService.getUserByToken();
+        washingMachineService.sendModeCommand(dto, user);
         return ResponseEntity.ok().build();
     }
 
     @PermitAll
     @PostMapping("/simulation/working")
-    public ResponseEntity<Boolean> setWorking(@RequestBody WashingMachineWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.sendWorkingCommand(dto, currentUser);
+    public ResponseEntity<?> setWorking(@RequestBody WashingMachineWorkingDTO dto) throws UserNotFoundException, DeviceNotFoundException, UnauthorizedWriteException {
+        User user = userService.getUserByToken();
+        permissionService.canWrite(dto.getId());
+        washingMachineService.sendWorkingCommand(dto, user);
         return ResponseEntity.ok().build();
     }
 
     @PermitAll
     @PostMapping("/simulation/schedule")
-    public ResponseEntity<?> setSchedule(@RequestBody WashingMachineScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        washingMachineService.setSchedule(dto, currentUser);
+    public ResponseEntity<?> setSchedule(@RequestBody WashingMachineScheduleDTO dto) throws DeviceNotFoundException, InvalidDateException, ScheduleOverlappingException, UserNotFoundException, UnauthorizedWriteException {
+        User user = userService.getUserByToken();
+        permissionService.canWrite(dto.getDeviceId());
+        washingMachineService.setSchedule(dto, user);
         return ResponseEntity.ok().build();
     }
 

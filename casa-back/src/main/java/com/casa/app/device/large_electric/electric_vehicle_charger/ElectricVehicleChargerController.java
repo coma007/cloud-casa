@@ -3,7 +3,9 @@ package com.casa.app.device.large_electric.electric_vehicle_charger;
 
 import com.casa.app.device.large_electric.electric_vehicle_charger.dto.ElectricVehicleChargerSimulationDTO;
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.permission.PermissionService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,24 +23,32 @@ public class ElectricVehicleChargerController {
 
     @Autowired
     private ElectricVehicleChargerService electricVehicleChargerService;
+    @Autowired
+    private PermissionService permissionService;
 
     @PermitAll
     @GetMapping("/startCharging/{id}/{slot}")
-    public ResponseEntity<?> startCharging(@PathVariable Long id, @PathVariable String slot) throws NotFoundException, UserNotFoundException {
+    public ResponseEntity<?> startCharging(@PathVariable Long id, @PathVariable String slot) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
+
         electricVehicleChargerService.command(id, "Start", slot, "/");
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     @PermitAll
     @GetMapping("/endCharging/{id}/{slot}")
-    public ResponseEntity<?> endCharging(@PathVariable Long id, @PathVariable String slot) throws NotFoundException, UserNotFoundException {
+    public ResponseEntity<?> endCharging(@PathVariable Long id, @PathVariable String slot) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
+
         electricVehicleChargerService.command(id, "End", slot, "/");
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }
 
     @PermitAll
     @GetMapping("/setMaxPercentage/{id}/{slot}/{max}")
-    public ResponseEntity<?> setMaxPercentage(@PathVariable Long id, @PathVariable String slot, @PathVariable String max) throws NotFoundException, UserNotFoundException {
+    public ResponseEntity<?> setMaxPercentage(@PathVariable Long id, @PathVariable String slot, @PathVariable String max) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+        permissionService.canWrite(id);
+
         electricVehicleChargerService.command(id, "Set max", slot, max);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
     }

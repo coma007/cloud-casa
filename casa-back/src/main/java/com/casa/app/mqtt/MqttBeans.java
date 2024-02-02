@@ -124,9 +124,6 @@ public class MqttBeans {
                     case (MeasurementType.ambientSensor):
                         ambientSensorService.handleMessage(id, content);
                         break;
-                    case (MeasurementType.washingMachine):
-                        // call service handler here
-                        break;
                     case (MeasurementType.electricVehicleChargerCommand):
                         electricVehicleChargerService.commandHandler(id, content);
                         break;

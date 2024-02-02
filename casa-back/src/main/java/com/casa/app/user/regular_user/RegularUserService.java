@@ -40,6 +40,9 @@ public class RegularUserService {
         return regularUserRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
     }
 
+    public RegularUser getUserById(long id){
+        return regularUserRepository.findById(id).orElse(null);
+    }
     public List<RegularUserDTO> getAll(){
         return regularUserRepository.findAll().stream().map(RegularUserDTO::toDto).collect(Collectors.toList());
     }
