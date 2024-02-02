@@ -13,6 +13,7 @@ const PowerUsageReportPage = () => {
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [toDateMin, setToDateMin] = useState('');
+    const [resetTable, setResetTable] = useState(false);
 
     const [showActivity, setShowActivity] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -106,7 +107,7 @@ const PowerUsageReportPage = () => {
             });
             fetchEstateData();
         }
-    }, [powerUsageForCity, currentPage])
+    }, [powerUsageForCity, currentPage, resetTable])
 
     useEffect(() => {
 
@@ -129,6 +130,7 @@ const PowerUsageReportPage = () => {
         }
         setFromDate('');
         setToDate('');
+        setResetTable(!resetTable);
     }
 
     const handleDateFilterClick = (from: string, to: string) => {
@@ -141,7 +143,8 @@ const PowerUsageReportPage = () => {
         }
         setFromDate(from);
         setToDate(to);
-        setCurrentPage(2);
+        setCurrentPage(1);
+        setResetTable(!resetTable);
     }
 
     const handleFromDateChange = (e) => {

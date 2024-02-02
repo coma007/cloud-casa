@@ -98,26 +98,36 @@ public class HouseBatteryService {
         for (RealEstate e : estates) {
             double power = 0;
             double production = 0;
+//            List<HouseBattery> batteries = houseBatteryRepository.findAllByRealEstate(e);
+//            for (HouseBattery b : batteries) {
+//                MeasurementList measurements = deviceService.fullQueryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
+//                for (AbstractMeasurement m : measurements.getMeasurements()) {
+//                    power += ((HouseBatteryPowerUsageMeasurement)m).getPower();
+//                }
+//            }
+
             List<HouseBattery> batteries = houseBatteryRepository.findAllByRealEstate(e);
-            for (HouseBattery b : batteries) {
-                int pages = deviceService.queryNumOfPages(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
-                for (int i = 1; i <= pages; i++) {
-                    MeasurementList measurements = deviceService.queryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "", i);
-                    for (AbstractMeasurement m : measurements.getMeasurements()) {
-                        power += ((HouseBatteryPowerUsageMeasurement)m).getPower();
-                    }
-                }
-            }
+            power = batteries.stream()
+                    .flatMap(b -> deviceService.fullQueryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "").getMeasurements().stream())
+                    .filter(m -> m instanceof HouseBatteryPowerUsageMeasurement)
+                    .mapToDouble(m -> ((HouseBatteryPowerUsageMeasurement)m).getPower())
+                    .sum();
+            
+//            List<SolarPanelSystem> systems = solarPanelSystemRepository.findAllByRealEstate(e);
+//            for (SolarPanelSystem s : systems) {
+//                MeasurementList measurements = deviceService.fullQueryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
+//                for (AbstractMeasurement m : measurements.getMeasurements()) {
+//                    production += ((SolarPanelSystemPowerMeasurement)m).getPower();
+//                }
+//            }
             List<SolarPanelSystem> systems = solarPanelSystemRepository.findAllByRealEstate(e);
-            for (SolarPanelSystem s : systems) {
-                int pages = deviceService.queryNumOfPages(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
-                for (int i = 1; i <= pages; i++) {
-                    MeasurementList measurements = deviceService.queryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "", i);
-                    for (AbstractMeasurement m : measurements.getMeasurements()) {
-                        production += ((SolarPanelSystemPowerMeasurement)m).getPower();
-                    }
-                }
-            }
+
+            production = systems.stream()
+                    .flatMap(s -> deviceService.fullQueryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "").getMeasurements().stream())
+                    .filter(m -> m instanceof SolarPanelSystemPowerMeasurement)
+                    .mapToDouble(m -> ((SolarPanelSystemPowerMeasurement) m).getPower())
+                    .sum();
+
             estatesPowerUsage.add(new RealEstatePowerUsageDTO(e.getName(), power, production));
         }
         return estatesPowerUsage;
