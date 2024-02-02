@@ -2,6 +2,8 @@ package com.casa.app.permission;
 
 
 import com.casa.app.device.Device;
+import com.casa.app.device.DeviceRepository;
+import com.casa.app.device.DeviceService;
 import com.casa.app.estate.RealEstateService;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UnathorizedReadException;
@@ -16,6 +18,8 @@ import com.casa.app.permission.real_estate_permission.RealEstatePermissionReposi
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.casa.app.estate.RealEstate;
 
@@ -34,6 +38,8 @@ public class PermissionService {
     private RegularUserService regularUserService;
     @Autowired
     private RealEstateService realEstateService;
+    @Autowired
+    private DeviceRepository deviceRepository;
 
     public boolean canReadDevice(long deviceId, long userId){
         return devicePermissionRepository.canAccess(deviceId, userId) ||
@@ -52,11 +58,19 @@ public class PermissionService {
         throw new NotFoundException();
     }
 
-    public PermissionDTO create(PermissionDTO dto) throws NotFoundException, UserNotFoundException {
+    public PermissionDTO create(PermissionDTO dto) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
         RegularUser user = regularUserService.getUserById(dto.getUserId());
         if(user == null)
             throw new UserNotFoundException();
+
         if(dto.getKind().equalsIgnoreCase("DEVICE")){
+            Device device = deviceRepository.findById(dto.getResourceId()).orElse(null);
+            if(device == null)
+                throw new NotFoundException();
+            RegularUser currentUser = regularUserService.getUserByToken();
+            if(!device.getOwner().getId().equals(currentUser.getId()))
+                throw new UnauthorizedWriteException();
+
             DevicePermission permission = new DevicePermission();
             permission.setType(toType(dto.getType()));
             permission.setUserId(dto.getUserId());
@@ -67,6 +81,10 @@ public class PermissionService {
             RealEstate realEstate = realEstateService.getById(dto.getResourceId());
             if (realEstate == null)
                 throw new NotFoundException();
+            RegularUser currentUser = regularUserService.getUserByToken();
+            if(!realEstate.getOwner().getUser().getId().equals(currentUser.getId()))
+                throw new UnauthorizedWriteException();
+
             RealEstatePermission permission = new RealEstatePermission();
             permission.setType(toType(dto.getType()));
             permission.setUser(user);
@@ -107,26 +125,35 @@ public class PermissionService {
 
     }
 
-//TODO delete
-    public void delete(PermissionDTO dto) throws UserNotFoundException {
+    public void delete(PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException {
         RegularUser user = regularUserService.getUserById(dto.getUserId());
         if(user == null)
             throw new UserNotFoundException();
         if(dto.getKind().equalsIgnoreCase("DEVICE")){
-            DevicePermissionKey key = new DevicePermissionKey();
-            key.setDeviceId(dto.getResourceId());
-            key.setUserId(dto.getUserId());
-            DevicePermission permission = devicePermissionRepository.findById(key);
+            Device device = deviceRepository.findById(dto.getResourceId()).orElse(null);
+            if(device == null)
+                throw new NotFoundException();
+            if(!device.getOwner().getId().equals(user.getId()))
+                throw new UnauthorizedWriteException();
+
+            DevicePermission permission = devicePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId());
+            if(permission == null)
+                throw new NotFoundException();
             devicePermissionRepository.delete(permission);
         }
         else if(dto.getKind().equalsIgnoreCase("REAL ESTATE")){
             RealEstate realEstate = realEstateService.getById(dto.getResourceId());
             if (realEstate == null)
                 throw new NotFoundException();
-            RealEstatePermission permission = realEstatePermissionRepository.findById();
+            RegularUser currentUser = regularUserService.getUserByToken();
+            if(!realEstate.getOwner().getUser().getId().equals(currentUser.getId()))
+                throw new UnauthorizedWriteException();
+
+            RealEstatePermission permission = realEstatePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId());
+            if(permission==null)
+                throw new NotFoundException();
             realEstatePermissionRepository.delete(permission);
         }
         else throw new NotFoundException();
-        return dto;
     }
 }

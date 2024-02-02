@@ -2,6 +2,7 @@ package com.casa.app.permission;
 
 
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.permission.dto.PermissionDTO;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
@@ -30,10 +31,7 @@ public class PermissionController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<?> create(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        if(dto.getUserId() != currentUser.getId())
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not the owner of resource");
+    public ResponseEntity<?> create(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException {
         if(!(dto.getKind().equalsIgnoreCase("REAL ESTATE") || dto.getKind().equalsIgnoreCase("DEVICE") ))
             return ResponseEntity.badRequest().body("Invalid kind given");
         return new ResponseEntity<>(permissionService.create(dto), HttpStatus.OK);
@@ -41,10 +39,7 @@ public class PermissionController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<?> delete(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException {
-        RegularUser currentUser = regularUserService.getUserByToken();
-        if(dto.getUserId() != currentUser.getId())
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You are not the owner of resource");
+    public ResponseEntity<?> delete(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException {
         if(!(dto.getKind().equalsIgnoreCase("REAL ESTATE") || dto.getKind().equalsIgnoreCase("DEVICE") ))
             return ResponseEntity.badRequest().body("Invalid kind given");
         permissionService.delete(dto);
