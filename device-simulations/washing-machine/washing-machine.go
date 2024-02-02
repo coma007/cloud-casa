@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	wr "github.com/mroth/weightedrand"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -149,11 +148,12 @@ func (machine *WashingMachine) getCurrentSchedule() *utils.WashingMachineSchedul
 func (machine *WashingMachine) checkSchedule() {
 
 	//        check for current schedules
-	for _, schedule := range machine.Schedules {
+	for i, schedule := range machine.Schedules {
 		now := time.Now()
 		isBefore := schedule.StartTime.Time.Before(now) || schedule.StartTime.Time.Equal(now)
 
 		if isBefore && !schedule.Activated {
+			machine.Working = schedule.Working
 			if machine.Working {
 				machine.currentSchedule = schedule
 				if schedule.Mode != nil {
@@ -162,7 +162,7 @@ func (machine *WashingMachine) checkSchedule() {
 
 			}
 
-			schedule.Activated = true
+			machine.Schedules[i].Activated = true
 		}
 	}
 }
@@ -175,11 +175,12 @@ func (machine *WashingMachine) handleWorkingCommand(client mqtt.Client, msg mqtt
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	chooser, _ := wr.NewChooser(
-		wr.Choice{Item: SUCCESS, Weight: 8},
-		wr.Choice{Item: FAILURE, Weight: 2},
-	)
-	result := chooser.Pick().(string)
+	//chooser, _ := wr.NewChooser(
+	//	wr.Choice{Item: SUCCESS, Weight: 8},
+	//	wr.Choice{Item: FAILURE, Weight: 2},
+	//)
+	//result := chooser.Pick().(string)
+	result := SUCCESS
 
 	if result == SUCCESS {
 		if contentTokens[1] == "TURN ON" {
@@ -214,11 +215,12 @@ func (machine *WashingMachine) handleModeCommand(client mqtt.Client, msg mqtt.Me
 func (machine *WashingMachine) setMode(modeStr string) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	chooser, _ := wr.NewChooser(
-		wr.Choice{Item: SUCCESS, Weight: 8},
-		wr.Choice{Item: FAILURE, Weight: 2},
-	)
-	result := chooser.Pick().(string)
+	//chooser, _ := wr.NewChooser(
+	//	wr.Choice{Item: SUCCESS, Weight: 8},
+	//	wr.Choice{Item: FAILURE, Weight: 2},
+	//)
+	//result := chooser.Pick().(string)
+	result := SUCCESS
 	if modeStr != "WHITE" && modeStr != "COLOR" {
 		result = FAILURE
 	}
@@ -317,6 +319,9 @@ func StartSimulation(device WashingMachine) {
 	device.Schedules = fetchDSchedules(device.Id)
 	for i, _ := range device.Schedules {
 		device.Schedules[i].FixTimezone()
+		if device.Schedules[i].EndTime.Time.Before(time.Now()) {
+			device.Schedules[i].Activated = true
+		}
 	}
 
 	for {

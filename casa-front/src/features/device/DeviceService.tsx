@@ -1,7 +1,7 @@
 import axios from "axios";
-import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER, SPRINKLER_SCHEDULE } from "../../api";
+import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER, SPRINKLER_SCHEDULE, WASHING_MACHINE_MODE, WASHING_MACHINE_SCHEDULE, WASHING_MACHINE_WORKING } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { DeviceCreate, DeviceDetails, ModeCommand, AirConditionerSchedule, TemperatureCommand, WorkingCommand, SprinklerSchedule } from "./Device";
+import { DeviceCreate, DeviceDetails, ModeCommand, AirConditionerSchedule, TemperatureCommand, WorkingCommand, SprinklerSchedule, WashingMachineSchedule } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
 import { OnlineMeasurementList } from "./OnlineMeasurementList";
 
@@ -81,6 +81,33 @@ export const DeviceService = {
     sendModeCommand: async function (command: ModeCommand): Promise<any> {
         try {
             let response = await axios.post(AIR_CONDITION_MODE(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    sendWashingMachineWorkingCommand: async function (command: WorkingCommand): Promise<any> {
+        try {
+            let response = await axios.post(WASHING_MACHINE_WORKING(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    sendMWashingMachineModeCommand: async function (command: ModeCommand): Promise<any> {
+        try {
+            let response = await axios.post(WASHING_MACHINE_MODE(), command);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    createWashingMachineSchedule: async function (schedule: WashingMachineSchedule): Promise<any> {
+        try {
+            let response = await axios.post(WASHING_MACHINE_SCHEDULE(), schedule);
             return response.data;
         } catch (error) {
             console.error(error);

@@ -67,4 +67,4 @@ func GetTimezoneLocation() *time.Location {
 
 // const URL_PREFIX = "http://casa-back:8080/api/"
 // const URL_PREFIX = "http://localhost:8080/api/"
-const URL_DOMAIN = "192.168.1.48"
+const URL_DOMAIN = "localhost"

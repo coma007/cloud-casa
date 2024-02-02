@@ -27,6 +27,10 @@ export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/wo
 export const AIR_CONDITION_SCHEDULE = () => url + "/airConditioning/simulation/schedule"
 export const SPRINKLER_SCHEDULE = (deviceId) => url + "/sprinklerSystem/setSchedule/" + deviceId;
 
+export const WASHING_MACHINE_MODE = () => url + "/washingMachine/simulation/mode"
+export const WASHING_MACHINE_WORKING = () => url + "/washingMachine/simulation/working"
+export const WASHING_MACHINE_SCHEDULE = () => url + "/washingMachine/simulation/schedule"
+
 export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page: number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
 export const ACTIVITY_FILTER = (id: number, from: string, to: string) => url + "/device/filterActivity?" + `id=${id}&` + `from=${from}&` + `to=${to}&`;
 export const DEVICE_GET_PAGE_NUMBER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filterPages?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;

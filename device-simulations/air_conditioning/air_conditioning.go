@@ -13,7 +13,6 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	wr "github.com/mroth/weightedrand"
 )
 
 type AuxAirConditioningMode string
@@ -178,21 +177,22 @@ func (conditioner *AirConditioning) overrideIfNeeded() {
 
 func (conditioner *AirConditioning) checkSchedule() {
 	//        reset repeating schedules
-	for _, schedule := range conditioner.Schedules {
-		if schedule.EndTime.After(time.Now()) && schedule.Repeating {
-			schedule.Override = false
-			schedule.Activated = false
-			schedule.EndTime.Time.AddDate(0, 0, int(schedule.RepeatingDaysIncrement))
-			schedule.StartTime.Time.AddDate(0, 0, int(schedule.RepeatingDaysIncrement))
+	for i, _ := range conditioner.Schedules {
+		if conditioner.Schedules[i].EndTime.After(time.Now()) && conditioner.Schedules[i].Repeating {
+			conditioner.Schedules[i].Override = false
+			conditioner.Schedules[i].Activated = false
+			conditioner.Schedules[i].EndTime.Time.AddDate(0, 0, int(conditioner.Schedules[i].RepeatingDaysIncrement))
+			conditioner.Schedules[i].StartTime.Time.AddDate(0, 0, int(conditioner.Schedules[i].RepeatingDaysIncrement))
 		}
 	}
 
 	//        check for current schedules
-	for _, schedule := range conditioner.Schedules {
+	for i, schedule := range conditioner.Schedules {
 		now := time.Now()
 		isBefore := schedule.StartTime.Time.Before(now) || schedule.StartTime.Time.Equal(now)
 
 		if isBefore && !schedule.Activated && !schedule.Override {
+			conditioner.Working = schedule.Working
 			if conditioner.Working {
 				conditioner.currentSchedule = schedule
 				if schedule.Mode != nil {
@@ -204,7 +204,7 @@ func (conditioner *AirConditioning) checkSchedule() {
 
 			}
 
-			schedule.Activated = true
+			conditioner.Schedules[i].Activated = true
 		}
 	}
 }
@@ -218,11 +218,12 @@ func (conditioner *AirConditioning) handleWorkingCommand(client mqtt.Client, msg
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	chooser, _ := wr.NewChooser(
-		wr.Choice{Item: SUCCESS, Weight: 8},
-		wr.Choice{Item: FAILURE, Weight: 2},
-	)
-	result := chooser.Pick().(string)
+	//chooser, _ := wr.NewChooser(
+	//	wr.Choice{Item: SUCCESS, Weight: 8},
+	//	wr.Choice{Item: FAILURE, Weight: 2},
+	//)
+	//result := chooser.Pick().(string)
+	result := SUCCESS
 
 	if result == SUCCESS {
 		if contentTokens[1] == "TURN ON" {
@@ -259,11 +260,12 @@ func (conditioner *AirConditioning) handleTemperatureCommand(client mqtt.Client,
 func (conditioner *AirConditioning) setTemperature(tempStr string) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	chooser, _ := wr.NewChooser(
-		wr.Choice{Item: "SUCCESS", Weight: 8},
-		wr.Choice{Item: "FAILURE", Weight: 2},
-	)
-	result := chooser.Pick().(string)
+	//chooser, _ := wr.NewChooser(
+	//	wr.Choice{Item: "SUCCESS", Weight: 8},
+	//	wr.Choice{Item: "FAILURE", Weight: 2},
+	//)
+	//result := chooser.Pick().(string)
+	result := SUCCESS
 	targetTemperature, err := strconv.ParseFloat(tempStr, 64)
 	if err != nil {
 		result = FAILURE
@@ -295,11 +297,12 @@ func (conditioner *AirConditioning) handleModeCommand(client mqtt.Client, msg mq
 func (conditioner *AirConditioning) setMode(modeStr string) string {
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	chooser, _ := wr.NewChooser(
-		wr.Choice{Item: SUCCESS, Weight: 8},
-		wr.Choice{Item: FAILURE, Weight: 2},
-	)
-	result := chooser.Pick().(string)
+	//chooser, _ := wr.NewChooser(
+	//	wr.Choice{Item: SUCCESS, Weight: 8},
+	//	wr.Choice{Item: FAILURE, Weight: 2},
+	//)
+	//result := chooser.Pick().(string)
+	result := SUCCESS
 	if modeStr != "COOLING" && modeStr != "HEATING" &&
 		modeStr != "VENTILATION" && modeStr != "AUTO" {
 		result = FAILURE
@@ -434,10 +437,10 @@ func StartSimulation(device AirConditioning) {
 
 	for {
 		device.checkSchedule()
-		fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
-		fmt.Printf("MODE: %s\n", device.CurrentMode)
-		fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
-		fmt.Printf("WORKING: %t\n", device.Working)
+		//fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
+		//fmt.Printf("MODE: %s\n", device.CurrentMode)
+		//fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
+		//fmt.Printf("WORKING: %t\n", device.Working)
 		increment := device.findIncrement()
 		device.CurrentTemperature += increment
 
