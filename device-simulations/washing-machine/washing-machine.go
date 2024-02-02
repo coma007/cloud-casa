@@ -123,8 +123,10 @@ func (machine *WashingMachine) handleScheduleCommand(client mqtt.Client, msg mqt
 		result = "FAILURE"
 	}
 
-	if *newSchedule.Mode != "WHITE" && *newSchedule.Mode != "COLOR" {
-		result = FAILURE
+	if newSchedule.Mode != nil {
+		if *newSchedule.Mode != "WHITE" && *newSchedule.Mode != "COLOR" {
+			result = FAILURE
+		}
 	}
 
 	if result != "FAILURE" {
@@ -326,8 +328,8 @@ func StartSimulation(device WashingMachine) {
 
 	for {
 		device.checkSchedule()
-		fmt.Printf("MODE: %s\n", device.CurrentMode)
-		fmt.Printf("WORKING: %t\n", device.Working)
+		//fmt.Printf("MODE: %s\n", device.CurrentMode)
+		//fmt.Printf("WORKING: %t\n", device.Working)
 
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)

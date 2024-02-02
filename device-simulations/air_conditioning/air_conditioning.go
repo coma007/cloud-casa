@@ -183,6 +183,10 @@ func (conditioner *AirConditioning) checkSchedule() {
 			conditioner.Schedules[i].Activated = false
 			conditioner.Schedules[i].EndTime.Time.AddDate(0, 0, int(conditioner.Schedules[i].RepeatingDaysIncrement))
 			conditioner.Schedules[i].StartTime.Time.AddDate(0, 0, int(conditioner.Schedules[i].RepeatingDaysIncrement))
+
+			if conditioner.Schedules[i].EndTime.After(time.Now()) {
+				conditioner.Schedules[i].Activated = true
+			}
 		}
 	}
 
@@ -437,10 +441,10 @@ func StartSimulation(device AirConditioning) {
 
 	for {
 		device.checkSchedule()
-		//fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
-		//fmt.Printf("MODE: %s\n", device.CurrentMode)
-		//fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
-		//fmt.Printf("WORKING: %t\n", device.Working)
+		fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
+		fmt.Printf("MODE: %s\n", device.CurrentMode)
+		fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
+		fmt.Printf("WORKING: %t\n", device.Working)
 		increment := device.findIncrement()
 		device.CurrentTemperature += increment
 
