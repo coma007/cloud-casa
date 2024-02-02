@@ -7,9 +7,7 @@ import com.casa.app.device.home.washing_machine.dto.WashingMachineScheduleDTO;
 import com.casa.app.device.home.washing_machine.dto.WashingMachineSimulationDTO;
 import com.casa.app.device.home.washing_machine.dto.WashingMachineWorkingDTO;
 import com.casa.app.device.home.washing_machine.measuraments.commands.*;
-import com.casa.app.device.home.washing_machine.measuraments.execution.WashingMachineModeExecution;
-import com.casa.app.device.home.washing_machine.measuraments.execution.WashingMachineNewScheduleExecution;
-import com.casa.app.device.home.washing_machine.measuraments.execution.WashingMachineWorkingExecution;
+import com.casa.app.device.home.washing_machine.measuraments.execution.WashingMachineExecution;
 import com.casa.app.device.home.washing_machine.schedule.WashingMachineSchedule;
 import com.casa.app.device.home.washing_machine.schedule.WashingMachineScheduleRepository;
 import com.casa.app.exceptions.DeviceNotFoundException;
@@ -112,8 +110,8 @@ public class WashingMachineService {
 //            device.setWorking(working);
             notificationService.makeNotification(user,
                     "Setting washing machine " + (working ? "ON" : "OFF") + ", was " + (exec ? "successful" : "failure") );
-            WashingMachineWorkingExecution result = new WashingMachineWorkingExecution(device.getId(), tokens[1], executed, username, Instant.now());
-            webSocketController.sendMessage(new SocketMessage<WashingMachineWorkingExecution>("washing_machine_commands", "New value", null, id.toString(), result));
+            WashingMachineExecution result = new WashingMachineExecution(device.getId(), tokens[1], executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<WashingMachineExecution>("washing_machine_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
@@ -140,8 +138,8 @@ public class WashingMachineService {
 //            device.setMode(mode);
             notificationService.makeNotification(user, "Setting washing machine mode to "
                     + mode + ", was " + (exec ? "successful" : "failure"));
-            WashingMachineModeExecution result = new WashingMachineModeExecution(device.getId(), mode, executed, username, Instant.now());
-            webSocketController.sendMessage(new SocketMessage<WashingMachineModeExecution>("washing_machine_commands", "New value", null, id.toString(), result));
+            WashingMachineExecution result = new WashingMachineExecution(device.getId(), mode, executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<WashingMachineExecution>("washing_machine_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {
@@ -172,8 +170,8 @@ public class WashingMachineService {
             }
 
             notificationService.makeNotification(user, "Setting schedule was " + (exec ? "successful" : "failure"));
-            WashingMachineNewScheduleExecution result = new WashingMachineNewScheduleExecution(device.getId(), schedule, executed, username, Instant.now());
-            webSocketController.sendMessage(new SocketMessage<WashingMachineNewScheduleExecution>("washing_machine_commands", "New value", null, id.toString(), result));
+            WashingMachineExecution result = new WashingMachineExecution(device.getId(), schedule, executed, username, Instant.now());
+            webSocketController.sendMessage(new SocketMessage<WashingMachineExecution>("washing_machine_commands", "New value", null, id.toString(), result));
             influxDBService.write(result);
             deviceRepository.save(device);
         } catch (NumberFormatException e) {

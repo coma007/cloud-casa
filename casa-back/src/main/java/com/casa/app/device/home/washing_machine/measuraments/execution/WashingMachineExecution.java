@@ -1,4 +1,4 @@
-package com.casa.app.device.home.air_conditioning.measurements.execution;
+package com.casa.app.device.home.washing_machine.measuraments.execution;
 
 import com.casa.app.device.measurement.AbstractMeasurement;
 import com.casa.app.device.measurement.MeasurementType;
@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Measurement(name = MeasurementType.airConditioningNewScheduleAck)
+@Measurement(name = MeasurementType.washingMachineExecution)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AirConditionNewScheduleExecution extends AbstractMeasurement {
+public class WashingMachineExecution extends AbstractMeasurement {
     @Column(tag = true)
     Long id;
 
     @Column
-    String mode;
+    String command;
 
     @Column
     String executed;
@@ -31,5 +31,5 @@ public class AirConditionNewScheduleExecution extends AbstractMeasurement {
     Instant timestamp;
 
 
-
 }
+

@@ -6,13 +6,13 @@ import DeviceTableCSS from './DetailsTable.module.scss'
 const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasurementList, topic?: string }) => {
     let header, data;
 
-    const parseAirConditioningCommand = (measurement) => {
+    const parseCommand = (measurement) => {
         let result = measurement.executed;
         let command = "";
-        if ("working" in measurement) command = measurement.working;
-        if ("temperature" in measurement) command = "SET TEMPERATURE TO " + measurement.temperature;
-        if ("mode" in measurement) command = "SET MODE TO " + measurement.mode;
-
+        if(measurement.command.includes("startTime"))
+            command = "SCHEDULE";
+        else
+            command = measurement.command;
         let user = measurement.user;
         const timestamp = new Date(measurement.timestamp * 1000)
         const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
@@ -28,7 +28,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
     useEffect(() => {
         console.log("AAAAAA", props.measurements.measurements)
         if (props.measurements.measurements !== undefined) {
-            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system") {
+            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system" || props.deviceType == "washing_machine") {
                 let command = "Command";
                 let width = [40, 40, 40]
 
@@ -64,7 +64,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         onClick: undefined
                     }
                 }
-                if (props.deviceType == "air_conditioning") {
+                if (props.deviceType == "air_conditioning" || props.deviceType == "washing_machine") {
                     header = {
                         rowData: [
                             { content: "Time", widthPercentage: 25 },
@@ -75,6 +75,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         onClick: undefined
                     }
                 }
+
                 setHeaders(header);
                 data = [] as TableRow[]
                 console.log(props.measurements)
@@ -123,11 +124,15 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         content = m.licence_plates
 
                     }
-                    if (props.deviceType == 'air_conditioning') {
+                    else if (props.deviceType == 'air_conditioning' || props.deviceType == 'washing_machine') {
+                        // TODO maybe add schedule modal
+                        const onClick = m.command.includes("startTime") ? () =>{
+                            console.log("CLICK");
+                        } : undefined;
 
                         data.push({
-                            rowData: parseAirConditioningCommand(m),
-                            onClick: undefined
+                            rowData: parseCommand(m),
+                            onClick: onClick
                         })
                     }
                     else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {

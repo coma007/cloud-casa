@@ -211,7 +211,7 @@ func (machine *WashingMachine) handleModeCommand(client mqtt.Client, msg mqtt.Me
 
 	data := append(contentTokens, result)
 	fmt.Println("HANDLING Mode COMMAND")
-	utils.SendComplexMessage(client, "wshing_machine_mode_ack", machine.Id, data)
+	utils.SendComplexMessage(client, "washing_machine_mode_ack", machine.Id, data)
 }
 
 func (machine *WashingMachine) setMode(modeStr string) string {
@@ -328,8 +328,8 @@ func StartSimulation(device WashingMachine) {
 
 	for {
 		device.checkSchedule()
-		//fmt.Printf("MODE: %s\n", device.CurrentMode)
-		//fmt.Printf("WORKING: %t\n", device.Working)
+		fmt.Printf("MODE: %s\n", device.CurrentMode)
+		fmt.Printf("WORKING: %t\n", device.Working)
 
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)
