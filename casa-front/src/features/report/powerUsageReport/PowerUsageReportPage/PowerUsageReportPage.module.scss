@@ -1,0 +1,35 @@
+.smallButton {
+    background-color: var(--primary-color-background-transparent);
+    border: none;
+    margin: 10px 20px;
+    border-radius: 10px;
+    width: 25%;
+    height: 2em;
+}
+
+.smallButton:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2vh;
+}
+
+.content {
+    width: 90%;
+    margin: auto;
+}
+
+.content > div {
+    margin-top: 1vh;
+}
+
+.smallButtonWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

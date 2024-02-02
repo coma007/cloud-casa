@@ -28,15 +28,17 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
     useEffect(() => {
         console.log("AAAAAA", props.measurements.measurements)
         if (props.measurements.measurements !== undefined) {
-            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system") {
+            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system" || props.deviceType === "electric_vehicle_charger") {
                 let command = "Command";
-                let width = [40, 40, 40]
+                let width = [40, 40, 40];
 
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
                     command = "Status"
                     width = [40, 40, 25]
-                }
-                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
+                } else if (props.deviceType == "electric_vehicle_charger") {
+                    console.log(props.measurements)
+                    width = [35, 70, 45]
+                } else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
                     command = "Mode"
                     width = [53, 53, 33]
                 }
@@ -139,6 +141,19 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
+<<<<<<< casa-front/src/features/device/details/inspect/table/DetailsTable.tsx
+
+                    console.log(width)
+                    if(props.deviceType == 'air_conditioning'){
+                        
+                        data.push({
+                            rowData: parseAirConditioningCommand(m),
+                            onClick: undefined
+                        })
+                    }
+
+=======
+>>>>>>> casa-front/src/features/device/details/inspect/table/DetailsTable.tsx
                     else {
                         data.push({
                             rowData: [

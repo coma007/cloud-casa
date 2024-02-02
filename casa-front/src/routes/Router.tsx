@@ -10,6 +10,7 @@ import EstateOverviewPage from "../features/estate/overview/EstateOverviewPage";
 import RequestOverviewPage from "../features/request/overview/RequestOverviewPage";
 import DeviceOverviewPage from "../features/device/overview/DeviceOverviewPage";
 import DeviceDetails from "../features/device/details/DeviceDetails";
+import PowerUsageReportPage from "../features/report/powerUsageReport/PowerUsageReportPage/PowerUsageReportPage";
 
 const Router = () => {
 
@@ -27,6 +28,7 @@ const Router = () => {
                     <Route path="/" element={<RequestOverviewPage />} />
                     <Route path="/requests" element={<RequestOverviewPage />} />
                     <Route path="/logout/admin" element={<Logout />} />
+                    <Route path="/reports/powerUsage" element={<PowerUsageReportPage />} />
                 </Route>
                 <Route element={<SuperAdminAuthGuard />}>
                     <Route path="/register/admin" element={<RegisterAdminPage />} />

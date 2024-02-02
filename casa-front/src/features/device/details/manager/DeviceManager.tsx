@@ -18,10 +18,53 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
     const [temperature, setTemperature] = useState<number>(0.0);
     const [mode, setMode] = useState<string>("");
+    
+    const [startChargingSlot, setStartChargingSlot] = useState<number>(1);
+    const [endChargingSlot, setEndChargingSlot] = useState<number>(1);
+    const [maxPercentageSlot, setMaxPercentageSlot] = useState<number>(1);
+    const [percentage, setPercentage] = useState<string>("");
 
     useEffect(() => {
         setToggleIsOn(props.device.Status === 'ONLINE');
     }, [props.device.Status]);
+
+    useEffect(() => {
+        console.log(percentage)
+    }, [percentage]);
+
+    const handleStartChargingSlot = (e) => {
+        setStartChargingSlot(e.target.value);
+    }
+
+    const handleEndChargingSlot = (e) => {
+        setEndChargingSlot(e.target.value);
+    }
+
+    const handleMaxPercentageSlot = (e) => {
+        setMaxPercentageSlot(e.target.value);
+    }
+
+    const handleMaxPercentage = (e) => {
+        setPercentage(e.target.value);
+    }
+
+    const handleStartCharging = async () => {
+        await DeviceService.startCharging(props.device.Id, startChargingSlot);
+    }
+    
+    const handleEndCharging = async () => {
+        await DeviceService.endCharging(props.device.Id, endChargingSlot);
+    }
+    
+    const handleSetMaxPercentage = async () => {
+        let percentageNumber = parseFloat(percentage);
+        if (!Number.isNaN(percentageNumber) && percentageNumber >= 0 && percentageNumber <= 100) {
+            await DeviceService.setMaxPercentage(props.device.Id, maxPercentageSlot, percentageNumber);
+        } else {
+            alert("Fail")
+        }
+    }
+
 
     const handleIsOnClick = async () => {
         if (props.deviceType === "solar_panel_system") {
@@ -204,6 +247,50 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
                         <p>
                             <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
                         </p>
+                    </div>
+                );
+
+            case 'electric_vehicle_charger':
+                return (
+                    <div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div>
+                                Select slot:
+                                <select className={DeviceManagerCSS.customSelect} onChange={handleStartChargingSlot} value={startChargingSlot}>
+                                    {Array.from({ length: props.device.NumOfSlots }, (_, index) => index + 1).map((modeS, index) => (
+                                        <option key={index} value={modeS}>{modeS}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <Button text="Start charging" onClick={handleStartCharging} submit={undefined} />
+                        </div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div>
+                                Select slot:
+                                <select className={DeviceManagerCSS.customSelect} onChange={handleEndChargingSlot} value={endChargingSlot}>
+                                    {Array.from({ length: props.device.NumOfSlots }, (_, index) => index + 1).map((modeS, index) => (
+                                        <option key={index} value={modeS}>{modeS}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <Button text="End charging" onClick={handleEndCharging} submit={undefined} />
+                        </div>
+                        <div className={DeviceManagerCSS.row}>
+                            <div className={DeviceManagerCSS.row}>
+                                    Select slot:
+                                    <select className={DeviceManagerCSS.customSelect} onChange={handleMaxPercentageSlot} value={maxPercentageSlot}>
+                                        {Array.from({ length: props.device.NumOfSlots }, (_, index) => index + 1).map((modeS, index) => (
+                                            <option key={index} value={modeS}>{modeS}</option>
+                                        ))}
+                                    </select>
+                                    <div className={DeviceManagerCSS.input}>
+                                        <InputField usage={'Max Percentage'} className={''} onChange={handleMaxPercentage} />
+                                    </div>
+                            </div>
+                            <div>
+                                <Button text="Set max percentage" onClick={handleSetMaxPercentage} submit={undefined} />
+                            </div>
+                        </div>
                     </div>
                 );
 

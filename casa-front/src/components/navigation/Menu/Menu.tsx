@@ -21,7 +21,10 @@ const Menu = ({admin, superadmin, superadminInit} : IMenuProps) => {
             <MenuItem className={MenuCSS.logo} tooltipText="" tooltip={false} image={Logo} path="/" text={''} />
             <div className={MenuCSS.menuGrid}>
                 { admin ? 
-                    (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Requests overview" tooltip={true} image={undefined} path="/profile" text={'REQUESTS'} />)
+                    (<>
+                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Requests overview" tooltip={true} image={undefined} path="/profile" text={'REQUESTS'} />
+                        <MenuItem className={MenuCSS.nonMainOption} tooltipText="Power usage report" tooltip={true} image={undefined} path="/reports/powerUsage" text={'POWER USAGE'} />
+                    </>)
                     :
                     (<>
                         <MenuItem className={MenuCSS.nonMainOption} tooltipText="Estates overview" tooltip={true} image={undefined} path="/real-estate-overview" text={'ESTATES'} />

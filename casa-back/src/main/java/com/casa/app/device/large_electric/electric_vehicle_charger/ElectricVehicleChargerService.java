@@ -47,11 +47,13 @@ public class ElectricVehicleChargerService {
     }
 
     private String generateCommand(String command, String slot, String maxPercentage) {
-        StringBuilder generatedCommand = new StringBuilder("Command: " + command + ". Slot: " + slot + ". ");
-        if (!maxPercentage.equals("/")) {
-            generatedCommand.append("Max percentage: ").append(maxPercentage).append("%");
+        if (command.equalsIgnoreCase("START")) {
+            return "Attempting to start charging on slot " + slot;
+        } else if (command.equalsIgnoreCase("END")) {
+            return "Attempting to end charging on slot " + slot;
+        } else {
+            return "Attempting to set max battery percentage to " + maxPercentage + "% on slot " + slot;
         }
-        return generatedCommand.toString();
     }
 
     //    ID~COMMAND|USER
