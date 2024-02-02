@@ -1,5 +1,7 @@
 package com.casa.app.device.outdoor.vehicle_gate;
 
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDTO;
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
@@ -7,12 +9,10 @@ import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
 import com.casa.app.permission.PermissionService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +39,19 @@ public class VehicleGateController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @PermitAll
+    @GetMapping("/addLicencePlate/{id}")
+    public ResponseEntity<VehicleGateDetailsDTO> addLicencePlate(@PathVariable Long id, @RequestParam String licencePlate) throws NotFoundException, UserNotFoundException {
+        VehicleGateDetailsDTO gate = vehicleGateService.addLicencePlate(id, licencePlate);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/removeLicencePlate/{id}")
+    public ResponseEntity<VehicleGateDetailsDTO> removeLicencePlate(@PathVariable Long id, @RequestParam String licencePlate) throws NotFoundException, UserNotFoundException {
+        VehicleGateDetailsDTO gate = vehicleGateService.removeLicencePlate(id, licencePlate);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
     @PermitAll
     @GetMapping("/mode/{id}")
     public ResponseEntity<?> toggleMode(@PathVariable Long id) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {

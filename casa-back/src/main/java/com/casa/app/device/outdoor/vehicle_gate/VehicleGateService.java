@@ -4,6 +4,7 @@ import com.casa.app.device.measurement.MeasurementType;
 import com.casa.app.device.outdoor.lamp.Lamp;
 import com.casa.app.device.outdoor.lamp.LampBrightnessMeasurement;
 import com.casa.app.device.outdoor.lamp.LampCommandMeasurement;
+import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateSimulationDTO;
@@ -73,6 +74,36 @@ public class VehicleGateService {
         mqttGateway.sendToMqtt(id + "~" + what.toUpperCase() +"~" + currentUser.getUsername(), id.toString());
     }
 
+    public VehicleGateDetailsDTO addLicencePlate(Long id, String licencePlate) throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        VehicleGate gate = vehicleGateRepository.getReferenceById(id);
+        List<String> vehicles = gate.getAllowedVehicles();
+        if (!vehicles.contains(licencePlate)) {
+            vehicles.add(licencePlate);
+        }
+        gate.setAllowedVehicles(vehicles);
+        vehicleGateRepository.save(gate);
+        mqttGateway.sendToMqtt(id + "~" + "ADD~" + licencePlate + "~" + currentUser.getUsername(), id.toString());
+        VehicleGateVehicleMeasurement vehicleGate = new VehicleGateVehicleMeasurement( id, true, licencePlate, currentUser.getUsername(), Instant.now());
+        influxDBService.write(vehicleGate);
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.vehicleGateVehicles, currentUser.getUsername(), id.toString(), id.toString(), vehicleGate));
+        return gate.toDetailsDTO();
+    }
+
+    public VehicleGateDetailsDTO removeLicencePlate(Long id, String licencePlate) throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        VehicleGate gate = vehicleGateRepository.getReferenceById(id);
+        List<String> vehicles = gate.getAllowedVehicles();
+        vehicles.remove(licencePlate);
+        gate.setAllowedVehicles(vehicles);
+        vehicleGateRepository.save(gate);
+        mqttGateway.sendToMqtt(id + "~" + "REMOVE~" + licencePlate + "~" + currentUser.getUsername(), id.toString());
+        VehicleGateVehicleMeasurement vehicleGate = new VehicleGateVehicleMeasurement( id, false, licencePlate, currentUser.getUsername(), Instant.now());
+        influxDBService.write(vehicleGate);
+        webSocketController.sendMessage(new SocketMessage<>(MeasurementType.vehicleGateVehicles, currentUser.getUsername(), id.toString(), id.toString(), vehicleGate));
+        return gate.toDetailsDTO();
+    }
+
     public List<VehicleGateSimulationDTO> getAllSimulation() {
         List<VehicleGate> vehicleGates = vehicleGateRepository.findAll();
         List<VehicleGateSimulationDTO> vehicleGateDTOS = new ArrayList<>();
@@ -81,4 +112,5 @@ public class VehicleGateService {
         }
         return vehicleGateDTOS;
     }
+
 }

@@ -6,7 +6,8 @@ import InputField from '../../../../components/forms/InputField/InputField';
 import { DeviceService } from '../../DeviceService';
 import { Modal } from 'react-bootstrap';
 import ModalWindow from '../../../../components/view/Modal/ModalWindow';
-import CreateScheduleModal from './createSchedule/CreateScheduleModal';
+import CreateScheduleModalAirConditioning from './createSchedule/CreateScheduleModalAirConditioning';
+import CreateScheduleModalSprinklerSystem from './createSchedule/CreateScheduleModalSprinklerSystem';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
     const [toggleIsOn, setToggleIsOn] = useState(props.device.Status == 'ONLINE');
@@ -54,39 +55,39 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     const handleOnOffCommand = () => {
         handleIsOnClick();
         try {
-            DeviceService.sendWorkingCommand({working: !toggleIsOn, id: props.device.Id});
+            DeviceService.sendWorkingCommand({ working: !toggleIsOn, id: props.device.Id });
         } catch (error) {
             console.error(error);
         }
     };
 
     const handleTemperatureChange = (e) => {
-        if( isNaN(+e.target.value) )
-        return;
+        if (isNaN(+e.target.value))
+            return;
         setTemperature(Number(e.target.value));
     };
 
     const handleSetTemperature = () => {
         try {
-            DeviceService.sendTemperatureCommand({temperature: temperature!, id: props.device.Id});
+            DeviceService.sendTemperatureCommand({ temperature: temperature!, id: props.device.Id });
         } catch (error) {
             console.error(error);
         }
-        
+
     };
 
     const handleSetMode = () => {
         try {
-            DeviceService.sendModeCommand({mode: mode, id: props.device.Id});
+            DeviceService.sendModeCommand({ mode: mode, id: props.device.Id });
         } catch (error) {
             console.error(error);
         }
-    
+
     };
 
     const showModal = () => {
         setShowCreateSchedule(true);
-    
+
     };
 
 
@@ -100,7 +101,7 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     useEffect(() => {
         (async function () {
             try {
-                if(mode === "")
+                if (mode === "")
                     setMode(props.device.SupportedModes[0])
             } catch (error) {
                 console.error(error);
@@ -114,10 +115,10 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
             case 'air_conditioning':
                 return (
                     <div>
-                        <CreateScheduleModal 
-                        show={showCreateSchedule}
-                        setShow={setShowCreateSchedule}
-                        device={props.device} />
+                        <CreateScheduleModalAirConditioning
+                            show={showCreateSchedule}
+                            setShow={setShowCreateSchedule}
+                            device={props.device} />
                         <div className={DeviceManagerCSS.row}>
                             <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleOnOffCommand} submit={undefined} />
                             <Button text="Custom Mode" onClick={showModal} submit={undefined} />
@@ -185,9 +186,15 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
             case 'sprinkler_system':
                 return (
-                    <div className={DeviceManagerCSS.row}>
-                        <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
-                        <Button text="Custom Mode" onClick={undefined} submit={undefined} />
+                    <div>
+                        <CreateScheduleModalSprinklerSystem
+                            show={showCreateSchedule}
+                            setShow={setShowCreateSchedule}
+                            device={props.device} />
+                        <div className={DeviceManagerCSS.row}>
+                            <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleIsOnClick} submit={undefined} />
+                            <Button text="Custom Mode" onClick={showModal} submit={undefined} />
+                        </div>
                     </div>
                 );
 

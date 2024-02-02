@@ -6,12 +6,12 @@ import DeviceTableCSS from './DetailsTable.module.scss'
 const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasurementList, topic?: string }) => {
     let header, data;
 
-    const parseAirConditioningCommand = (measurement) =>{
+    const parseAirConditioningCommand = (measurement) => {
         let result = measurement.executed;
         let command = "";
-        if("working" in measurement) command = measurement.working;
-        if("temperature" in measurement) command = "SET TEMPERATURE TO " + measurement.temperature;
-        if("mode" in measurement) command = "SET MODE TO " + measurement.mode;
+        if ("working" in measurement) command = measurement.working;
+        if ("temperature" in measurement) command = "SET TEMPERATURE TO " + measurement.temperature;
+        if ("mode" in measurement) command = "SET MODE TO " + measurement.mode;
 
         let user = measurement.user;
         const timestamp = new Date(measurement.timestamp * 1000)
@@ -26,17 +26,24 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
         return rowData;
     }
     useEffect(() => {
+        console.log("AAAAAA", props.measurements.measurements)
         if (props.measurements.measurements !== undefined) {
-            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType=="air_conditioning") {
+            if (props.deviceType === "solar_panel_system" || props.deviceType === "vehicle_gate" || props.deviceType == "air_conditioning" || props.deviceType == "sprinkler_system") {
                 let command = "Command";
                 let width = [40, 40, 40]
 
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
                     command = "Status"
-                    width = [50, 35, 25]
+                    width = [40, 40, 25]
                 }
                 else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
                     command = "Mode"
+                    width = [53, 53, 33]
+                }
+                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                    width = [53, 53]
+                }
+                else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_vehicles") {
                     width = [53, 53, 33]
                 }
                 header = {
@@ -48,7 +55,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                     onClick: undefined
                 }
                 if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
-                    command = "Licence Plates"
+                    command = "Scanned Licence Plates"
                     header = {
                         rowData: [
                             { content: "Time", widthPercentage: 50 },
@@ -60,7 +67,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                 if (props.deviceType == "air_conditioning") {
                     header = {
                         rowData: [
-                            { content: "Time", widthPercentage: 25},
+                            { content: "Time", widthPercentage: 25 },
                             { content: "Command", widthPercentage: 25 },
                             { content: "Result", widthPercentage: 25 },
                             { content: "User", widthPercentage: 25 },
@@ -75,8 +82,6 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                     const timestamp = new Date(m.timestamp * 1000)
                     const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
 
-
-
                     let content = m.command;
 
                     if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_command") {
@@ -87,6 +92,17 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             content = "CLOSED"
                         }
                     }
+                    else if (props.deviceType == 'sprinkler_system') {
+                        if (m.is_on) {
+                            content = "ON"
+                        }
+                        else if (!m.is_on) {
+                            content = "OFF"
+                        }
+                        if (m.is_schedule) {
+                            content = "SCHEDULE CHANGE"
+                        }
+                    }
                     else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_mode") {
                         if (m.is_private) {
                             content = "PRIVATE"
@@ -95,8 +111,26 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             content = "PUBLIC"
                         }
                     }
-                    if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_vehicles") {
+                        content = "remove "
+                        if (m.adding) {
+                            content = "add "
+                        }
+                        content += m.vehicle
+                    }
+
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
                         content = m.licence_plates
+
+                    }
+                    if (props.deviceType == 'air_conditioning') {
+
+                        data.push({
+                            rowData: parseAirConditioningCommand(m),
+                            onClick: undefined
+                        })
+                    }
+                    else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
                         data.push({
                             rowData: [
                                 { content: formattedTime, widthPercentage: 60 },
@@ -105,14 +139,6 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
-                    if(props.deviceType == 'air_conditioning'){
-                        
-                        data.push({
-                            rowData: parseAirConditioningCommand(m),
-                            onClick: undefined
-                        })
-                    }
-
                     else {
                         data.push({
                             rowData: [

@@ -19,10 +19,20 @@
 
 .row {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
 }
 
 .left {
     width: 80%;
+}
+
+.autocomplete {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    grid-column-gap: 20px;
+}
+
+.autocomplete label {
+    padding-top: 7px;
 }

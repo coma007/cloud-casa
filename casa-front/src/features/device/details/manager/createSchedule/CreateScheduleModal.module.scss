@@ -23,7 +23,7 @@
     column-gap: 20px;
 }
 
-.grid div{
+.grid div {
     width: 100%;
 }
 
@@ -37,7 +37,8 @@
 }
 
 
-.row {
+.row,
+.rowTime {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -68,9 +69,25 @@
 }
 
 .accentButton:hover {
-    background-color: rgba(134, 145, 157, 0.9);;
+    background-color: rgba(134, 145, 157, 0.9);
 }
 
-.title{
+.title {
     padding-bottom: 40px;
+}
+
+.dayLabel {
+    text-align: center;
+    width: 100px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.dayLabel:hover {
+    cursor: pointer;
+}
+
+.rowTime input {
+    border: 1px solid gray;
 }
