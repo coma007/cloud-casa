@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { GET_ALL_USERS, SUPER_AND_INIT } from "../../api";
+import { GET_ALL_USERS, ID_BY_USERNAME, SUPER_AND_INIT } from "../../api";
 import { User } from "./auth/types/User";
 
 
@@ -30,6 +30,11 @@ export const UserService = {
     let response = await axios.get(GET_ALL_USERS());
     return response.data;
   },
+
+  getIdByUsername: async function (username: string): Promise<any> {
+    let response: ServiceResponse<any> = await axios.get(ID_BY_USERNAME(), {params: {"username": username}});
+    return response.data;
+},
 }
 
 

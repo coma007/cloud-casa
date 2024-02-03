@@ -1,6 +1,7 @@
 package com.casa.app.permission;
 
 
+import com.casa.app.exceptions.AlreadyExistsException;
 import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UnauthorizedWriteException;
 import com.casa.app.exceptions.UserNotFoundException;
@@ -29,9 +30,17 @@ public class PermissionController {
     @Autowired
     private RegularUserService regularUserService;
 
+    @PostMapping("/permissionExists")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<?> permissionExists(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException, AlreadyExistsException {
+        if(!(dto.getKind().equalsIgnoreCase("REAL ESTATE") || dto.getKind().equalsIgnoreCase("DEVICE") ))
+            return ResponseEntity.badRequest().body("Invalid kind given");
+        return new ResponseEntity<>(permissionService.permissionExists(dto), HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<?> create(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException {
+    public ResponseEntity<?> create(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException, AlreadyExistsException {
         if(!(dto.getKind().equalsIgnoreCase("REAL ESTATE") || dto.getKind().equalsIgnoreCase("DEVICE") ))
             return ResponseEntity.badRequest().body("Invalid kind given");
         return new ResponseEntity<>(permissionService.create(dto), HttpStatus.OK);

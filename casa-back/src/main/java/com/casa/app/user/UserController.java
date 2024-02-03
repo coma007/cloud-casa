@@ -2,6 +2,7 @@ package com.casa.app.user;
 
 import com.casa.app.exceptions.InvalidCredentialsException;
 import com.casa.app.exceptions.NotFoundException;
+import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.dtos.NewPasswordDTO;
 import com.casa.app.user.dtos.UserDTO;
 import com.casa.app.user.regular_user.RegularUserService;
@@ -55,6 +56,12 @@ public class UserController {
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body("Cannot find user");
         }
+    }
+
+    @GetMapping("/getIdByUsername")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<?> getByUsername(@RequestParam String username) throws UserNotFoundException {
+        return ResponseEntity.ok().body(regularUserService.getUserByUsername(username));
     }
 
     @GetMapping("/init")

@@ -5,6 +5,7 @@ import com.casa.app.device.dto.DeviceRegistrationDTO;
 import com.casa.app.device.dto.DeviceSimulationDTO;
 import com.casa.app.device.measurement.MeasurementList;
 import com.casa.app.device.measurement.OnlineMeasurementList;
+import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.permission.PermissionService;
@@ -48,8 +49,8 @@ public class DeviceController {
     @PermitAll
     @GetMapping("/getAll")
     @PreAuthorize("hasAnyAuthority('regular user')")
-    public ResponseEntity<List<DeviceSimulationDTO>> getAll() throws UserNotFoundException {
-        List<DeviceSimulationDTO> devices = service.getAll();
+    public ResponseEntity<List<DeviceDetailsDTO>> getAll() throws UserNotFoundException {
+        List<DeviceDetailsDTO> devices = service.getAll();
         return new ResponseEntity<>(devices, HttpStatus.OK);
     }
 
@@ -91,6 +92,7 @@ public class DeviceController {
         return new ResponseEntity<>(service.getAllByOwner(), HttpStatus.OK);
     }
 
+
     @GetMapping("/getAllByRealEstate/{id}")
     @PreAuthorize("hasAnyAuthority('regular user')")
     public ResponseEntity<List<DeviceDetailsDTO>> getAllByRealEstate(@PathVariable Long id) throws UserNotFoundException {
@@ -101,6 +103,12 @@ public class DeviceController {
     @PreAuthorize("hasAnyAuthority('regular user')")
     public ResponseEntity<DeviceDetailsDTO> getDeviceDetails(@PathVariable Long id) throws UserNotFoundException, UnathorizedReadException {
         return new ResponseEntity<>(service.getDeviceDetails(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/isOwner/{id}")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<?> isOwner(@PathVariable Long id) throws UserNotFoundException, UnathorizedReadException, NotFoundException {
+        return new ResponseEntity<>(service.isOwner(id), HttpStatus.OK);
     }
 
     @Autowired

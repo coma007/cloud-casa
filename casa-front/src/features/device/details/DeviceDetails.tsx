@@ -16,6 +16,8 @@ import { WebSocketService } from '../../../api/websocket/WebSocketService'
 import GraphPagination from '../../../components/tables/GraphPagination/GraphPagination'
 import ActivityChart from './inspect/graph/ActivityChart'
 import { OnlineMeasurementList } from '../OnlineMeasurementList'
+import { Permission } from '../Device'
+import { UserService } from '../../user/UserService'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -28,6 +30,7 @@ const DeviceDetails = () => {
     const [numberOfPages, setNumberOfPages] = useState(1);
     const [socket, setSocket] = useState(null);
     const location = useLocation();
+    const [isOwner, setIsOwner] = useState(false);
 
 
 
@@ -45,6 +48,8 @@ const DeviceDetails = () => {
                     const fetchedDevice = await DeviceService.getDeviceDetails(deviceId);
                     // console.log(fetchedDevice)
                     populateData(fetchedDevice)
+                    const fetchedIsOwner = await DeviceService.isOwner(deviceId);
+                    setIsOwner(fetchedIsOwner);
                 }
             } catch (error) {
                 console.error(error);
@@ -579,6 +584,26 @@ const DeviceDetails = () => {
         dev.measurementTopic = mode;
     }
 
+    const handleGivePermission = ()=> {
+
+        (async () => {
+            try{
+            const userId = await UserService.getIdByUsername(username);
+            let permission: Permission = {
+                Kind: "device",
+                ResourceId: deviceId,
+                Type: 'MODERATOR',
+                UserId: userId
+            } 
+            const result = await DeviceService.createPermission(permission);
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+        }
+
+        })();
+    }
+
 
 
     const [showActivity, setShowActivity] = useState(false);
@@ -631,6 +656,10 @@ const DeviceDetails = () => {
                 <div className={DeviceDetailsCSS.right}>
                     <Button text={!showActivity ? 'Show activity' : 'Hide activity'} onClick={handleShowActivity} submit={undefined}></Button>
                 </div>
+                {isOwner && <div className={DeviceDetailsCSS.right}>
+                <FilterUser username={username} onInputChange={setUsername} handleSubmit={handleGivePermission} text='Give permission'></FilterUser>
+                                <hr></hr>
+                </div>}
             </div>
 
             <div className={DeviceDetailsCSS.content}>

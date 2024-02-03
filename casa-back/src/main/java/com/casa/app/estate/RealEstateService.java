@@ -1,8 +1,12 @@
 package com.casa.app.estate;
 
+import com.casa.app.device.Device;
+import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.location.City;
 import com.casa.app.location.LocationService;
+import com.casa.app.permission.PermissionService;
+import com.casa.app.permission.real_estate_permission.RealEstatePermission;
 import com.casa.app.permission.real_estate_permission.RealEstatePermissionService;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.request.RealEstateRequestService;
@@ -31,6 +35,8 @@ public class RealEstateService {
     RealEstateRequestService realEstateRequestService;
     @Autowired
     RealEstatePermissionService realEstatePermissionService;
+    @Autowired
+    private PermissionService permissionService;
 
     public RealEstateDTO create(RealEstateCreateDTO estateDTO) throws UserNotFoundException {
 
@@ -68,11 +74,43 @@ public class RealEstateService {
         return approvedEstates.stream().map(RealEstateDTO::new).collect(Collectors.toList());
     }
 
+    public List<RealEstateDTO> getAll() throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        List<RealEstate> estates = realEstateRepository.findAll();
+
+        return estates.
+                stream().
+                parallel().
+                filter(e-> permissionService.canReadEstate(e.getId(), currentUser.getId())).
+                map(e -> new RealEstateDTO(e)).
+                collect(Collectors.toList());
+    }
+
+    public List<RealEstateDTO> getAllApproved() throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        List<RealEstate> estates = realEstateRepository.findAll();
+
+        return estates.
+                stream().
+                parallel().
+                filter(e-> permissionService.canReadEstate(e.getId(), currentUser.getId()) && e.getRequest().isApproved()).
+                map(e -> new RealEstateDTO(e)).
+                collect(Collectors.toList());
+    }
+
     public RealEstate getByName(String name) {
         return realEstateRepository.getByName(name);
     }
 
     public RealEstate getById(Long id) {
         return realEstateRepository.findById(id).orElse(null);
+    }
+
+    public Boolean isOwner(Long id) throws NotFoundException, UserNotFoundException {
+        RealEstate estate = realEstateRepository.findById(id).orElse(null);
+        if(estate == null)
+            throw new NotFoundException();
+        RegularUser user = regularUserService.getUserByToken();
+        return estate.getOwner().getUser().getId().equals(user.getId());
     }
 }

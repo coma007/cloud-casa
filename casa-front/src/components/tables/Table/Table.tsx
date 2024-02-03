@@ -15,7 +15,7 @@ const Table = (props: { headers: TableRow, rows: TableRow[] }) => {
         row.rowData.map((cell, columnIndex, onClick) => ({
             content: cell.content,
             widthPercentage: columnWidths[columnIndex],
-            onClick: row.onClick,
+            onClick: cell.onClick,
         }))
     );
 

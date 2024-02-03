@@ -7,7 +7,7 @@ import { User } from '../../../../user/auth/types/User';
 import { UserService } from '../../../../user/UserService';
 
 
-const FilterUser = (props: { username: string, onInputChange: any, handleSubmit: any }) => {
+const FilterUser = (props: { username: string, onInputChange: any, handleSubmit: any , text?: string}) => {
 
     const [items, setItems] = useState<User[]>([]);
 
@@ -67,7 +67,7 @@ const FilterUser = (props: { username: string, onInputChange: any, handleSubmit:
                 />
             </span>
             <span>
-                <Button text={'Filter'} onClick={props.handleSubmit} submit={undefined} />
+                {props.handleSubmit && <Button text={props.text || 'Filter'} onClick={props.handleSubmit} submit={undefined} />}
             </span>
         </div>
     )

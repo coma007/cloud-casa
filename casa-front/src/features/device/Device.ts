@@ -1,3 +1,5 @@
+import { User } from "../user/auth/types/User"
+
 export interface DeviceCreate {
     type: string,
     device: any
@@ -10,7 +12,14 @@ export interface DeviceDetails {
     powerSupplyType: string
     energyConsumption: number,
     type: string,
-    schedule?: SprinklerSchedule
+    schedule?: SprinklerSchedule,
+    owner: User
+}
+export interface Permission {
+    Type: "MODERATOR" | "OWNER",
+    Kind: "device" | "real estate",
+    UserId: number | null,
+    ResourceId: number
 }
 
 export interface TemperatureCommand {

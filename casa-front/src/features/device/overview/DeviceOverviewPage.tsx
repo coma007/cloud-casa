@@ -12,13 +12,18 @@ import { WebSocketService } from "../../../api/websocket/WebSocketService";
 // import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import SockJS from "sockjs-client";
-import { DeviceDetails } from "../Device";
+import { DeviceDetails, Permission } from "../Device";
+import { AuthService } from "../../user/auth/services/AuthService";
+import PermissionModal from "../../estate/permission/PermissionModal";
 
 const DeviceOverviewPage = () => {
 
     const [withdrawIsOpen, setWithdrawModalIsOpen] = useState(false);
     const [selectedDevice, setSelectedDevice] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
+
+    let [show, setShow] = useState(false);
+    let [currentPermission, setCurrentPermission] = useState<Permission>();
 
     let location = useLocation()
 
@@ -37,7 +42,7 @@ const DeviceOverviewPage = () => {
         } else {
             (async function () {
                 try {
-                    const fetchedDevices = await DeviceService.getAllByOwner();
+                    const fetchedDevices = await DeviceService.getAll();
                     // const fetchedDevices = [{} as RealEstate]
                     populateData(fetchedDevices);
                 } catch (error) {
@@ -68,7 +73,8 @@ const DeviceOverviewPage = () => {
             { content: "Real estate name", widthPercentage: 30},
             { content: "Power supply", widthPercentage: 30},
             { content: "Energy consumption", widthPercentage: 30},
-            { content: "Type", widthPercentage: 30}
+            { content: "Type", widthPercentage: 30},
+            { content: "Permission", widthPercentage: 10}
         ],
         onClick: undefined
 }
@@ -76,6 +82,19 @@ const DeviceOverviewPage = () => {
     const showDetails = (deviceId : number, deviceType : string) => {
         // alert(deviceId + " " + deviceType)
         navigate("/device-details", {state : {id: deviceId, type: deviceType}})
+    }
+
+    const handleGivePermissionModal = (device) =>{
+        let permission: Permission = {
+            Kind: "device",
+            ResourceId: device!.id,
+            Type: "MODERATOR",
+            UserId: null,
+        }
+        setCurrentPermission(permission);
+        console.log("OPEN MODAL")
+        setShow(true);
+
     }
 
     const populateData = (devices: DeviceDetails[]) => {
@@ -87,14 +106,21 @@ const DeviceOverviewPage = () => {
                 while (deviceType.includes('_')) {
                     deviceType = deviceType.replace('_', ' ');
                 }
+                let rowData = [
+                    { content: device.name, widthPercentage: 30},
+                    { content: device.realEstateName, widthPercentage: 30},
+                    { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
+                    { content: device.energyConsumption, widthPercentage: 30},
+                    { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
+                    { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(device)}}
+                ]
+                if(AuthService.getUsername() !== device!.owner!.email){
+                    rowData.pop();
+                    rowData.push({ content: "", widthPercentage: 10});
+                }
+                 
                 data.push({
-                    rowData: [
-                        { content: device.name, widthPercentage: 30},
-                        { content: device.realEstateName, widthPercentage: 30},
-                        { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
-                        { content: device.energyConsumption, widthPercentage: 30},
-                        { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
-                    ],
+                    rowData: rowData,
                     onClick: () => {showDetails(device.id, device.type)}
                 });
             });
@@ -112,6 +138,7 @@ const DeviceOverviewPage = () => {
         <div>
             <Menu admin={false} />
             <div>
+            <PermissionModal show={show} setShow={setShow} permission={currentPermission} />
                 <div className={DeviceOverviewPageCSS.header}>
                     <PageTitle title="Devices overview" description="Take a detailed view of your devices." />
                     <div className={DeviceOverviewPageCSS.alignRight}>

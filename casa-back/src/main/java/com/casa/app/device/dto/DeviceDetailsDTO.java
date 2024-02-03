@@ -1,6 +1,7 @@
 package com.casa.app.device.dto;
 
 
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,6 @@ public class DeviceDetailsDTO{
     private String powerSupplyType;
     private double energyConsumption;
     private String realEstateName;
+
+    private RegularUserDTO owner;
 }
