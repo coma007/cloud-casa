@@ -157,6 +157,24 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/RealEstateDTO"
+  /api/permission/permissionExists:
+    post:
+      tags:
+        - permission-controller
+      operationId: permissionExists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PermissionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
   /api/permission/delete:
     post:
       tags:
@@ -533,6 +551,24 @@ paths:
             "*/*":
               schema:
                 type: object
+  /api/user/getIdByUsername:
+    get:
+      tags:
+        - user-controller
+      operationId: getByUsername
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
   /api/sprinklerSystem/turnOn/{id}:
     get:
       tags:
@@ -608,11 +644,58 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/RealEstateDTO"
+  /api/realEstate/isOwner/{id}:
+    get:
+      tags:
+        - real-estate-controller
+      operationId: isOwner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/realEstate/getAll:
+    get:
+      tags:
+        - real-estate-controller
+      operationId: getAll_6
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
   /api/realEstate/getAllByOwner:
     get:
       tags:
         - real-estate-controller
       operationId: getAllByOwner
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
+  /api/realEstate/getAllApproved:
+    get:
+      tags:
+        - real-estate-controller
+      operationId: getAllApproved
       responses:
         "200":
           description: OK
@@ -693,7 +776,7 @@ paths:
     get:
       tags:
         - lamp-controller
-      operationId: getAll_6
+      operationId: getAll_7
       responses:
         "200":
           description: OK
@@ -707,7 +790,7 @@ paths:
     get:
       tags:
         - house-battery-controller
-      operationId: getAll_7
+      operationId: getAll_8
       responses:
         "200":
           description: OK
@@ -824,7 +907,7 @@ paths:
     get:
       tags:
         - electric-vehicle-charger-controller
-      operationId: getAll_8
+      operationId: getAll_9
       responses:
         "200":
           description: OK
@@ -884,6 +967,25 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/DeviceSimulationDTO"
+  /api/device/isOwner/{id}:
+    get:
+      tags:
+        - device-controller
+      operationId: isOwner_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
   /api/device/getDeviceDetails/{id}:
     get:
       tags:
@@ -907,7 +1009,7 @@ paths:
     get:
       tags:
         - device-controller
-      operationId: getAll_9
+      operationId: getAll_10
       responses:
         "200":
           description: OK
@@ -916,7 +1018,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DeviceSimulationDTO"
+                  $ref: "#/components/schemas/DeviceDetailsDTO"
   /api/device/getAllByRealEstate/{id}:
     get:
       tags:
@@ -1070,7 +1172,7 @@ paths:
     get:
       tags:
         - ambient-sensor-controller
-      operationId: getAll_10
+      operationId: getAll_11
       responses:
         "200":
           description: OK
@@ -1103,7 +1205,7 @@ paths:
     get:
       tags:
         - air-conditioning-controller
-      operationId: getAll_11
+      operationId: getAll_12
       responses:
         "200":
           description: OK
@@ -1372,6 +1474,8 @@ components:
           format: double
         realEstateName:
           type: string
+        owner:
+          $ref: "#/components/schemas/RegularUserDTO"
         currentMode:
           type: string
         allowedVehicles:
@@ -1500,6 +1604,8 @@ components:
           format: double
         realEstateName:
           type: string
+        owner:
+          $ref: "#/components/schemas/RegularUserDTO"
     AbstractMeasurement:
       type: object
       properties:
