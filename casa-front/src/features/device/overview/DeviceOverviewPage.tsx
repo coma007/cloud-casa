@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react"
+import { MouseEventHandler, useEffect, useState } from "react"
 import { useLocation, useNavigate } from 'react-router-dom';
 import Menu from "../../../components/navigation/Menu/Menu";
 import PageTitle from "../../../components/view/PageTitle/PageTitle";
@@ -128,7 +128,7 @@ const DeviceOverviewPage = () => {
                     { content: device!.powerSupplyType.toUpperCase(), widthPercentage: 30},
                     { content: device!.energyConsumption, widthPercentage: 30},
                     { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
-                    { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(device)}}
+                    { content: "Permission", widthPercentage: 10, onClick: (event)  => {event?.stopPropagation(); handleGivePermissionModal(device)}}
                 ]
                 // if(AuthService.getUsername() !== device!.owner!.email){
                 //     rowData.pop();

@@ -74,6 +74,7 @@ public class DeviceService {
         for (Device d : devices) {
             DeviceDetailsDTO dto = d.toDetailsDTO();
             dto.setType(getType(d));
+            dto.setOwner(RegularUserDTO.toDto(d.getOwner()));
             devicesDTO.add(dto);
         }
         return devicesDTO;
@@ -89,6 +90,7 @@ public class DeviceService {
         List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             DeviceDetailsDTO dto = d.toDetailsDTO();
+            dto.setOwner(RegularUserDTO.toDto(d.getOwner()));
             dto.setType(getType(d));
             devicesDTO.add(dto);
         }

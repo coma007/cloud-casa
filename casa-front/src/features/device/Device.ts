@@ -13,7 +13,7 @@ export interface DeviceDetails {
     energyConsumption: number,
     type: string,
     schedule?: SprinklerSchedule,
-    owner: User
+    owner?: User
 }
 export interface Permission {
     Type: "MODERATOR" | "OWNER",
