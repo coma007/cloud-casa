@@ -5,6 +5,7 @@ import Table, { TableRow } from "../../../../components/tables/Table/Table";
 import FilterDate from "../../../device/details/inspect/filter/FilterDate";
 import Button from "../../../../components/forms/Button/Button";
 import { PowerUsageService } from "../service/PowerUsageService";
+import Pagination from "../../../../components/tables/Pagination/Pagination";
 
 const PowerUsageReportPage = () => {
     const [powerUsageForCity, setPowerUsageForCity] = useState(false);
@@ -16,8 +17,11 @@ const PowerUsageReportPage = () => {
     const [resetTable, setResetTable] = useState(false);
 
     const [showActivity, setShowActivity] = useState(false);
+    const [allData, setAllData] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [numberOfPages, setNumberOfPages] = useState(1);
+    const [numOfPages, setNumOfPages] = useState(1);
+
+    const pageSize = 1;
 
     const width = [40, 40, 40]
     const [header, setHeader] =useState<TableRow>({
@@ -45,25 +49,38 @@ const PowerUsageReportPage = () => {
                 newToDate = toDate + "T00:00:00.000Z";
             }
             const fetchedData = await PowerUsageService.getCityData(newFromDate, newToDate);
-            replaceData(fetchedData, true);
+            replaceData(fetchedData);
         })();
     };
 
-    const replaceData = (fetchedData: any[], cityData : boolean) => {
-        let newData = [] as TableRow[]
-        fetchedData.forEach(element => {
-            console.log(element);
-            newData.push({
-                rowData: [
-                    { content: cityData ? element.cityName.toLowerCase().replace(/(?:^|\s)\S/g, (char) => char.toUpperCase()) : element.name, widthPercentage: width[0] },
-                    { content: element.powerUsage, widthPercentage: width[1] },
-                    { content: element.powerProduction, widthPercentage: width[2] },
-                ],
-                onClick: undefined
-            });
-        });
-        setData(newData);
+    const replaceData = (fetchedData: any[]) => {
+        let newNumOfPages = Math.floor(fetchedData.length / pageSize);
+        if (newNumOfPages < fetchedData.length / pageSize) {
+            newNumOfPages += 1;
+        }
+        setNumOfPages(newNumOfPages);
+        
+        setAllData(fetchedData);
     };
+
+    useEffect(()=> {
+        let newData = [] as TableRow[]
+        if (allData.length > 0) {
+            for (let i = pageSize * (currentPage - 1); i < Math.min(allData.length, pageSize * currentPage); i++) {
+                let element = allData.at(i)
+                console.log(element);
+                newData.push({
+                    rowData: [
+                        { content: powerUsageForCity ? element.cityName.toLowerCase().replace(/(?:^|\s)\S/g, (char) => char.toUpperCase()) : element.name, widthPercentage: width[0] },
+                        { content: element.powerUsage, widthPercentage: width[1] },
+                        { content: element.powerProduction, widthPercentage: width[2] },
+                    ],
+                    onClick: undefined
+                });
+            };
+        }
+        setData(newData);
+    }, [allData]);
 
     const fetchEstateData = () => {
         (async () => {
@@ -79,7 +96,7 @@ const PowerUsageReportPage = () => {
                 newToDate = toDate + "T00:00:00.000Z";
             }
             const fetchedData = await PowerUsageService.getEstateData(newFromDate, newToDate);
-            replaceData(fetchedData, false);
+            replaceData(fetchedData);
         })();
     };
 
@@ -157,6 +174,11 @@ const PowerUsageReportPage = () => {
         setToDate(nextDay.toISOString().split('T')[0]);
     };
 
+    
+    const changePage = (pageNumber: number) => {
+        setCurrentPage(pageNumber)
+    };
+
     return(
         <div>
             <Menu admin={true} />
@@ -180,6 +202,9 @@ const PowerUsageReportPage = () => {
                 }
                 <div>
                     <Table headers={header} rows={data}></Table>
+                    <div>
+                        <Pagination currentPage={currentPage} numberOfPages={numOfPages} onClick={changePage} />
+                    </div>
                 </div>
             </div>
         </div>

@@ -12,12 +12,18 @@ import { UserService } from "../../user/UserService";
 import PermissionModal from "../permission/PermissionModal";
 import { AuthService } from "../../user/auth/services/AuthService";
 import { Permission } from "../../device/Device";
+import Pagination from "../../../components/tables/Pagination/Pagination";
 
 const EstateOverviewPage = () => {
 
     const [withdrawIsOpen, setWithdrawModalIsOpen] = useState(false);
     const [selectedEstate, setSelectedEstate] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
+    const [allEstates, setAllEstates] = useState<RealEstate[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numOfPages, setNumOfPages] = useState(1);
+
+    const pageSize = 10;
 
     const navigate = useNavigate()
 
@@ -65,30 +71,87 @@ const EstateOverviewPage = () => {
     }
 
     const populateData = (estates: RealEstate[]) => {
+        let newNumOfPages = Math.floor(estates.length / pageSize);
+        if (newNumOfPages < estates.length / pageSize) {
+            newNumOfPages += 1;
+        }
+        setNumOfPages(newNumOfPages)
+        setAllEstates(estates)
+    }
+
+    useEffect(()=> {
         let data: TableRow[] = []
-        if (estates !== undefined) {
-            estates.forEach(estate => {
+        // if (estates !== undefined) {
+        //     estates.forEach(estate => {
+        //         let rowData = [
+        //             { content: estate.name, widthPercentage: 20},
+        //             { content: estate.type.toUpperCase(), widthPercentage: 12},
+        //             { content: estate.size, widthPercentage: 5},
+        //             { content: estate.numberOfFloors, widthPercentage: 8},
+        //             { content: estate.address?.address, widthPercentage: 15},
+        //             { content: estate.city?.name, widthPercentage: 10},
+        //             { content: estate.city?.country, widthPercentage: 10},
+        //             { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+        //             { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(estate)}}
+        //         ]
+        //         if(AuthService.getUsername() !== estate!.owner!.email)
+        //             rowData.pop();
+        //         data.push({
+        //             rowData: rowData,
+        //             onClick: () => {showDetails(estate)}
+        if (allEstates.length > 0) {
+            for (let i = pageSize * (currentPage - 1); i < Math.min(allEstates.length, pageSize * currentPage); i++) {
+                let estate = allEstates.at(i)
                 let rowData = [
-                    { content: estate.name, widthPercentage: 20},
-                    { content: estate.type.toUpperCase(), widthPercentage: 12},
-                    { content: estate.size, widthPercentage: 5},
-                    { content: estate.numberOfFloors, widthPercentage: 8},
-                    { content: estate.address?.address, widthPercentage: 15},
-                    { content: estate.city?.name, widthPercentage: 10},
-                    { content: estate.city?.country, widthPercentage: 10},
-                    { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+                    { content: estate!.name, widthPercentage: 20},
+                    { content: estate!.type.toUpperCase(), widthPercentage: 12},
+                    { content: estate!.size, widthPercentage: 5},
+                    { content: estate!.numberOfFloors, widthPercentage: 8},
+                    { content: estate!.address?.address, widthPercentage: 15},
+                    { content: estate!.city?.name, widthPercentage: 15},
+                    { content: estate!.city?.country, widthPercentage: 15},
+                    { content: <i> {estate!.request.approved === false && estate!.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate!.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
                     { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(estate)}}
                 ]
+                // data.push({
+                //     rowData: [
+                //         { content: estate!.name, widthPercentage: 20},
+                //         { content: estate!.type.toUpperCase(), widthPercentage: 12},
+                //         { content: estate!.size, widthPercentage: 5},
+                //         { content: estate!.numberOfFloors, widthPercentage: 8},
+                //         { content: estate!.address?.address, widthPercentage: 15},
+                //         { content: estate!.city?.name, widthPercentage: 15},
+                //         { content: estate!.city?.country, widthPercentage: 15},
+                //         { content: <i> {estate!.request.approved === false && estate!.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate!.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+                //         { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(estate)}}
+                //     ],
+                //     onClick: () => {showDetails(estate!)}
+                // });
                 if(AuthService.getUsername() !== estate!.owner!.email)
                     rowData.pop();
                 data.push({
                     rowData: rowData,
-                    onClick: () => {showDetails(estate)}
-                });
-            });
+                    onClick: () => {showDetails(estate!)}
+                })
+            }
+            // estates.forEach(estate => {
+            //     data.push({
+            //         rowData: [
+            //             { content: estate.name, widthPercentage: 20},
+            //             { content: estate.type.toUpperCase(), widthPercentage: 12},
+            //             { content: estate.size, widthPercentage: 5},
+            //             { content: estate.numberOfFloors, widthPercentage: 8},
+            //             { content: estate.address?.address, widthPercentage: 15},
+            //             { content: estate.city?.name, widthPercentage: 15},
+            //             { content: estate.city?.country, widthPercentage: 15},
+            //             { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+            //         ],
+            //         onClick: () => {showDetails(estate)}
+            //     });
+            // });
         }
         setTableData(data);
-    }
+    }, [allEstates, currentPage])
 
     const createNew = () => {
         navigate("/register-real-estate");
@@ -104,6 +167,9 @@ const EstateOverviewPage = () => {
 
  
 
+    const changePage = (pageNumber: number) => {
+        setCurrentPage(pageNumber)
+    }
 
     return (
         <div>
@@ -118,6 +184,9 @@ const EstateOverviewPage = () => {
                 </div>
                 <div className={EstateOverviewPageCSS.table} >
                     <Table headers={headers} rows={tableData} />
+                    <div>
+                        <Pagination currentPage={currentPage} numberOfPages={numOfPages} onClick={changePage} />
+                    </div>
                 </div>
                 {/* <ModalWindow
                     height="75%"
