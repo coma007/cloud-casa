@@ -103,14 +103,14 @@ const EstateOverviewPage = () => {
             for (let i = pageSize * (currentPage - 1); i < Math.min(allEstates.length, pageSize * currentPage); i++) {
                 let estate = allEstates.at(i)
                 let rowData = [
-                    { content: estate.name, widthPercentage: 20},
-                    { content: estate.type.toUpperCase(), widthPercentage: 12},
-                    { content: estate.size, widthPercentage: 5},
-                    { content: estate.numberOfFloors, widthPercentage: 8},
-                    { content: estate.address?.address, widthPercentage: 15},
-                    { content: estate.city?.name, widthPercentage: 10},
-                    { content: estate.city?.country, widthPercentage: 10},
-                    { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+                    { content: estate!.name, widthPercentage: 20},
+                    { content: estate!.type.toUpperCase(), widthPercentage: 12},
+                    { content: estate!.size, widthPercentage: 5},
+                    { content: estate!.numberOfFloors, widthPercentage: 8},
+                    { content: estate!.address?.address, widthPercentage: 15},
+                    { content: estate!.city?.name, widthPercentage: 10},
+                    { content: estate!.city?.country, widthPercentage: 10},
+                    { content: <i> {estate!.request.approved === false && estate!.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate!.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
                     { content: "Permission", widthPercentage: 10, onClick: (event) => {event.stopPropagation(); handleGivePermissionModal(estate)}}
                 ]
                 // data.push({
