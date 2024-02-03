@@ -3,11 +3,10 @@ package com.casa.app.permission;
 
 import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
-import com.casa.app.device.DeviceService;
+import com.casa.app.estate.RealEstateRepository;
 import com.casa.app.estate.RealEstateService;
 import com.casa.app.exceptions.*;
 import com.casa.app.permission.device_permission.DevicePermission;
-import com.casa.app.permission.device_permission.DevicePermissionKey;
 import com.casa.app.permission.device_permission.DevicePermissionRepository;
 import com.casa.app.permission.dto.PermissionDTO;
 import com.casa.app.permission.real_estate_permission.RealEstatePermission;
@@ -15,8 +14,6 @@ import com.casa.app.permission.real_estate_permission.RealEstatePermissionReposi
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.casa.app.estate.RealEstate;
 
@@ -34,13 +31,18 @@ public class PermissionService {
     @Autowired
     private RegularUserService regularUserService;
     @Autowired
-    private RealEstateService realEstateService;
+    private RealEstateRepository realEstateRepository;
     @Autowired
     private DeviceRepository deviceRepository;
 
     public boolean canReadDevice(long deviceId, long userId){
         return devicePermissionRepository.canAccess(deviceId, userId) ||
                 realEstatePermissionRepository.canAccess(deviceId, userId);
+    }
+
+    public boolean canReadEstate(long estateId, long userId){
+        RealEstatePermission permission = realEstatePermissionRepository.findByIds(estateId, userId);
+        return permission != null;
     }
 
     public boolean canWriteDevice(long deviceId, long userId){
@@ -77,7 +79,7 @@ public class PermissionService {
             devicePermissionRepository.save(permission);
         }
         else if(dto.getKind().equalsIgnoreCase("REAL ESTATE")){
-            RealEstate realEstate = realEstateService.getById(dto.getResourceId());
+            RealEstate realEstate = realEstateRepository.findById(dto.getResourceId()).orElse(null);
             if (realEstate == null)
                 throw new NotFoundException();
             RegularUser currentUser = regularUserService.getUserByToken();
@@ -92,6 +94,37 @@ public class PermissionService {
         }
         else throw new NotFoundException();
         return dto;
+    }
+
+    public Boolean permissionExists(PermissionDTO dto) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException, AlreadyExistsException {
+        RegularUser user = regularUserService.getUserById(dto.getUserId());
+        if(user == null)
+            throw new UserNotFoundException();
+
+        if(dto.getKind().equalsIgnoreCase("DEVICE")){
+            Device device = deviceRepository.findById(dto.getResourceId()).orElse(null);
+            if(device == null)
+                throw new NotFoundException();
+
+            return devicePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId()) != null;
+        }
+        else if(dto.getKind().equalsIgnoreCase("REAL ESTATE")){
+            RealEstate realEstate = realEstateRepository.findById(dto.getResourceId()).orElse(null);
+            if (realEstate == null)
+                throw new NotFoundException();
+
+            return realEstatePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId()) != null;
+        }
+        else throw new NotFoundException();
+    }
+
+
+    public List<RealEstate> filterReadDEstates(List<RealEstate> estates) throws UserNotFoundException {
+        RegularUser currentUser = regularUserService.getUserByToken();
+        return estates
+                .parallelStream()
+                .filter(e->canReadEstate(e.getId(), currentUser.getId()))
+                .collect(Collectors.toList());
     }
 
     public List<Device> filterReadDevices(List<Device> devices) throws UserNotFoundException {
@@ -142,7 +175,7 @@ public class PermissionService {
             devicePermissionRepository.delete(permission);
         }
         else if(dto.getKind().equalsIgnoreCase("REAL ESTATE")){
-            RealEstate realEstate = realEstateService.getById(dto.getResourceId());
+            RealEstate realEstate = realEstateRepository.findById(dto.getResourceId()).orElse(null);
             if (realEstate == null)
                 throw new NotFoundException();
             RegularUser currentUser = regularUserService.getUserByToken();

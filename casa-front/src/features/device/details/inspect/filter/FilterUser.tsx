@@ -67,7 +67,7 @@ const FilterUser = (props: { username: string, onInputChange: any, handleSubmit:
                 />
             </span>
             <span>
-                <Button text={props.text || 'Filter'} onClick={props.handleSubmit} submit={undefined} />
+                {props.handleSubmit && <Button text={props.text || 'Filter'} onClick={props.handleSubmit} submit={undefined} />}
             </span>
         </div>
     )

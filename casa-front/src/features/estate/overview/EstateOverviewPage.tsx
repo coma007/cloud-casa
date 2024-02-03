@@ -8,6 +8,9 @@ import { RealEstate } from "../RealEstate";
 import { EstateService } from "../EstateService";
 import Button from "../../../components/forms/Button/Button";
 import { useNavigate } from "react-router-dom";
+import { UserService } from "../../user/UserService";
+import PermissionModal from "../permission/PermissionModal";
+import { AuthService } from "../../user/auth/services/AuthService";
 
 const EstateOverviewPage = () => {
 
@@ -20,7 +23,7 @@ const EstateOverviewPage = () => {
     useEffect(() => {
         (async function () {
             try {
-                const fetchedEstates = await EstateService.getAllByOwner();
+                const fetchedEstates = await EstateService.getAll();
                 populateData(fetchedEstates);
             } catch (error) {
                 console.error(error);
@@ -28,35 +31,51 @@ const EstateOverviewPage = () => {
         })()
     }, []);
 
+    let data = [
+        { content: "Name", widthPercentage: 20},
+        { content: "Type", widthPercentage: 12},
+        { content: "Size", widthPercentage: 5},
+        { content: "Floors", widthPercentage: 8},
+        { content: "Address", widthPercentage: 15},
+        { content: "City", widthPercentage: 10},
+        { content: "Country", widthPercentage: 10},
+        { content: "Status", widthPercentage: 10},
+        { content: "Permission", widthPercentage: 10}
+      
+    ]
+
+
     const headers: TableRow = { 
-        rowData: [
-            { content: "Name", widthPercentage: 20},
-            { content: "Type", widthPercentage: 12},
-            { content: "Size", widthPercentage: 5},
-            { content: "Floors", widthPercentage: 8},
-            { content: "Address", widthPercentage: 15},
-            { content: "City", widthPercentage: 15},
-            { content: "Country", widthPercentage: 15},
-            { content: "Status", widthPercentage: 10}
-        ],
+        rowData: data,
         onClick: undefined
+    }
+
+    const handleGivePermissionModal = (estate) =>{
+        setCurrentEstate(estate);
+        console.log("OPEN MODAL")
+        setShow(true);
+
     }
 
     const populateData = (estates: RealEstate[]) => {
         let data: TableRow[] = []
         if (estates !== undefined) {
             estates.forEach(estate => {
+                let rowData = [
+                    { content: estate.name, widthPercentage: 20},
+                    { content: estate.type.toUpperCase(), widthPercentage: 12},
+                    { content: estate.size, widthPercentage: 5},
+                    { content: estate.numberOfFloors, widthPercentage: 8},
+                    { content: estate.address?.address, widthPercentage: 15},
+                    { content: estate.city?.name, widthPercentage: 10},
+                    { content: estate.city?.country, widthPercentage: 10},
+                    { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
+                    { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(estate)}}
+                ]
+                if(AuthService.getUsername() !== estate!.owner!.email)
+                    rowData.pop();
                 data.push({
-                    rowData: [
-                        { content: estate.name, widthPercentage: 20},
-                        { content: estate.type.toUpperCase(), widthPercentage: 12},
-                        { content: estate.size, widthPercentage: 5},
-                        { content: estate.numberOfFloors, widthPercentage: 8},
-                        { content: estate.address?.address, widthPercentage: 15},
-                        { content: estate.city?.name, widthPercentage: 15},
-                        { content: estate.city?.country, widthPercentage: 15},
-                        { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
-                    ],
+                    rowData: rowData,
                     onClick: () => {showDetails(estate)}
                 });
             });
@@ -73,10 +92,15 @@ const EstateOverviewPage = () => {
         navigate("/device-overview", {state : {id: realEstate.id}})
     }
 
+    let [show, setShow] = useState(false);
+    let [currentEstate, setCurrentEstate] = useState<RealEstate>();
+
+
     return (
         <div>
             <Menu admin={false} />
             <div>
+                <PermissionModal show={show} setShow={setShow} estate={currentEstate} />
                 <div className={EstateOverviewPageCSS.header}>
                     <PageTitle title="Estates overview" description="Take a detailed view of your estates." />
                     <div className={EstateOverviewPageCSS.alignRight}>

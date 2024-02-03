@@ -17,6 +17,7 @@ import GraphPagination from '../../../components/tables/GraphPagination/GraphPag
 import ActivityChart from './inspect/graph/ActivityChart'
 import { OnlineMeasurementList } from '../OnlineMeasurementList'
 import { Permission } from '../Device'
+import { UserService } from '../../user/UserService'
 
 const DeviceDetails = () => {
     const [isFilterVisible, setFilterVisible] = useState(false);
@@ -587,7 +588,7 @@ const DeviceDetails = () => {
 
         (async () => {
             try{
-            const userId = await DeviceService.getIdByUsername(username);
+            const userId = await UserService.getIdByUsername(username);
             let permission: Permission = {
                 Kind: "device",
                 ResourceId: deviceId,

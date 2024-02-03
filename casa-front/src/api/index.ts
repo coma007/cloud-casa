@@ -11,6 +11,9 @@ export const ID_BY_USERNAME = () => url + "/user/getIdByUsername";
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
 export const ESTATE_GET_ALL_APPROVED_BY_OWNER = () => url + "/realEstate/getAllApprovedByOwner";
+export const ESTATE_GET_ALL = () => url + "/realEstate/getAll";
+export const ESTATE_GET_ALL_APPROVED = () => url + "/realEstate/getAllApproved";
+export const ESTATE_IS_OWNER = (id: number) => url + "/realEstate/isOwner/" + id
 
 export const REQUEST_MANAGE = () => url + "/realEstateRequest/manage";
 export const REQUEST_GET_ALL = () => url + "/realEstateRequest/getAll";
@@ -51,5 +54,7 @@ export const LAMP_MANAGER = (deviceId) => url + "/lamp/turnOn/" + deviceId;
 export const GATE_MANAGER = (deviceId, func) => url + "/vehicleGate/" + func + "/" + deviceId;
 
 export const PERMISSION_CREATE = () => url + "/permission/create";
+export const PERMISSION_DELETE = () => url + "/permission/delete";
+export const PERMISSION_EXISTS = () => url + "/permission/permissionExists";
 
 export const WEBSOCKET = () => "http://localhost:8080/socket";

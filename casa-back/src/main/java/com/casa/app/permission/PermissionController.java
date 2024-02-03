@@ -30,6 +30,14 @@ public class PermissionController {
     @Autowired
     private RegularUserService regularUserService;
 
+    @PostMapping("/permissionExists")
+    @PreAuthorize("hasAnyAuthority('regular user')")
+    public ResponseEntity<?> permissionExists(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException, AlreadyExistsException {
+        if(!(dto.getKind().equalsIgnoreCase("REAL ESTATE") || dto.getKind().equalsIgnoreCase("DEVICE") ))
+            return ResponseEntity.badRequest().body("Invalid kind given");
+        return new ResponseEntity<>(permissionService.permissionExists(dto), HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('regular user')")
     public ResponseEntity<?> create(@RequestBody PermissionDTO dto) throws UserNotFoundException, NotFoundException, UnauthorizedWriteException, AlreadyExistsException {
