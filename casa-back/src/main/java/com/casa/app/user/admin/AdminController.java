@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 @RestController
@@ -31,6 +32,8 @@ public class AdminController {
             return ResponseEntity.internalServerError().body("Could not send email");
         } catch (UnsupportedEncodingException e) {
             return ResponseEntity.internalServerError().body("Unsupported encoding");
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().body("Email could not be sent");
         }
     }
 

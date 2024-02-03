@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ public class RealEstateRequestService {
         return request;
     }
 
-    public void manage(RealEstateRequestDTO requestDTO) throws MessagingException, UnsupportedEncodingException {
+    public void manage(RealEstateRequestDTO requestDTO) throws MessagingException, IOException {
         RealEstateRequest request = realEstateRequestRepository.getReferenceById(requestDTO.getId());
         request.setApproved(requestDTO.isApproved());
         request.setDeclined(requestDTO.isDeclined());

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class AdminService {
     public EmailService emailService;
 
     @Transactional
-    public UserDTO createAdmin(NewUserDTO userDTO) throws NotFoundException, MessagingException, UnsupportedEncodingException {
+    public UserDTO createAdmin(NewUserDTO userDTO) throws NotFoundException, MessagingException, IOException {
         Admin newUser = new Admin();
         newUser.setUsername(userDTO.getUsername());
         newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));

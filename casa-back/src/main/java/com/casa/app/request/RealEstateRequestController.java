@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class RealEstateRequestController {
     RealEstateRequestService realEstateRequestService;
 
     @PatchMapping("/manage")
-    public ResponseEntity<?> manageRequest(@RequestBody RealEstateRequestDTO request) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<?> manageRequest(@RequestBody RealEstateRequestDTO request) throws MessagingException, IOException {
         realEstateRequestService.manage(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

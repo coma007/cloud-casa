@@ -51,7 +51,7 @@ public class InfluxDBService {
             from = to.minus(24, ChronoUnit.HOURS);
         }
         else if (Duration.between(from, to).toDays() > 30) {
-            from = to.minus(1, ChronoUnit.MONTHS);
+            from = to.minus(30, ChronoUnit.DAYS);
         }
         String fromString = from.toString();
         String toString = to.toString();
@@ -80,7 +80,7 @@ public class InfluxDBService {
             from = to.minus(24, ChronoUnit.HOURS);
         }
         else if (Duration.between(from, to).toDays() > 30) {
-            from = to.minus(1, ChronoUnit.MONTHS);
+            from = to.minus(30, ChronoUnit.DAYS);
         }
         String fromString = from.toString();
         String toString = to.toString();

@@ -73,17 +73,14 @@ const RegisterPage = () => {
             <div>
                 <PageTitle title="Register real estate" description="Register new real estate." />
             </div>
-            <Row className={RegisterPageCSS.form}>
-                <Col md={6}>
-                    <div>
-                        <RegisterForm formData={formData} setFormData={setFormData} countries={countries} cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
-                    </div>
-                </Col>
-                <Col md={6}>
-                    <Map setAddress={setAddress}></Map>
-                </Col>
-            </Row>
-        </div>
+            <div className={RegisterPageCSS.form}>
+                <div>
+                    <RegisterForm formData={formData} setFormData={setFormData} countries={countries} cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
+                </div>
+                <Map setAddress={setAddress}></Map>
+            </div>
+
+        </div >
     );
 };
 

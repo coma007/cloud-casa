@@ -1,7 +1,10 @@
 package com.casa.app.util.email;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 
 import com.casa.app.estate.RealEstate;
@@ -10,18 +13,20 @@ import com.casa.app.request.RealEstateRequest;
 import com.casa.app.request.RealEstateRequestDTO;
 import com.casa.app.user.admin.Admin;
 import com.casa.app.user.regular_user.RegularUser;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.*;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.mail.javamail.JavaMailSender;
 //import org.springframework.messaging.MessagingException;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.Message;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
@@ -89,39 +94,58 @@ public class EmailService {
         sendEmail(session, toAddress, subject, content);
     }
 
-    public void sendPasswordEmail(Admin user, String username, String pwd) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
+    public void sendPasswordEmail(Admin user, String username, String pwd) throws IOException, jakarta.mail.MessagingException {
         String toAddress = user.getUsername();
         String fromAddress = getMailProperties().getProperty("mail.user");
         String senderName = "Casa";
 
 
         String subject = "Change your password";
-        String content = "Dear admin user,<br>"
+        String content = "<html>" +
+                "<head>" +
+                "<style>" +
+                "body { font-family: 'Lato', sans-serif; font-size: 12px; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<img src='cid:image' style='width: 100%; max-width: 500px;'><br>"
+                + "Dear <i>[[name]]</i>,<br> <br>"
                 + "These are your credentials, please change password after your login:<br>"
-                + "<br>Username: [[username]]"
-                + "<br>Password: [[password]]"
-                + "<br>Thank you,<br>"
-                + "Casa";
-
+                + "<br>Username: <font color='#32F0D9'>[[username]]</font> <br>"
+                + "<br>Password: <font color='#32F0D9'>[[password]]</font> <br> <br>"
+                + "Thank you,<br>"
+                + "<i>Casa Team</i></body></html>";
         content = content.replace("[[username]]", username);
         content = content.replace("[[password]]", pwd);
 
         Session session = getSession();
-        sendEmail(session, toAddress, subject, content);
+
+        String imagePath = "logo.png";
+        MimeMessage message = createEmailWithImage(session, toAddress, fromAddress, senderName, subject, content, imagePath);
+
+        Transport.send(message);
     }
 
-    public void sendNotificationEmail(RealEstateRequest request) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
+    public void sendNotificationEmail(RealEstateRequest request) throws IOException, jakarta.mail.MessagingException {
         String toAddress = request.getRealEstate().getOwner().getUser().getUsername();
         String fromAddress = getMailProperties().getProperty("mail.user");
         String senderName = "Casa";
 
         String subject = "Real Estate Notification";
-        String content = "Dear [[name]],<br>"
-                + "Your request for real estate registration <b>[[estate]]</b> has been processed.<br>"
-                + "<b>Current status</b>: [[status]] <br>"
-                + "<b>Comment</b>: [[comment]] <br>"
+        String content = "<html>" +
+                "<head>" +
+                "<style>" +
+                "body { font-family: 'Lato', sans-serif; font-size: 12px; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<img src='cid:image' style='width: 100%; max-width: 500px;'><br>"
+                + "Dear <i>[[name]]</i>,<br><br>"
+                + "Your request for real estate registration <font color='#32F0D9'><b>[[estate]]</b></font> has been processed.<br>"
+                + "<b>Current status</b>: <font color='#32F0D9'>[[status]]</font> <br>"
+                + "<b>Comment</b>: <font color='#32F0D9'>[[comment]]</font> <br> <br>"
                 + "Thank you,<br>"
-                + "Casa";
+                + "<i>Casa Team</i></body></html>";
 
         content = content.replace("[[name]]", request.getRealEstate().getOwner().getUser().getFirstName());
         content = content.replace("[[estate]]", request.getRealEstate().getName());
@@ -129,8 +153,38 @@ public class EmailService {
         content = content.replace("[[comment]]", request.getComment());
 
         Session session = getSession();
-        sendEmail(session, toAddress, subject, content);
+
+        String imagePath = "logo.png";
+        MimeMessage message = createEmailWithImage(session, toAddress, fromAddress, senderName, subject, content, imagePath);
+
+        Transport.send(message);
     }
+
+    private MimeMessage createEmailWithImage(Session session, String toAddress, String fromAddress,
+                                             String senderName, String subject, String content, String imagePath)
+            throws MessagingException, IOException {
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(fromAddress, senderName));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+        message.setSubject(subject);
+
+        MimeMultipart multipart = new MimeMultipart("related");
+        BodyPart messageBodyPart = new MimeBodyPart();
+        messageBodyPart.setContent(content, "text/html");
+        multipart.addBodyPart(messageBodyPart);
+
+        BodyPart imageBodyPart = new MimeBodyPart();
+        DataSource fds = new FileDataSource(new File(String.valueOf((new ClassPathResource(imagePath)).getFile())));
+        imageBodyPart.setDataHandler(new DataHandler(fds));
+        imageBodyPart.setHeader("Content-ID", "<image>");
+        multipart.addBodyPart(imageBodyPart);
+
+        message.setContent(multipart);
+
+        return message;
+    }
+
 
     private void sendEmail(Session session, String toEmail, String subject, String body) throws jakarta.mail.MessagingException, UnsupportedEncodingException{
         session.setDebug(true);
