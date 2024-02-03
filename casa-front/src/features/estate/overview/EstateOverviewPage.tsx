@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { UserService } from "../../user/UserService";
 import PermissionModal from "../permission/PermissionModal";
 import { AuthService } from "../../user/auth/services/AuthService";
+import { Permission } from "../../device/Device";
 
 const EstateOverviewPage = () => {
 
@@ -51,7 +52,13 @@ const EstateOverviewPage = () => {
     }
 
     const handleGivePermissionModal = (estate) =>{
-        setCurrentEstate(estate);
+        let permission: Permission = {
+            Kind: "real estate",
+            ResourceId: estate!.id,
+            Type: "MODERATOR",
+            UserId: null,
+        }
+        setCurrentPermission(permission);
         console.log("OPEN MODAL")
         setShow(true);
 
@@ -93,14 +100,16 @@ const EstateOverviewPage = () => {
     }
 
     let [show, setShow] = useState(false);
-    let [currentEstate, setCurrentEstate] = useState<RealEstate>();
+    let [currentPermission, setCurrentPermission] = useState<Permission>();
+
+ 
 
 
     return (
         <div>
             <Menu admin={false} />
             <div>
-                <PermissionModal show={show} setShow={setShow} estate={currentEstate} />
+                <PermissionModal show={show} setShow={setShow} permission={currentPermission} />
                 <div className={EstateOverviewPageCSS.header}>
                     <PageTitle title="Estates overview" description="Take a detailed view of your estates." />
                     <div className={EstateOverviewPageCSS.alignRight}>

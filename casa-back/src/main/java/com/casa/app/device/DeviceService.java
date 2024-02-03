@@ -34,6 +34,7 @@ import com.casa.app.user.User;
 import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,8 +98,11 @@ public class DeviceService {
     public DeviceDetailsDTO getDeviceDetails(Long deviceId) throws UserNotFoundException, UnathorizedReadException {
         Device device = deviceRepository.findById(deviceId).orElse(null);
         RegularUser currentUser = regularUserService.getUserByToken();
-        if(permissionService.canReadDevice(deviceId, currentUser.getId()))
-            return getDeviceDetailsDTO(device);
+        if(permissionService.canReadDevice(deviceId, currentUser.getId())){
+            DeviceDetailsDTO dto = getDeviceDetailsDTO(device);
+            dto.setOwner(RegularUserDTO.toDto(currentUser));
+            return dto;
+        }
         else
             throw new UnathorizedReadException();
     }
@@ -159,7 +163,10 @@ public class DeviceService {
         List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             String type = getType(d);
-            devicesDTO.add(new DeviceDetailsDTO(d.getId(), type, d.getPowerSupplyType().name(), d.getName(), d.getStatus().name(), d.getEnergyConsumption(), d.getRealEstate().getName()));
+            devicesDTO.add(new DeviceDetailsDTO(d.getId(), type,
+                    d.getPowerSupplyType().name(),
+                    d.getName(), d.getStatus().name(), d.getEnergyConsumption(),
+                    d.getRealEstate().getName(), RegularUserDTO.toDto(d.getOwner())));
         }
         return devicesDTO;
     }

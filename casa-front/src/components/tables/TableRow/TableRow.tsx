@@ -15,7 +15,7 @@ const TableRow = (props: { data: TableRowData[], className: string, onClick: Mou
             {props.data.map((rowData, index) => (
                 <span key={index} style={{ width: `${rowData.widthPercentage}%` }}>
                     {rowData.onClick !== undefined ? 
-                        <Button text="Give Permission" onClick={() => rowData.onClick()} submit={undefined}></Button> :
+                        <Button text="Handle" onClick={() => rowData.onClick()} submit={undefined}></Button> :
                         rowData.content
                     }
                 </span>

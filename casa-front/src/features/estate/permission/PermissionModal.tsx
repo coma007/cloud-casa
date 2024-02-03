@@ -12,7 +12,7 @@ import { UserService } from '../../user/UserService';
 import { EstateService } from '../EstateService';
 import Button from '../../../components/forms/Button/Button';
 
-const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
+const PermissionModal = (props: { show: any, setShow: any, permission: Permission | undefined }) => {
     const [toggleIsOn, setToggleIsOn] = useState(false);
     const [username, setUsername] = useState<string>("");
     const [isOwner, setIsOwner] = useState(false);
@@ -21,17 +21,23 @@ const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
     useEffect(() => {
         (async function () {
             try {
-                if (props.estate.id > 0) {
+                if(props.permission === undefined)
+                return;
+                if (props.permission.ResourceId > 0) {
                     // const fetchedDevice = await DeviceService.getDeviceDetails(props.estate.id );
                     // console.log(fetchedDevice)
-                    const fetchedIsOwner = await EstateService.isOwner(props.estate.id );
+                    let fetchedIsOwner = false;
+                    if(props.permission.Kind === "real estate")
+                        fetchedIsOwner =  await EstateService.isOwner(props.permission.ResourceId );
+                    else if(props.permission.Kind === "device")
+                        fetchedIsOwner =  await DeviceService.isOwner(props.permission.ResourceId );
                     setIsOwner(fetchedIsOwner);
                 }
             } catch (error) {
                 console.error(error);
             }
         })()
-    }, [props.estate]);
+    }, [props.permission]);
 
     const formRef = useRef<FormikProps<FormikValues>>(null);
 
@@ -53,14 +59,11 @@ const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
 
         (async () => {
             try{
+                if(props.permission === undefined)
+                return;
             const userId = await UserService.getIdByUsername(username);
-            let permission: Permission = {
-                Kind: "real estate",
-                ResourceId: props.estate!.id,
-                Type: 'MODERATOR',
-                UserId: userId
-            } 
-            const result = await DeviceService.createPermission(permission);
+            props.permission.UserId = userId;
+            const result = await DeviceService.createPermission(props.permission);
             console.log(result);
             setMessage("Already exists");
         } catch (error) {
@@ -75,14 +78,11 @@ const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
 
         (async () => {
             try{
+                if(props.permission === undefined)
+                return;
             const userId = await UserService.getIdByUsername(username);
-            let permission: Permission = {
-                Kind: "real estate",
-                ResourceId: props.estate!.id,
-                Type: 'MODERATOR',
-                UserId: userId
-            } 
-            const result = await DeviceService.deletePermission(permission);
+            props.permission.UserId = userId;
+            const result = await DeviceService.deletePermission(props.permission);
             console.log(result);
             setMessage("Valid");
         } catch (error) {
@@ -102,14 +102,11 @@ const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
     useEffect(() => {
         (async () => {
             try{
+                if(props.permission === undefined)
+                return;
                 const userId = await UserService.getIdByUsername(username);
-                let permission: Permission = {
-                    Kind: "real estate",
-                    ResourceId: props.estate!.id,
-                    Type: 'MODERATOR',
-                    UserId: userId
-                } 
-                const result = await DeviceService.permissionExists(permission);
+                props.permission.UserId = userId;
+                const result = await DeviceService.permissionExists(props.permission);
                 if(result)
                     setMessage("Already exists");
                 else
@@ -141,7 +138,7 @@ const PermissionModal = (props: { show: any, setShow: any, estate: any }) => {
             <div>
                 {isOwner && <div className={PermissionModalCSS.right}>
                 <div>
-                    <FilterUser username={username} onInputChange={usernameChanged} handleSubmit={undefined} text='Give permission'></FilterUser>
+                    <FilterUser username={username} onInputChange={usernameChanged} handleSubmit={undefined} text='Permission'></FilterUser>
                                     <hr></hr>
                     <p>{message}</p>
                 </div>
