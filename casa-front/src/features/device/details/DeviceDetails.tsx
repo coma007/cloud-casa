@@ -386,7 +386,7 @@ const DeviceDetails = () => {
                     ChargePower: device.chargePower.toString() + " kWh",
                     NumOfSlots: device.numOfSlots,
                     type: 'electric_vehicle_charger',
-                    measurementTopic: 'electric_vehicle_charger',
+                    measurementTopic: 'electric_vehicle_charger_command',
                 })
                 break;
             case "house_battery":
@@ -638,7 +638,7 @@ const DeviceDetails = () => {
                     <DeviceInfo deviceType={dev.type} device={dev}></DeviceInfo>
                     <br></br>
                     {
-                        (!["ambient_sensor", "house_battery", "electric_vehicle_charger"].includes(dev.type)) &&
+                        (!["ambient_sensor", "house_battery"].includes(dev.type)) &&
                         <DeviceManager deviceType={dev.type} device={dev}></DeviceManager>
                     }
                     {
@@ -703,7 +703,7 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system", "washing_machine"].includes(dev.type)) && !showActivity &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system", "electric_vehicle_charger", "washing_machine"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />

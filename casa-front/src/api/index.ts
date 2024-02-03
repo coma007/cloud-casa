@@ -21,6 +21,10 @@ export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id: number) => url + "/device/getA
 export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id: number) => url + "/solarPanelSystem/toggleStatus/" + id
 export const DEVICE_GET_DETAILS = (id: number) => url + "/device/getDeviceDetails/" + id
 
+export const CHARGER_START_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/startCharging/" + id + "/" + slot 
+export const CHARGER_END_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/endCharging/" + id + "/" + slot 
+export const CHARGER_SET_MAX_PERCENTAGE = (id : number, slot : number, max : number) => url + "/electricVehicleCharger/setMaxPercentage/" + id + "/" + slot + "/" + max
+
 export const AIR_CONDITION_TEMPERATURE = () => url + "/airConditioning/simulation/temperature"
 export const AIR_CONDITION_MODE = () => url + "/airConditioning/simulation/mode"
 export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/working"
@@ -31,7 +35,10 @@ export const WASHING_MACHINE_MODE = () => url + "/washingMachine/simulation/mode
 export const WASHING_MACHINE_WORKING = () => url + "/washingMachine/simulation/working"
 export const WASHING_MACHINE_SCHEDULE = () => url + "/washingMachine/simulation/schedule"
 
-export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page: number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
+export const POWER_USAGE_FOR_CITY = (from: string, to: string) => url + "/houseBattery/powerUsageForCity?" + `from=${from}&` + `to=${to}`;
+export const POWER_USAGE_FOR_ESTATE = (from: string, to: string) => url + "/houseBattery/powerUsage?" + `from=${from}&` + `to=${to}`;
+
+export const DEVICE_FILTER = (id: number, measurement: string, from: string, to: string, username: string, page : number) => url + "/device/filter?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}&` + `page=${page}`;
 export const ACTIVITY_FILTER = (id: number, from: string, to: string) => url + "/device/filterActivity?" + `id=${id}&` + `from=${from}&` + `to=${to}&`;
 export const DEVICE_GET_PAGE_NUMBER = (id: number, measurement: string, from: string, to: string, username: string) => url + "/device/filterPages?" + `id=${id}&` + `measurement=${measurement}&` + `from=${from}&` + `to=${to}&` + `username=${username}`;
 export const LOCATION_CITIES = (country) => url + "/location/getAllCities/" + country;

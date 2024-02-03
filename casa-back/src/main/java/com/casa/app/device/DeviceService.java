@@ -186,6 +186,18 @@ public class DeviceService {
     }
 
     public MeasurementList queryMeasurements(Long id, String measurement, String from, String to, String username, int page) {
+        MeasurementList data = fullQueryMeasurements(id, measurement, from, to, username);
+        if (data.getMeasurements().size() != 0) {
+            Collections.reverse(data.getMeasurements());
+            int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
+            int lastIndex = min(10 * page, data.getMeasurements().size());
+            List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);
+            data.setMeasurements(newData);
+        }
+        return data;
+    }
+
+    public MeasurementList fullQueryMeasurements(Long id, String measurement, String from, String to, String username) {
         Device device = deviceRepository.getReferenceById(id);
         Instant fromDate = null, toDate = null;
         if (!from.equals("")) {
@@ -199,15 +211,7 @@ public class DeviceService {
             findUser = false;
         }
         User user = userService.getByUsername(username);
-        MeasurementList data = influxDBService.query(measurement, device, fromDate, toDate, user, findUser);
-        if (data.getMeasurements().size() != 0) {
-            Collections.reverse(data.getMeasurements());
-            int firstIndex = min(10 * (page - 1), data.getMeasurements().size());
-            int lastIndex = min(10 * page, data.getMeasurements().size());
-            List<AbstractMeasurement> newData = data.getMeasurements().subList(firstIndex, lastIndex);
-            data.setMeasurements(newData);
-        }
-        return data;
+        return influxDBService.query(measurement, device, fromDate, toDate, user, findUser);
     }
 
     public int queryNumOfPages(Long id, String measurement, String from, String to, String username) {
