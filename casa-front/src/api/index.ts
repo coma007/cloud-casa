@@ -31,6 +31,10 @@ export const AIR_CONDITION_WORKING = () => url + "/airConditioning/simulation/wo
 export const AIR_CONDITION_SCHEDULE = () => url + "/airConditioning/simulation/schedule"
 export const SPRINKLER_SCHEDULE = (deviceId) => url + "/sprinklerSystem/setSchedule/" + deviceId;
 
+export const WASHING_MACHINE_MODE = () => url + "/washingMachine/simulation/mode"
+export const WASHING_MACHINE_WORKING = () => url + "/washingMachine/simulation/working"
+export const WASHING_MACHINE_SCHEDULE = () => url + "/washingMachine/simulation/schedule"
+
 export const POWER_USAGE_FOR_CITY = (from: string, to: string) => url + "/houseBattery/powerUsageForCity?" + `from=${from}&` + `to=${to}`;
 export const POWER_USAGE_FOR_ESTATE = (from: string, to: string) => url + "/houseBattery/powerUsage?" + `from=${from}&` + `to=${to}`;
 

@@ -188,8 +188,8 @@ func StartSimulation(device AmbientSensor) {
 		humidityS := fmt.Sprintf("%f", humidity)
 		data = append(data, temperatureS, humidityS)
 
-		fmt.Println("HUMIDITY: " + humidityS)
-		fmt.Println("TEMPERATURE: " + temperatureS)
+		//fmt.Println("HUMIDITY: " + humidityS)
+		//fmt.Println("TEMPERATURE: " + temperatureS)
 
 		utils.SendComplexMessage(client, "ambient_sensor", device.Id, data)
 		utils.Ping(device.Id, client)

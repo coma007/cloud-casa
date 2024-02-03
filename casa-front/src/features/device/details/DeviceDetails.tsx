@@ -168,6 +168,27 @@ const DeviceDetails = () => {
 
             })
         }
+        else if (fetchedDevice.type === "washing_machine") {
+            WebSocketService.createSocket("/topic/washing_machine_commands/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                let tstp = (new Date(message.attachment.timestamp)).getTime() / 1000;
+                message.attachment.timestamp = tstp;
+                let newMeasurements = [{ ...message.attachment, id: message.attachment.id }, ...measurements.measurements]
+                if (newMeasurements.length > 10) {
+                    newMeasurements = newMeasurements.slice(0, 10)
+                    if (numberOfPages == 1) {
+                        setNumberOfPages(numberOfPages + 1);
+                    }
+                }
+                setMeasurements({
+                    deviceType: measurements.deviceType,
+                    deviceId: measurements.deviceId,
+                    from: measurements.from,
+                    to: measurements.to,
+                    measurements: newMeasurements,
+                })
+
+            })
+        }
     }
 
     useEffect(() => {
@@ -294,6 +315,30 @@ const DeviceDetails = () => {
                 }
             })
         }
+        else if (dev.type === "washing_machine") {
+            WebSocketService.unsubscribe()
+            WebSocketService.openSocket("/topic/washing_machine_commands/" + deviceId, (message: { topic: string, message: string, fromId: string, toId: string, attachment: any }) => {
+                console.log(measurements)
+                if (currentPage == 1) {
+                    let tstp = (new Date(message.attachment.timestamp)).getTime() / 1000;
+                    message.attachment.timestamp = tstp;
+                    let newMeasurements = [{ ...message.attachment, id: message.attachment.id }, ...measurements.measurements]
+                    if (newMeasurements.length > 10) {
+                        newMeasurements = newMeasurements.slice(0, 10)
+                        if (numberOfPages == 1) {
+                            setNumberOfPages(numberOfPages + 1);
+                        }
+                    }
+                    setMeasurements({
+                        deviceType: measurements.deviceType,
+                        deviceId: measurements.deviceId,
+                        from: measurements.from,
+                        to: measurements.to,
+                        measurements: newMeasurements,
+                    })
+                }
+            })
+        }
     }, [measurements, currentPage])
 
 
@@ -324,7 +369,7 @@ const DeviceDetails = () => {
                     MaxTemperature: device.maxTemperature,
                     SupportedModes: device.supportedModes,
                     type: 'air_conditioning',
-                    measurementTopic: 'air_conditioning',
+                    measurementTopic: 'air_conditioning_execution',
                 })
                 break;
             case "washing_machine":
@@ -332,7 +377,7 @@ const DeviceDetails = () => {
                     ...baseDevice,
                     SupportedModes: device.supportedModes,
                     type: 'washing_machine',
-                    measurementTopic: 'washing_machine',
+                    measurementTopic: 'washing_machine_execution',
                 })
                 break;
             case "electric_vehicle_charger":
@@ -450,31 +495,13 @@ const DeviceDetails = () => {
         setToDate(to);
         setCurrentPage(1);
         (async () => {
-            if (deviceType == "air_conditioning") {
-                const fetchedNumberOfPages1 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_mode_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
-                const fetchedNumberOfPages2 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_working_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
-                const fetchedNumberOfPages3 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_temperature_ack", new Date(from).toISOString(), new Date(to).toISOString(), username);
-                setNumberOfPages(fetchedNumberOfPages1 + fetchedNumberOfPages2 + fetchedNumberOfPages3);
-            }
-            else {
-                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
-                setNumberOfPages(fetchedNumberOfPages);
-            }
+            const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username);
+            setNumberOfPages(fetchedNumberOfPages);
 
         })();
         (async () => {
-            if (deviceType == "air_conditioning") {
-                const fetchedMeasurements1 = await DeviceService.filter(dev.Id, "air_conditioning_mode_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-                const fetchedMeasurements2 = await DeviceService.filter(dev.Id, "air_conditioning_working_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-                const fetchedMeasurements3 = await DeviceService.filter(dev.Id, "air_conditioning_temperature_ack", new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-                let fetchedMeasurements = fetchedMeasurements1;
-                fetchedMeasurements.measurements = [...fetchedMeasurements1.measurements, ...fetchedMeasurements2.measurements, ...fetchedMeasurements3.measurements];
-                setMeasurements(fetchedMeasurements);
-            }
-            else {
-                const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
-                setMeasurements(fetchedMeasurements);
-            }
+            const fetchedMeasurements = await DeviceService.filter(dev.Id, dev.measurementTopic, new Date(from).toISOString(), new Date(to).toISOString(), username, 1);
+            setMeasurements(fetchedMeasurements);
 
         })();
 
@@ -489,41 +516,19 @@ const DeviceDetails = () => {
     useEffect(() => {
         (async () => {
             if (Object.keys(dev).length > 0) {
-                if (deviceType == "air_conditioning") {
-                    const fetchedNumberOfPages1 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_mode_ack", fromDate, toDate, username);
-                    const fetchedNumberOfPages2 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_working_ack", fromDate, toDate, username);
-                    const fetchedNumberOfPages3 = await DeviceService.getPageNumber(dev.Id, "air_conditioning_temperature_ack", fromDate, toDate, username);
-                    setNumberOfPages(fetchedNumberOfPages1 + fetchedNumberOfPages2 + fetchedNumberOfPages3);
-                }
-                else {
-                    const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, fromDate, toDate, username);
-                    setNumberOfPages(fetchedNumberOfPages);
-                }
-
+                const fetchedNumberOfPages = await DeviceService.getPageNumber(dev.Id, dev.measurementTopic, fromDate, toDate, username);
+                setNumberOfPages(fetchedNumberOfPages);
             }
         })();
         (async () => {
             if (Object.keys(dev).length > 0) {
-                if (deviceType == "air_conditioning") {
-                    const fetchedMeasurements1 = await DeviceService.filter(dev.Id, "air_conditioning_mode_ack", fromDate, toDate, username, 1);
-                    const fetchedMeasurements2 = await DeviceService.filter(dev.Id, "air_conditioning_working_ack", fromDate, toDate, username, 1);
-                    const fetchedMeasurements3 = await DeviceService.filter(dev.Id, "air_conditioning_temperature_ack", fromDate, toDate, username, 1);
-                    let fetchedMeasurements = fetchedMeasurements1;
-                    fetchedMeasurements.measurements = [...fetchedMeasurements1.measurements, ...fetchedMeasurements2.measurements, ...fetchedMeasurements3.measurements];
-                    setMeasurements(fetchedMeasurements);
-                    createWebSocket(dev, fetchedMeasurements);
-                }
-                else {
-                    const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, 1);
-                    setMeasurements(fetchedMeasurements);
-                    createWebSocket(dev, fetchedMeasurements);
-                }
-                // if(dev.)
-                // console.log(fetchedMeasurements);
-
-
+                const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, 1);
+                setMeasurements(fetchedMeasurements);
+                createWebSocket(dev, fetchedMeasurements);
             }
-        })()
+        })();
+
+        
     }, [dev, dev.measurementTopic])
 
     const resetFilters = () => {
@@ -556,6 +561,7 @@ const DeviceDetails = () => {
 
     useEffect(() => {
         (async () => {
+            
             if (Object.keys(dev).length > 0) {
                 const fetchedMeasurements = await DeviceService.filter(deviceId, dev.measurementTopic, fromDate, toDate, username, currentPage);
                 setMeasurements(fetchedMeasurements)
@@ -697,7 +703,7 @@ const DeviceDetails = () => {
                         }
                     </div>)}
                     {
-                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system", "electric_vehicle_charger"].includes(dev.type)) && !showActivity &&
+                        (["solar_panel_system", "vehicle_gate", "air_conditioning", "sprinkler_system", "electric_vehicle_charger", "washing_machine"].includes(dev.type)) && !showActivity &&
                         (
                             <>
                                 <DetailsTable measurements={measurements} deviceType={deviceType} topic={gateMode} />

@@ -41,6 +41,14 @@ export interface AirConditionerSchedule {
     repeatingDaysIncrement: number;
 }
 
+export interface WashingMachineSchedule {
+    startTime: string;
+    endTime: string;
+    deviceId: number;
+
+    working: boolean;
+    mode: string | undefined;
+}
 
 export interface SprinklerSchedule {
     startTime: Date;

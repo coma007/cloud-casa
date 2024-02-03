@@ -33,4 +33,6 @@ public class MeasurementType {
     public final static String washingMachineModeAck = "washing_machine_mode_ack";
     public final static String washingMachineNewScheduleAck = "washing_machine_new_schedule_ack";
     public final static String washingMachineWorkingAck = "washing_machine_working_ack";
+    public final static String washingMachineExecution = "washing_machine_execution";
+    public final static String airConditioningExecution = "air_conditioning_execution";
 }

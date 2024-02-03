@@ -1,6 +1,5 @@
 package com.casa.app.device.home.washing_machine.measuraments.commands;
 
-import com.casa.app.device.home.air_conditioning.measurements.commands.AirConditionCommand;
 import com.casa.app.device.measurement.MeasurementType;
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;

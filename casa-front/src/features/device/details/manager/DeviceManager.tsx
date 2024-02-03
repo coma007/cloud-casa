@@ -8,6 +8,7 @@ import { Modal } from 'react-bootstrap';
 import ModalWindow from '../../../../components/view/Modal/ModalWindow';
 import CreateScheduleModalAirConditioning from './createSchedule/CreateScheduleModalAirConditioning';
 import CreateScheduleModalSprinklerSystem from './createSchedule/CreateScheduleModalSprinklerSystem';
+import CreateScheduleModalWashingMachine from './createSchedule/CreateScheduleModalWashingMachine';
 
 const DeviceManager = (props: { deviceType: string; device: any }) => {
     const [toggleIsOn, setToggleIsOn] = useState(props.device.Status == 'ONLINE');
@@ -98,7 +99,12 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
     const handleOnOffCommand = () => {
         handleIsOnClick();
         try {
-            DeviceService.sendWorkingCommand({ working: !toggleIsOn, id: props.device.Id });
+            if(props.deviceType == "air_conditioning")
+                DeviceService.sendWorkingCommand({ working: !toggleIsOn, id: props.device.Id });
+            else if(props.deviceType == "washing_machine")
+                DeviceService.sendWashingMachineWorkingCommand({ working: !toggleIsOn, id: props.device.Id });
+            else
+                console.log("INVALID DEVICE TYPE")
         } catch (error) {
             console.error(error);
         }
@@ -121,7 +127,13 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
 
     const handleSetMode = () => {
         try {
+            if(props.deviceType == "air_conditioning")
             DeviceService.sendModeCommand({ mode: mode, id: props.device.Id });
+        else if(props.deviceType == "washing_machine")
+        DeviceService.sendMWashingMachineModeCommand({ mode: mode, id: props.device.Id });
+        else
+            console.log("INVALID DEVICE TYPE")
+         
         } catch (error) {
             console.error(error);
         }
@@ -194,21 +206,30 @@ const DeviceManager = (props: { deviceType: string; device: any }) => {
             case 'washing_machine':
                 return (
                     <div>
+                        <CreateScheduleModalWashingMachine
+                            show={showCreateSchedule}
+                            setShow={setShowCreateSchedule}
+                            device={props.device} />
+                        <div className={DeviceManagerCSS.row}>
+                            <Button text={toggleIsOn ? 'Turn OFF' : 'Turn ON'} onClick={handleOnOffCommand} submit={undefined} />
+                            <Button text="Custom Mode" onClick={showModal} submit={undefined} />
+                        </div>
                         <div className={DeviceManagerCSS.row}>
                             <div>
                                 Select Mode:
-                                <select className={DeviceManagerCSS.customSelect}>
-                                    {props.device.SupportedModes.map((mode, index) => (
-                                        <option key={index}>{mode}</option>
+                                <select className={DeviceManagerCSS.customSelect}
+                                 onChange={handleModeChange} value={mode}>
+                                    {props.device.SupportedModes.map((modeS, index) => (
+                                        <option key={index} value={modeS}>{modeS}</option>
                                     ))}
                                 </select>
                             </div>
-                            <Button text={toggleIsOn ? 'STOP' : 'START'} onClick={handleIsOnClick} submit={undefined} />
+                            <Button text="Set" onClick={handleSetMode} submit={undefined} />
                         </div>
-                        <div className={DeviceManagerCSS.row}>
+                        {/* <div className={DeviceManagerCSS.row}>
                             <div></div>
                             <Button text="Schedule Washing" onClick={undefined} submit={undefined} />
-                        </div>
+                        </div> */}
                     </div>
                 );
 
