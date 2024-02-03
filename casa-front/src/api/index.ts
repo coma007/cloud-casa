@@ -6,6 +6,7 @@ export const REGISTER_ADMIN = () => url + "/admin";
 export const CHANGE_PASSWORD = () => url + "/user/change-password";
 export const SUPER_AND_INIT = () => url + "/user/init";
 export const GET_ALL_USERS = () => url + "/user/public";
+export const ID_BY_USERNAME = () => url + "/user/getIdByUsername";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";
@@ -17,9 +18,11 @@ export const REQUEST_GET_ALL_UNRESOLVED = () => url + "/realEstateRequest/getAll
 
 export const DEVICE_REGISTER = () => url + "/device/register"
 export const DEVICE_GET_ALL_BY_OWNER = () => url + "/device/getAllByOwner"
+export const DEVICE_GET_ALL = () => url + "/device/getAll"
 export const DEVICE_GET_ALL_BY_REAL_ESTATE = (id: number) => url + "/device/getAllByRealEstate/" + id
 export const DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM = (id: number) => url + "/solarPanelSystem/toggleStatus/" + id
 export const DEVICE_GET_DETAILS = (id: number) => url + "/device/getDeviceDetails/" + id
+export const DEVICE_IS_OWNER = (id: number) => url + "/device/isOwner/" + id
 
 export const CHARGER_START_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/startCharging/" + id + "/" + slot 
 export const CHARGER_END_CHARGING = (id : number, slot : number) => url + "/electricVehicleCharger/endCharging/" + id + "/" + slot 
@@ -46,5 +49,7 @@ export const LOCATION_COUNTRIES = () => url + "/location/getAllCountries";
 
 export const LAMP_MANAGER = (deviceId) => url + "/lamp/turnOn/" + deviceId;
 export const GATE_MANAGER = (deviceId, func) => url + "/vehicleGate/" + func + "/" + deviceId;
+
+export const PERMISSION_CREATE = () => url + "/permission/create";
 
 export const WEBSOCKET = () => "http://localhost:8080/socket";

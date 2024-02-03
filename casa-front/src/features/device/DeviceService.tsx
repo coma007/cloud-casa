@@ -1,7 +1,7 @@
 import axios from "axios";
-import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, CHARGER_END_CHARGING, CHARGER_SET_MAX_PERCENTAGE as CHARGER_SET_MAX_PERCENTAGE, CHARGER_START_CHARGING, DEVICE_FILTER, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, LAMP_MANAGER, SPRINKLER_SCHEDULE, WASHING_MACHINE_MODE, WASHING_MACHINE_SCHEDULE, WASHING_MACHINE_WORKING } from "../../api";
+import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, CHARGER_END_CHARGING, CHARGER_SET_MAX_PERCENTAGE as CHARGER_SET_MAX_PERCENTAGE, CHARGER_START_CHARGING, DEVICE_FILTER, DEVICE_GET_ALL, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_IS_OWNER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, ID_BY_USERNAME, LAMP_MANAGER, PERMISSION_CREATE, SPRINKLER_SCHEDULE, WASHING_MACHINE_MODE, WASHING_MACHINE_SCHEDULE, WASHING_MACHINE_WORKING } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
-import { DeviceCreate, DeviceDetails, ModeCommand, AirConditionerSchedule, TemperatureCommand, WorkingCommand, SprinklerSchedule, WashingMachineSchedule } from "./Device";
+import { DeviceCreate, DeviceDetails, ModeCommand, AirConditionerSchedule, TemperatureCommand, WorkingCommand, SprinklerSchedule, WashingMachineSchedule, Permission } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
 import { OnlineMeasurementList } from "./OnlineMeasurementList";
 
@@ -31,6 +31,13 @@ export const DeviceService = {
         return response.data;
     },
 
+    getAll: async function (): Promise<DeviceDetails[]> {
+        let response: ServiceResponse<DeviceDetails[]> = await axios.get(DEVICE_GET_ALL());
+
+        return response.data;
+    },
+
+
     getAllByOwner: async function (): Promise<DeviceDetails[]> {
         let response: ServiceResponse<DeviceDetails[]> = await axios.get(DEVICE_GET_ALL_BY_OWNER());
 
@@ -45,6 +52,11 @@ export const DeviceService = {
 
     getDeviceDetails: async function (deviceId: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(DEVICE_GET_DETAILS(deviceId));
+        return response.data;
+    },
+
+    isOwner: async function (deviceId: number): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(DEVICE_IS_OWNER(deviceId));
         return response.data;
     },
 
@@ -148,6 +160,16 @@ export const DeviceService = {
 
     setMaxPercentage: async function (deviceId: number, slot: number, maxPercentage: number): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(CHARGER_SET_MAX_PERCENTAGE(deviceId, slot, maxPercentage));
+        return response.data;
+    },
+
+    getIdByUsername: async function (username: string): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(ID_BY_USERNAME(), {params: {"username": username}});
+        return response.data;
+    },
+
+    createPermission: async function (permission: Permission): Promise<any> {
+        let response: ServiceResponse<any> = await axios.post(PERMISSION_CREATE(), permission);
         return response.data;
     },
 }

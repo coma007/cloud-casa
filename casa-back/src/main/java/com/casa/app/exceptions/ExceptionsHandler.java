@@ -61,4 +61,9 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUnauthorizedWriteException(Exception ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unathorized write");
     }
+
+    @ExceptionHandler(value = {AlreadyExistsException.class})
+    public ResponseEntity<Object> handleAlreadyExistsException(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Already exists");
+    }
 }

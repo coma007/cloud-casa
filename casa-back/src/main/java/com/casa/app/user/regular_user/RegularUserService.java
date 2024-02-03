@@ -46,4 +46,11 @@ public class RegularUserService {
     public List<RegularUserDTO> getAll(){
         return regularUserRepository.findAll().stream().map(RegularUserDTO::toDto).collect(Collectors.toList());
     }
+
+    public Long getUserByUsername(String username) throws UserNotFoundException {
+        RegularUser user = regularUserRepository.findByUsername(username);
+        if(user == null)
+            throw new UserNotFoundException();
+        return user.getId();
+    }
 }

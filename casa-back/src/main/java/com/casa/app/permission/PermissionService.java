@@ -5,10 +5,7 @@ import com.casa.app.device.Device;
 import com.casa.app.device.DeviceRepository;
 import com.casa.app.device.DeviceService;
 import com.casa.app.estate.RealEstateService;
-import com.casa.app.exceptions.NotFoundException;
-import com.casa.app.exceptions.UnathorizedReadException;
-import com.casa.app.exceptions.UnauthorizedWriteException;
-import com.casa.app.exceptions.UserNotFoundException;
+import com.casa.app.exceptions.*;
 import com.casa.app.permission.device_permission.DevicePermission;
 import com.casa.app.permission.device_permission.DevicePermissionKey;
 import com.casa.app.permission.device_permission.DevicePermissionRepository;
@@ -58,7 +55,7 @@ public class PermissionService {
         throw new NotFoundException();
     }
 
-    public PermissionDTO create(PermissionDTO dto) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException {
+    public PermissionDTO create(PermissionDTO dto) throws NotFoundException, UserNotFoundException, UnauthorizedWriteException, AlreadyExistsException {
         RegularUser user = regularUserService.getUserById(dto.getUserId());
         if(user == null)
             throw new UserNotFoundException();
@@ -71,6 +68,8 @@ public class PermissionService {
             if(!device.getOwner().getId().equals(currentUser.getId()))
                 throw new UnauthorizedWriteException();
 
+            if(devicePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId()) != null)
+                throw new AlreadyExistsException();
             DevicePermission permission = new DevicePermission();
             permission.setType(toType(dto.getType()));
             permission.setUserId(dto.getUserId());
@@ -133,7 +132,8 @@ public class PermissionService {
             Device device = deviceRepository.findById(dto.getResourceId()).orElse(null);
             if(device == null)
                 throw new NotFoundException();
-            if(!device.getOwner().getId().equals(user.getId()))
+            RegularUser currentUser = regularUserService.getUserByToken();
+            if(!device.getOwner().getId().equals(currentUser.getId()))
                 throw new UnauthorizedWriteException();
 
             DevicePermission permission = devicePermissionRepository.findByIds(dto.getResourceId(), dto.getUserId());

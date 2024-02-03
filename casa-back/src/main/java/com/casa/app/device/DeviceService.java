@@ -25,6 +25,7 @@ import com.casa.app.device.outdoor.vehicle_gate.VehicleGate;
 import com.casa.app.device.outdoor.vehicle_gate.dto.VehicleGateDetailsDTO;
 import com.casa.app.estate.RealEstate;
 import com.casa.app.estate.RealEstateService;
+import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UnathorizedReadException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.influxdb.InfluxDBService;
@@ -152,13 +153,13 @@ public class DeviceService {
         return devicesDTO;
     }
 
-    public List<DeviceSimulationDTO> getAll() throws UserNotFoundException {
+    public List<DeviceDetailsDTO> getAll() throws UserNotFoundException {
         List<Device> devices = deviceRepository.findAll();
         devices = permissionService.filterReadDevices(devices);
-        List<DeviceSimulationDTO> devicesDTO = new ArrayList<>();
+        List<DeviceDetailsDTO> devicesDTO = new ArrayList<>();
         for (Device d : devices) {
             String type = getType(d);
-            devicesDTO.add(new DeviceSimulationDTO(d.getId(), type));
+            devicesDTO.add(new DeviceDetailsDTO(d.getId(), type, d.getPowerSupplyType().name(), d.getName(), d.getStatus().name(), d.getEnergyConsumption(), d.getRealEstate().getName()));
         }
         return devicesDTO;
     }
@@ -247,5 +248,11 @@ public class DeviceService {
     }
 
 
-
+    public Boolean isOwner(Long id) throws NotFoundException, UserNotFoundException {
+        Device device = deviceRepository.findById(id).orElse(null);
+        if(device == null)
+            throw new NotFoundException();
+        RegularUser user = regularUserService.getUserByToken();
+        return device.getOwner().getId().equals(user.getId());
+    }
 }

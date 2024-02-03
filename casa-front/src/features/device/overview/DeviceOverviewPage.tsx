@@ -37,7 +37,7 @@ const DeviceOverviewPage = () => {
         } else {
             (async function () {
                 try {
-                    const fetchedDevices = await DeviceService.getAllByOwner();
+                    const fetchedDevices = await DeviceService.getAll();
                     // const fetchedDevices = [{} as RealEstate]
                     populateData(fetchedDevices);
                 } catch (error) {

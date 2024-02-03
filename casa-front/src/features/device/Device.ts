@@ -12,6 +12,12 @@ export interface DeviceDetails {
     type: string,
     schedule?: SprinklerSchedule
 }
+export interface Permission {
+    Type: "MODERATOR" | "OWNER",
+    Kind: "device" | "real estate",
+    UserId: number,
+    ResourceId: number
+}
 
 export interface TemperatureCommand {
     temperature: number,
