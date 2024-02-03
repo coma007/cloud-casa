@@ -6,7 +6,7 @@ export interface TableRowData {
     content: any;
     widthPercentage: number;
 
-    onClick?: any;
+    onClick?: MouseEventHandler<HTMLDivElement> | undefined
 }
 
 const TableRow = (props: { data: TableRowData[], className: string, onClick: MouseEventHandler<HTMLDivElement> | undefined}) => {
@@ -15,7 +15,7 @@ const TableRow = (props: { data: TableRowData[], className: string, onClick: Mou
             {props.data.map((rowData, index) => (
                 <span key={index} style={{ width: `${rowData.widthPercentage}%` }}>
                     {rowData.onClick !== undefined ? 
-                        <Button text="Handle" onClick={() => rowData.onClick()} submit={undefined}></Button> :
+                        <Button text="Handle" onClick={rowData.onClick} submit={undefined}></Button> :
                         rowData.content
                     }
                 </span>

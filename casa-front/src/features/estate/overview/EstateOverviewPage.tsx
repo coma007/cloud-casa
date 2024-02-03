@@ -77,7 +77,7 @@ const EstateOverviewPage = () => {
                     { content: estate.city?.name, widthPercentage: 10},
                     { content: estate.city?.country, widthPercentage: 10},
                     { content: <i> {estate.request.approved === false && estate.request.declined === false ? <>{"in progress".toUpperCase()}</> : <>{estate.request.approved ? "approved".toUpperCase() : "declined".toUpperCase()}</>}</i>, widthPercentage: 10},
-                    { content: "Permission", widthPercentage: 10, onClick: () => {handleGivePermissionModal(estate)}}
+                    { content: "Permission", widthPercentage: 10, onClick: (event) => {event.stopPropagation(); handleGivePermissionModal(estate)}}
                 ]
                 if(AuthService.getUsername() !== estate!.owner!.email)
                     rowData.pop();

@@ -23,7 +23,7 @@ const Table = (props: { headers: TableRow, rows: TableRow[] }) => {
         <div>
             <TableRow className={TableCSS.header} key="headers" data={props.headers.rowData} onClick={props.headers.onClick}/>
             {rows.map((row, index) => (
-                <TableRow className="" key={index} data={row} onClick={row[0].onClick}/>
+                <TableRow className="" key={index} data={row} onClick={props.rows[index].onClick}/>
             ))}
         </div>
     )
