@@ -15,12 +15,18 @@ import SockJS from "sockjs-client";
 import { DeviceDetails, Permission } from "../Device";
 import { AuthService } from "../../user/auth/services/AuthService";
 import PermissionModal from "../../estate/permission/PermissionModal";
+import Pagination from "../../../components/tables/Pagination/Pagination";
 
 const DeviceOverviewPage = () => {
 
     const [withdrawIsOpen, setWithdrawModalIsOpen] = useState(false);
     const [selectedDevice, setSelectedDevice] = useState<RealEstate|undefined>(undefined);
     const [tableData, setTableData] = useState<TableRow[]>([]);
+    const [allDevices, setAllDevices] = useState<DeviceDetails[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [numOfPages, setNumOfPages] = useState(1);
+
+    const pageSize = 10;
 
     let [show, setShow] = useState(false);
     let [currentPermission, setCurrentPermission] = useState<Permission>();
@@ -98,39 +104,70 @@ const DeviceOverviewPage = () => {
     }
 
     const populateData = (devices: DeviceDetails[]) => {
+        // console.log(Math.floor(devices.length / 5))
+        let newNumOfPages = Math.floor(devices.length / pageSize);
+        if (newNumOfPages < devices.length / pageSize) {
+            newNumOfPages += 1;
+        }
+        setNumOfPages(newNumOfPages)
+        setAllDevices(devices)
+    }
+
+    useEffect(()=> {
         let data: TableRow[] = []
-        if (devices !== undefined) {
-            devices.forEach(device => {
-                console.log(device)
-                let deviceType = device.type;
+        if (allDevices.length > 0) {
+            for (let i = pageSize * (currentPage - 1); i < Math.min(allDevices.length, pageSize * currentPage); i++) {
+                let device = allDevices.at(i)
+                let deviceType = device!.type;
                 while (deviceType.includes('_')) {
                     deviceType = deviceType.replace('_', ' ');
                 }
                 let rowData = [
-                    { content: device.name, widthPercentage: 30},
-                    { content: device.realEstateName, widthPercentage: 30},
-                    { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
-                    { content: device.energyConsumption, widthPercentage: 30},
+                    { content: device!.name, widthPercentage: 30},
+                    { content: device!.realEstateName, widthPercentage: 30},
+                    { content: device!.powerSupplyType.toUpperCase(), widthPercentage: 30},
+                    { content: device!.energyConsumption, widthPercentage: 30},
                     { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
                     { content: "Permission", widthPercentage: 10, onClick: (event)  => {event?.stopPropagation(); handleGivePermissionModal(device)}}
                 ]
-                if(AuthService.getUsername() !== device!.owner!.email){
-                    rowData.pop();
-                    rowData.push({ content: "", widthPercentage: 10});
-                }
+                // if(AuthService.getUsername() !== device!.owner!.email){
+                //     rowData.pop();
+                //     rowData.push({ content: "", widthPercentage: 10});
+                // }
                  
                 data.push({
                     rowData: rowData,
-                    onClick: () => {showDetails(device.id, device.type)}
+                    onClick: () => {showDetails(device!.id, device!.type)}
                 });
-            });
+            }
+            // devices.forEach(device => {
+            //     let deviceType = device.type;
+            //     while (deviceType.includes('_')) {
+            //         deviceType = deviceType.replace('_', ' ');
+            //     }
+            //     data.push({
+            //         rowData: [
+            //             { content: device.name, widthPercentage: 30},
+            //             { content: device.realEstateName, widthPercentage: 30},
+            //             { content: device.powerSupplyType.toUpperCase(), widthPercentage: 30},
+            //             { content: device.energyConsumption, widthPercentage: 30},
+            //             { content: (deviceType.charAt(0).toUpperCase() + deviceType.substr(1).toLowerCase()), widthPercentage: 30},
+            //         ],
+            //         onClick: () => {showDetails(device.id, device.type)}
+            //     });
+            // });
         }
         setTableData(data);
-    }
+    }, [allDevices, currentPage])
+
     let isLoaded = false;
     
     const newDevice = () => {
         navigate("/register-device")
+    }
+
+    const changePage = (pageNumber: number) => {
+        setCurrentPage(pageNumber)
     }
 
 
@@ -147,6 +184,9 @@ const DeviceOverviewPage = () => {
                 </div>
                 <div className={DeviceOverviewPageCSS.table} >
                     <Table headers={headers} rows={tableData} />
+                    <div>
+                        <Pagination currentPage={currentPage} numberOfPages={numOfPages} onClick={changePage} />
+                    </div>
                 </div>
                 
                 {/* <ModalWindow

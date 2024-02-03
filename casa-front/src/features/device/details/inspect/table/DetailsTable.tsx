@@ -147,6 +147,16 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                             onClick: undefined
                         })
                     }
+
+                    // console.log(width)
+                    // if(props.deviceType == 'air_conditioning'){
+                        
+                    //     data.push({
+                    //         rowData: parseAirConditioningCommand(m),
+                    //         onClick: undefined
+                    //     })
+                    // }
+
                     else {
                         data.push({
                             rowData: [

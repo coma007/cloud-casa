@@ -1,0 +1,1580 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /api/user/change-password:
+    put:
+      tags:
+        - user-controller
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPasswordDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/washingMachine/simulation/working:
+    post:
+      tags:
+        - washing-machine-controller
+      operationId: setWorking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WashingMachineWorkingDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/washingMachine/simulation/schedule:
+    post:
+      tags:
+        - washing-machine-controller
+      operationId: setSchedule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WashingMachineScheduleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/washingMachine/simulation/mode:
+    post:
+      tags:
+        - washing-machine-controller
+      operationId: setMode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WashingMachineModeDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/sprinklerSystem/setSchedule/{id}:
+    post:
+      tags:
+        - sprinkler-system-controller
+      operationId: toggleOn
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SprinklerSystemSchedule"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/solarPanelSystem/toggleStatus/{id}:
+    post:
+      tags:
+        - solar-panel-system-controller
+      operationId: toggleStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/register:
+    post:
+      tags:
+        - unregistered-user-controller
+      operationId: register
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/NewRegularUserDTO"
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/realEstate/create:
+    post:
+      tags:
+        - real-estate-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealEstateCreateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/RealEstateDTO"
+  /api/permission/delete:
+    post:
+      tags:
+        - permission-controller
+      operationId: delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PermissionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/permission/create:
+    post:
+      tags:
+        - permission-controller
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PermissionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/login:
+    post:
+      tags:
+        - unregistered-user-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CredentialsDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/device/register:
+    post:
+      tags:
+        - device-controller
+      operationId: register_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceRegistrationDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/airConditioning/simulation/working:
+    post:
+      tags:
+        - air-conditioning-controller
+      operationId: setWorking_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AirConditionWorkingDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/airConditioning/simulation/temperature:
+    post:
+      tags:
+        - air-conditioning-controller
+      operationId: setTemperature
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AirConditionTemperatureDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/airConditioning/simulation/schedule:
+    post:
+      tags:
+        - air-conditioning-controller
+      operationId: setSchedule_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AirConditionScheduleDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/airConditioning/simulation/mode:
+    post:
+      tags:
+        - air-conditioning-controller
+      operationId: setMode_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AirConditionModeDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/admin:
+    post:
+      tags:
+        - admin-controller
+      operationId: createNewAdmin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewUserDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/realEstateRequest/manage:
+    patch:
+      tags:
+        - real-estate-request-controller
+      operationId: manageRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RealEstateRequestDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/washingMachine/public/simulation/schedules:
+    get:
+      tags:
+        - washing-machine-controller
+      operationId: getSchedules
+      parameters:
+        - name: deviceId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/washingMachine/public/simulation/getAll:
+    get:
+      tags:
+        - washing-machine-controller
+      operationId: getAll
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WashingMachineSimulationDTO"
+  /api/verify:
+    get:
+      tags:
+        - unregistered-user-controller
+      operationId: verifyUser
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/vehicleGate/removeLicencePlate/{id}:
+    get:
+      tags:
+        - vehicle-gate-controller
+      operationId: removeLicencePlate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: licencePlate
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/VehicleGateDetailsDTO"
+  /api/vehicleGate/public/simulation/getAll:
+    get:
+      tags:
+        - vehicle-gate-controller
+      operationId: getAll_1
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VehicleGateSimulationDTO"
+  /api/vehicleGate/open/{id}:
+    get:
+      tags:
+        - vehicle-gate-controller
+      operationId: toggleOn_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/vehicleGate/mode/{id}:
+    get:
+      tags:
+        - vehicle-gate-controller
+      operationId: toggleMode
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/vehicleGate/addLicencePlate/{id}:
+    get:
+      tags:
+        - vehicle-gate-controller
+      operationId: addLicencePlate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: licencePlate
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/VehicleGateDetailsDTO"
+  /api/user/public:
+    get:
+      tags:
+        - user-controller
+      operationId: getAll_2
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RegularUserDTO"
+  /api/user/public/{id}:
+    get:
+      tags:
+        - user-controller
+      operationId: getById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/user/init:
+    get:
+      tags:
+        - user-controller
+      operationId: isInit
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/sprinklerSystem/turnOn/{id}:
+    get:
+      tags:
+        - sprinkler-system-controller
+      operationId: toggleOn_2
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/sprinklerSystem/public/simulation/getAll:
+    get:
+      tags:
+        - sprinkler-system-controller
+      operationId: getAll_3
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SprinklerSystemSimulationDTO"
+  /api/solarPanelSystem/public/simulation/getAll:
+    get:
+      tags:
+        - solar-panel-system-controller
+      operationId: getAll_4
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SolarPanelSystemSimulationDTO"
+  /api/realEstateRequest/getAll:
+    get:
+      tags:
+        - real-estate-request-controller
+      operationId: getAll_5
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
+  /api/realEstateRequest/getAllUnresolved:
+    get:
+      tags:
+        - real-estate-request-controller
+      operationId: getAllUnresolved
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
+  /api/realEstate/getAllByOwner:
+    get:
+      tags:
+        - real-estate-controller
+      operationId: getAllByOwner
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
+  /api/realEstate/getAllApprovedByOwner:
+    get:
+      tags:
+        - real-estate-controller
+      operationId: getAllApprovedByOwner
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstateDTO"
+  /api/location/getAllCountries:
+    get:
+      tags:
+        - location-controller
+      operationId: getAllCountries
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/location/getAllCities/{country}:
+    get:
+      tags:
+        - location-controller
+      operationId: getAllCities
+      parameters:
+        - name: country
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CityDTO"
+  /api/lamp/turnOn/{id}:
+    get:
+      tags:
+        - lamp-controller
+      operationId: toggleOn_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/lamp/public/simulation/getAll:
+    get:
+      tags:
+        - lamp-controller
+      operationId: getAll_6
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LampSimulationDTO"
+  /api/houseBattery/public/simulation/getAll:
+    get:
+      tags:
+        - house-battery-controller
+      operationId: getAll_7
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HouseBatterySimulationDTO"
+  /api/houseBattery/powerUsage:
+    get:
+      tags:
+        - house-battery-controller
+      operationId: getPowerUsage
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RealEstatePowerUsageDTO"
+  /api/houseBattery/powerUsageForCity:
+    get:
+      tags:
+        - house-battery-controller
+      operationId: getCityPowerUsage
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CityPowerUsageDTO"
+  /api/electricVehicleCharger/startCharging/{id}/{slot}:
+    get:
+      tags:
+        - electric-vehicle-charger-controller
+      operationId: startCharging
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: slot
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/electricVehicleCharger/setMaxPercentage/{id}/{slot}/{max}:
+    get:
+      tags:
+        - electric-vehicle-charger-controller
+      operationId: setMaxPercentage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: slot
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: max
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/electricVehicleCharger/public/simulation/getAll:
+    get:
+      tags:
+        - electric-vehicle-charger-controller
+      operationId: getAll_8
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ElectricVehicleChargerSimulationDTO"
+  /api/electricVehicleCharger/endCharging/{id}/{slot}:
+    get:
+      tags:
+        - electric-vehicle-charger-controller
+      operationId: endCharging
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: slot
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/device/public/websocket:
+    get:
+      tags:
+        - device-controller
+      operationId: sendMessage
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: object
+  /api/device/public/simulation/getAll:
+    get:
+      tags:
+        - device-controller
+      operationId: getAllDevicesForSimulation
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeviceSimulationDTO"
+  /api/device/getDeviceDetails/{id}:
+    get:
+      tags:
+        - device-controller
+      operationId: getDeviceDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/DeviceDetailsDTO"
+  /api/device/getAll:
+    get:
+      tags:
+        - device-controller
+      operationId: getAll_9
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeviceSimulationDTO"
+  /api/device/getAllByRealEstate/{id}:
+    get:
+      tags:
+        - device-controller
+      operationId: getAllByRealEstate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeviceDetailsDTO"
+  /api/device/getAllByOwner:
+    get:
+      tags:
+        - device-controller
+      operationId: getAllByOwner_1
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeviceDetailsDTO"
+  /api/device/filter:
+    get:
+      tags:
+        - device-controller
+      operationId: queryMeasurements
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: measurement
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/MeasurementList"
+  /api/device/filterPages:
+    get:
+      tags:
+        - device-controller
+      operationId: queryPages
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: measurement
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: integer
+                format: int32
+  /api/device/filterActivity:
+    get:
+      tags:
+        - device-controller
+      operationId: queryActivity
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/OnlineMeasurementList"
+  /api/ambientSensor/public/simulation/getAll:
+    get:
+      tags:
+        - ambient-sensor-controller
+      operationId: getAll_10
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AmbientSensorSimulationDTO"
+  /api/airConditioning/public/simulation/schedules:
+    get:
+      tags:
+        - air-conditioning-controller
+      operationId: getSchedules_1
+      parameters:
+        - name: deviceId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+  /api/airConditioning/public/simulation/getAll:
+    get:
+      tags:
+        - air-conditioning-controller
+      operationId: getAll_11
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AirConditioningSimulationDTO"
+components:
+  schemas:
+    NewPasswordDTO:
+      type: object
+      properties:
+        OldPassword:
+          type: string
+        NewPassword:
+          type: string
+    WashingMachineWorkingDTO:
+      type: object
+      properties:
+        working:
+          type: boolean
+        id:
+          type: integer
+          format: int64
+    WashingMachineScheduleDTO:
+      type: object
+      properties:
+        startTime:
+          type: string
+        endTime:
+          type: string
+        deviceId:
+          type: integer
+          format: int64
+        working:
+          type: boolean
+        mode:
+          type: string
+    WashingMachineModeDTO:
+      type: object
+      properties:
+        mode:
+          type: string
+        id:
+          type: integer
+          format: int64
+    SprinklerSystemSchedule:
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        scheduledDays:
+          type: array
+          items:
+            type: boolean
+    NewRegularUserDTO:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        file:
+          type: string
+          format: binary
+    Address:
+      type: object
+      properties:
+        address:
+          type: string
+        longitude:
+          type: integer
+          format: int64
+        latitude:
+          type: integer
+          format: int64
+    CityDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        country:
+          type: string
+    RealEstateCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          $ref: "#/components/schemas/Address"
+        type:
+          type: string
+        size:
+          type: number
+          format: double
+        numberOfFloors:
+          type: integer
+          format: int32
+        city:
+          $ref: "#/components/schemas/CityDTO"
+    RealEstateDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        address:
+          $ref: "#/components/schemas/Address"
+        type:
+          type: string
+        size:
+          type: number
+          format: double
+        numberOfFloors:
+          type: integer
+          format: int32
+        city:
+          $ref: "#/components/schemas/CityDTO"
+        request:
+          $ref: "#/components/schemas/RealEstateRequestDTO"
+        owner:
+          $ref: "#/components/schemas/RegularUserDTO"
+    RealEstateRequestDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        approved:
+          type: boolean
+        declined:
+          type: boolean
+        comment:
+          type: string
+    RegularUserDTO:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+    PermissionDTO:
+      type: object
+      properties:
+        ResourceId:
+          type: integer
+          format: int64
+        UserId:
+          type: integer
+          format: int64
+        Kind:
+          type: string
+        Type:
+          type: string
+    CredentialsDTO:
+      type: object
+      properties:
+        Username:
+          type: string
+        Password:
+          type: string
+    DeviceRegistrationDTO:
+      type: object
+      properties:
+        type:
+          type: string
+        device:
+          type: object
+    AirConditionWorkingDTO:
+      type: object
+      properties:
+        working:
+          type: boolean
+        id:
+          type: integer
+          format: int64
+    AirConditionTemperatureDTO:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: double
+        id:
+          type: integer
+          format: int64
+    AirConditionScheduleDTO:
+      type: object
+      properties:
+        startTime:
+          type: string
+        endTime:
+          type: string
+        deviceId:
+          type: integer
+          format: int64
+        working:
+          type: boolean
+        mode:
+          type: string
+        temperature:
+          type: number
+          format: double
+        repeating:
+          type: boolean
+        repeatingDaysIncrement:
+          type: integer
+          format: int64
+    AirConditionModeDTO:
+      type: object
+      properties:
+        mode:
+          type: string
+        id:
+          type: integer
+          format: int64
+    NewUserDTO:
+      type: object
+      properties:
+        Username:
+          type: string
+        Password:
+          type: string
+    WashingMachineSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        supportedModes:
+          type: array
+          items:
+            type: string
+            enum:
+              - WHITE
+              - COLOR
+    VehicleGateDetailsDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        status:
+          type: string
+        name:
+          type: string
+        powerSupplyType:
+          type: string
+        energyConsumption:
+          type: number
+          format: double
+        realEstateName:
+          type: string
+        currentMode:
+          type: string
+        allowedVehicles:
+          type: array
+          items:
+            type: string
+    VehicleGateSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        allowedVehicles:
+          type: array
+          items:
+            type: string
+        currentMode:
+          type: string
+          enum:
+            - PUBLIC
+            - PRIVATE
+    SprinklerSystemSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sprinklerOn:
+          type: boolean
+        forceQuit:
+          type: boolean
+        forceStart:
+          type: boolean
+        schedule:
+          $ref: "#/components/schemas/SprinklerSystemSchedule"
+    SolarPanelSystemSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        size:
+          type: number
+          format: double
+        efficiency:
+          type: number
+          format: double
+    LampSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        lampOn:
+          type: boolean
+    HouseBatterySimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        size:
+          type: number
+          format: double
+        currentState:
+          type: number
+          format: double
+    RealEstatePowerUsageDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        powerUsage:
+          type: number
+          format: double
+        powerProduction:
+          type: number
+          format: double
+    CityPowerUsageDTO:
+      type: object
+      properties:
+        cityName:
+          type: string
+        powerUsage:
+          type: number
+          format: double
+        powerProduction:
+          type: number
+          format: double
+    ElectricVehicleChargerSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        chargePower:
+          type: integer
+          format: int32
+        numOfSlots:
+          type: integer
+          format: int32
+    DeviceSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+    DeviceDetailsDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        status:
+          type: string
+        name:
+          type: string
+        powerSupplyType:
+          type: string
+        energyConsumption:
+          type: number
+          format: double
+        realEstateName:
+          type: string
+    AbstractMeasurement:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        timestamp:
+          type: string
+          format: date-time
+    MeasurementList:
+      type: object
+      properties:
+        deviceType:
+          type: string
+        deviceId:
+          type: integer
+          format: int64
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        measurements:
+          type: array
+          items:
+            $ref: "#/components/schemas/AbstractMeasurement"
+    OnlineMeasurementList:
+      type: object
+      properties:
+        deviceId:
+          type: integer
+          format: int64
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+        counts:
+          type: object
+          additionalProperties:
+            type: string
+        hourly:
+          type: boolean
+        maxCount:
+          type: integer
+          format: int64
+        delay:
+          type: integer
+          format: int64
+    AmbientSensorSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+    AirConditioningSimulationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        minTemperature:
+          type: integer
+          format: int32
+        maxTemperature:
+          type: integer
+          format: int32
+        supportedModes:
+          type: array
+          items:
+            type: string
+            enum:
+              - COOLING
+              - HEATING
+              - AUTO
+              - VENTILATION
