@@ -98,13 +98,7 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                         </Form.Group>
                     </Col>
                 </Row>
-                <Row className="mb-3">
-                    <Col>
-                        <Form.Group controlId="image">
-                            <UploadImage className={""} fileRef={fileRef}/>
-                        </Form.Group>
-                    </Col>
-                </Row>
+           
                 <Row className="mb-3">
                     <Col>
                         <Form.Group controlId="numberOfFloors">
@@ -118,6 +112,13 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className="mb-3">
+                    <Col>
+                        <Form.Group controlId="image">
+                            <UploadImage className={""} fileRef={fileRef}/>
                         </Form.Group>
                     </Col>
                 </Row>

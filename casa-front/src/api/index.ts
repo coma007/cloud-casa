@@ -1,5 +1,10 @@
 const url = "http://localhost:8080/api"
 
+const STATIC_URL = "http://localhost/static/"
+export const PROFILE_IMG = () => STATIC_URL + "images/profile/";
+export const ESTATE_IMG = () => STATIC_URL + "images/estate/";
+export const DEVICE_IMG = () => STATIC_URL + "images/device/";
+
 export const LOGIN = () => url + "/login";
 export const REGISTER = () => url + "/register";
 export const REGISTER_ADMIN = () => url + "/admin";
@@ -7,6 +12,7 @@ export const CHANGE_PASSWORD = () => url + "/user/change-password";
 export const SUPER_AND_INIT = () => url + "/user/init";
 export const GET_ALL_USERS = () => url + "/user/public";
 export const ID_BY_USERNAME = () => url + "/user/getIdByUsername";
+export const GET_USER = () => url + "/user";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";

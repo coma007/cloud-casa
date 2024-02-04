@@ -45,6 +45,13 @@ public class UserController {
         return new ResponseEntity<>(u, HttpStatus.OK);
     }
 
+    @PermitAll
+    @GetMapping
+    public ResponseEntity<UserDTO> get(){
+        User u = userService.getUserByToken();
+        return new ResponseEntity<>(UserDTO.toDto(u), HttpStatus.OK);
+    }
+
     @PutMapping("/change-password")
     @PreAuthorize("hasAnyAuthority('super admin', 'admin', 'regular user', 'super admin init')")
     public ResponseEntity<?> changePassword(@RequestBody NewPasswordDTO dto){

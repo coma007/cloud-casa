@@ -6,6 +6,8 @@ import Menu from '../../../../../components/navigation/Menu/Menu';
 import InputField from '../../../../../components/forms/InputField/InputField';
 import PageTitle from '../../../../../components/view/PageTitle/PageTitle';
 import Button from '../../../../../components/forms/Button/Button';
+import { PROFILE_IMG } from '../../../../../api';
+import { AuthService } from '../../services/AuthService';
 
 
 const ProfilePage = () => {
@@ -17,10 +19,9 @@ const ProfilePage = () => {
     (async function () {
         try {
             // const data = await AuthService.getUserData();
-            // setFirstName(data.FirstName)
-            // setLastName(data.LastName)
-            // setEmail(data.Email)
-            // setPhone(data.Phone)
+            // setFirstName(data.firstName)
+            // setLastName(data.lastName)
+            // setEmail(data.email)
         } catch (error: any) {
           alert(error.response.data);
       }
@@ -34,13 +35,13 @@ const ProfilePage = () => {
                 <div className={ProfilePageCSS.subsection}>
                     <div className={ProfilePageCSS.mainInfo}>
                         <img src={Profile} />
+                        {/* <img src={PROFILE_IMG()}></img> */}
                         <div className={ProfilePageCSS.input}>
                             <InputField usage='First Name' className={ProfilePageCSS.input} />
                             <InputField usage='Last Name' className={ProfilePageCSS.input} />
                         </div>
                     </div>
                     <InputField usage='Email' className={ProfilePageCSS.input} />
-                    <InputField usage='Phone' className={ProfilePageCSS.input} />
                     <Button text='Save changes' onClick={undefined} submit='submit' />
                 </div>
                 <div className={`${ProfilePageCSS.subsectionRight} ${ProfilePageCSS.subsection}`}>
