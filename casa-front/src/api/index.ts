@@ -13,6 +13,8 @@ export const SUPER_AND_INIT = () => url + "/user/init";
 export const GET_ALL_USERS = () => url + "/user/public";
 export const ID_BY_USERNAME = () => url + "/user/getIdByUsername";
 export const GET_USER = () => url + "/user";
+export const GET_REGULAR_USER = () => url + "/user/getRegular";
+export const GET_IMAGE = () => url + "/user/getImage";
 
 export const ESTATE_REGISTER = () => url + "/realEstate/create";
 export const ESTATE_GET_ALL_BY_OWNER = () => url + "/realEstate/getAllByOwner";

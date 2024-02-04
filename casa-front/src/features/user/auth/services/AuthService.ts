@@ -2,7 +2,7 @@
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Credentials, NewPassword, User, UserRegister } from "../types/User";
-import { CHANGE_PASSWORD, GET_USER, LOGIN, REGISTER, REGISTER_ADMIN, SUPER_AND_INIT } from "../../../../api";
+import { CHANGE_PASSWORD, GET_IMAGE, GET_REGULAR_USER, GET_USER, LOGIN, REGISTER, REGISTER_ADMIN, SUPER_AND_INIT } from "../../../../api";
 import { jwtDecode } from "jwt-decode";
 
 export const AuthService = {
@@ -69,6 +69,19 @@ export const AuthService = {
 
   getUserData: async (): Promise<User> => {
     let url = GET_USER();
+    let response = await axios.get(url);
+    return response.data;
+  },
+
+
+  getRegularUserData: async (): Promise<User> => {
+    let url = GET_REGULAR_USER();
+    let response = await axios.get(url);
+    return response.data;
+  },
+
+  getImage: async (): Promise<number> => {
+    let url = GET_IMAGE();
     let response = await axios.get(url);
     return response.data;
   },
