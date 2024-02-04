@@ -8,15 +8,17 @@
 
 ### Technologies
 
-- Spring
+- Java Spring
+- Gradle
 - React
+- npm
 - Golang
 - Docker
 - PostgresSQL
 - InfluxDB
 - Paho MQTT
 - Python
-- Nginx
+- nginx
 - Redis
 - JMeter
 
