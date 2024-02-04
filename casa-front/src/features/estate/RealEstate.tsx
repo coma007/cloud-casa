@@ -10,7 +10,22 @@ export interface RealEstateCreate {
     type: string;
     size: number;
     numberOfFloors: number;
-    [key: string]: string | number | Address | City;
+    file: File | null,
+    [key: string]: string | number | Address | City | File | null;
+}
+
+export interface RealEstateCreateFlat {
+    name: string;
+    address: string;
+    cityName: string;
+    cityCountry: string
+    type: string;
+    size: number;
+    numberOfFloors: number;
+    longitude: number;
+    latitude: number;
+    file: File | null;
+
 }
 
 export interface RealEstate {

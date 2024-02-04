@@ -5,9 +5,10 @@ import { City } from '../Location';
 import { EstateService } from '../EstateService';
 import RegisterPageCSS from "./RegisterPage.module.scss"
 import Button from '../../../components/forms/Button/Button';
+import UploadImage from '../../../components/forms/UploadImage/UploadImage';
 
 
-const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, setSelectedCity, selectedCountry, setSelectedCountry }) => {
+const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, setSelectedCity, selectedCountry, setSelectedCountry, fileRef }) => {
 
 
     const handleInputChange = (
@@ -36,6 +37,8 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
     };
 
     const handleSubmit = (e: React.FormEvent) => {
+        if(fileRef?.current?.files === null) return;
+        formData.file = fileRef?.current?.files[0]!;
         e.preventDefault();
         console.log(formData)
         EstateService.register(formData).then((value) => console.log(value));
@@ -92,6 +95,13 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
                                 onChange={(e) => handleInputChange(e)}
                                 required
                             />
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row className="mb-3">
+                    <Col>
+                        <Form.Group controlId="image">
+                            <UploadImage className={""} fileRef={fileRef}/>
                         </Form.Group>
                     </Col>
                 </Row>

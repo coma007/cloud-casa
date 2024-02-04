@@ -20,6 +20,15 @@ public class CasaBackApplication {
 	@EventListener(ApplicationReadyEvent.class)
 	public void doSomethingAfterStartup() {
 		FileUtil.createIfNotExists(FileUtil.imagesDir);
+		FileUtil.createIfNotExists(FileUtil.profileDir);
+		FileUtil.createIfNotExists(FileUtil.estateDir);
+		FileUtil.createIfNotExists(FileUtil.deviceDir);
+
+		FileUtil.deleteFolder(FileUtil.profileDir);
+		FileUtil.deleteFolder(FileUtil.estateDir);
+		FileUtil.deleteFolder(FileUtil.deviceDir);
+
+
 		}
 
 }

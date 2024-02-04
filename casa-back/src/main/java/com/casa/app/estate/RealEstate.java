@@ -5,6 +5,7 @@ import com.casa.app.location.Address;
 import com.casa.app.permission.real_estate_permission.RealEstatePermission;
 import com.casa.app.request.RealEstateRequest;
 import com.casa.app.location.City;
+import com.casa.app.util.email.FileUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 import { Row, Col } from 'react-bootstrap';
 import RegisterForm from './RegisterForm';
 import Map from './Map';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Address, City } from '../Location';
 import { RealEstateCreate } from '../RealEstate';
 import { LocationService } from './LocationService';
@@ -20,10 +20,13 @@ const RegisterPage = () => {
         country: '',
     }]);
 
+    let fileRef = useRef<HTMLInputElement>(null);
+
     const [formData, setFormData] = useState<RealEstateCreate>({
         name: '',
         type: '',
         size: 0,
+        file: null,
         numberOfFloors: 0,
         address: address[0],
         city: address[1]
@@ -75,7 +78,7 @@ const RegisterPage = () => {
             </div>
             <div className={RegisterPageCSS.form}>
                 <div>
-                    <RegisterForm formData={formData} setFormData={setFormData} countries={countries} cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
+                    <RegisterForm fileRef={fileRef} formData={formData} setFormData={setFormData} countries={countries} cities={cities} selectedCity={selectedCity} setSelectedCity={setSelectedCity} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
                 </div>
                 <Map setAddress={setAddress}></Map>
             </div>
