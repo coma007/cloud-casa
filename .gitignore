@@ -3,3 +3,4 @@ mosquitto/
 
 compose.yml
 */Dockerfile
+/etc

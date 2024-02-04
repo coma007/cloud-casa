@@ -15,12 +15,21 @@ import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserRepository;
 import com.casa.app.user.regular_user.RegularUserService;
+import com.casa.app.util.email.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.casa.app.util.email.FileUtil.getExtension;
 
 @Service
 public class RealEstateService {
@@ -38,17 +47,26 @@ public class RealEstateService {
     @Autowired
     private PermissionService permissionService;
 
-    public RealEstateDTO create(RealEstateCreateDTO estateDTO) throws UserNotFoundException {
+    public RealEstateDTO create(RealEstateCreateDTO estateDTO, MultipartFile multipartFile) throws UserNotFoundException, IOException {
 
         RegularUser currentUser = regularUserService.getUserByToken();
 
         City city = locationService.getByName(estateDTO.getCity());
 
         RealEstate estate = new RealEstate(estateDTO, city);
+        estate.setImageExtension(getExtension(Objects.requireNonNull(multipartFile.getOriginalFilename())));
         estate = realEstateRepository.save(estate);
 
         estate.setRequest(realEstateRequestService.create(estate));
         realEstatePermissionService.createOwnershipPermission(currentUser, estate);
+
+        File file = new File(FileUtil.estateDir + estate.getId().toString() + "." + estate.getImageExtension());
+        try (OutputStream os = new FileOutputStream(file)) {
+            os.write(multipartFile.getBytes());
+        } catch (IOException e) {
+            realEstateRepository.delete(estate);
+            throw e;
+        }
 
         return new RealEstateDTO(estate);
     }

@@ -5,6 +5,7 @@ import com.casa.app.exceptions.NotFoundException;
 import com.casa.app.exceptions.UserNotFoundException;
 import com.casa.app.user.dtos.NewPasswordDTO;
 import com.casa.app.user.dtos.UserDTO;
+import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import com.casa.app.user.superuser.SuperAdminService;
@@ -43,6 +44,26 @@ public class UserController {
     public ResponseEntity<List<RegularUserDTO>> getAll(){
         List<RegularUserDTO> u = regularUserService.getAll();
         return new ResponseEntity<>(u, HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping
+    public ResponseEntity<UserDTO> get(){
+        User u = userService.getUserByToken();
+        return new ResponseEntity<>(UserDTO.toDto(u), HttpStatus.OK);
+    }
+    @PermitAll
+    @GetMapping("/getRegular")
+    public ResponseEntity<RegularUserDTO> getRegular() throws UserNotFoundException {
+        RegularUser u = regularUserService.getUserByToken();
+        return new ResponseEntity<>(RegularUserDTO.toDto(u), HttpStatus.OK);
+    }
+
+    @PermitAll
+    @GetMapping("/getImage")
+    public ResponseEntity<String> getImage() throws UserNotFoundException {
+        RegularUser u = regularUserService.getUserByToken();
+        return new ResponseEntity<>(u.getId() + "." + u.getImageExtension(), HttpStatus.OK);
     }
 
     @PutMapping("/change-password")
