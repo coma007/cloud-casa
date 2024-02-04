@@ -441,10 +441,10 @@ func StartSimulation(device AirConditioning) {
 
 	for {
 		device.checkSchedule()
-		fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
-		fmt.Printf("MODE: %s\n", device.CurrentMode)
-		fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
-		fmt.Printf("WORKING: %t\n", device.Working)
+		//fmt.Printf("CURENT TEMP: %f\n", device.CurrentTemperature)
+		//fmt.Printf("MODE: %s\n", device.CurrentMode)
+		//fmt.Printf("TARGET TEMP: %f\n", device.TargetTemperature)
+		//fmt.Printf("WORKING: %t\n", device.Working)
 		increment := device.findIncrement()
 		device.CurrentTemperature += increment
 

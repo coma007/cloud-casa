@@ -41,14 +41,14 @@ func (battery *HouseBattery) messageHandler(client mqtt.Client, msg mqtt.Message
 	message := string(msg.Payload())
 	tokens := strings.Split(message, "~")
 	if tokens[1] == "REDUCE" {
-		fmt.Printf("Device %d is reducing power by %s\n", battery.Id, tokens[2])
+		//fmt.Printf("Device %d is reducing power by %s\n", battery.Id, tokens[2])
 		power, err := strconv.ParseFloat(tokens[2], 64)
 		if err != nil {
 			panic(err)
 		}
 		battery.reducePower(power)
 	} else {
-		fmt.Printf("Device %d is increasing power by %s\n", battery.Id, tokens[2])
+		//fmt.Printf("Device %d is increasing power by %s\n", battery.Id, tokens[2])
 		power, err := strconv.ParseFloat(tokens[2], 64)
 		if err != nil {
 			panic(err)

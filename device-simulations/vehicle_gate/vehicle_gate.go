@@ -141,20 +141,20 @@ func (gate *VehicleGate) messageHandler(client mqtt.Client, msg mqtt.Message) {
 	tokens := strings.Split(message, "~")
 	if tokens[1] == "OPEN" {
 		gate.ToggleOpen()
-		fmt.Printf("Device %s is OPEN: %t\n", gate.Id, gate.IsOpen)
+		//fmt.Printf("Device %s is OPEN: %t\n", gate.Id, gate.IsOpen)
 		message := strconv.FormatBool(gate.IsOpen) + "|" + tokens[2]
 		utils.SendMessage(client, "vehicle_gate_command", gate.Id, message)
 	} else if tokens[1] == "MODE" {
 		gate.ToggleMode()
-		fmt.Printf("Device %s is PRIVATE: %t\n", gate.Id, gate.CurrentMode == PRIVATE)
+		//fmt.Printf("Device %s is PRIVATE: %t\n", gate.Id, gate.CurrentMode == PRIVATE)
 		message := strconv.FormatBool(gate.CurrentMode == PRIVATE) + "|" + tokens[2]
 		utils.SendMessage(client, "vehicle_gate_mode", gate.Id, message)
 	} else if tokens[1] == "ADD" {
-		fmt.Printf("Device %s allowed vehicle: %t\n", gate.Id, tokens[2])
+		//fmt.Printf("Device %s allowed vehicle: %t\n", gate.Id, tokens[2])
 		gate.AllowedVehicles = append(gate.AllowedVehicles, tokens[2])
-		fmt.Printf("%v", gate.AllowedVehicles)
+		//fmt.Printf("%v", gate.AllowedVehicles)
 	} else if tokens[1] == "REMOVE" {
-		fmt.Printf("Device %s removed vehicle: %t\n", gate.Id, tokens[2])
+		//fmt.Printf("Device %s removed vehicle: %t\n", gate.Id, tokens[2])
 		var result []string
 		for _, v := range gate.AllowedVehicles {
 			if v != tokens[2] {
@@ -162,7 +162,7 @@ func (gate *VehicleGate) messageHandler(client mqtt.Client, msg mqtt.Message) {
 			}
 		}
 		gate.AllowedVehicles = result
-		fmt.Printf("%v", gate.AllowedVehicles)
+		//fmt.Printf("%v", gate.AllowedVehicles)
 	}
 }
 
