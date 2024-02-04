@@ -40,7 +40,7 @@ const FilterDate = (props: { handleSubmit: any, handleFromDateChange: any, fromD
         {props.showActivity &&
           <button className={FilterCSS.smallButton}
             onClick={() => props.handleSubmit((new Date(new Date().getTime() - 2 * 60 * 60 * 1000)).toISOString(), (new Date()).toISOString())}>
-            last 3 hours
+            last 2 hours
           </button>
         }
         {props.showActivity &&

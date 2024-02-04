@@ -34,7 +34,7 @@ const DeviceOverviewPage = () => {
     let location = useLocation()
 
     useEffect(() => {
-        // console.log(location.state);
+        console.log(location.state);
         if (location.state !== null && location.state.id !== undefined) {
             (async function () {
                 try {
@@ -61,23 +61,23 @@ const DeviceOverviewPage = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        (async function () {
-            try {
-                const fetchedDevices = await DeviceService.getAllByOwner();
-                // const fetchedDevices = [{} as RealEstate]
-                populateData(fetchedDevices);
-            } catch (error) {
-                console.error(error);
-            }
-        })()
-    }, []);
+    // useEffect(() => {
+    //     (async function () {
+    //         try {
+    //             const fetchedDevices = await DeviceService.getAllByOwner();
+    //             // const fetchedDevices = [{} as RealEstate]
+    //             populateData(fetchedDevices);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     })()
+    // }, []);
     
     const headers: TableRow = { 
         rowData: [
             { content: "Name", widthPercentage: 30},
             { content: "Real estate name", widthPercentage: 30},
-            { content: "Power supply", widthPercentage: 30},
+            { content: "Status", widthPercentage: 30},
             { content: "Energy consumption", widthPercentage: 30},
             { content: "Type", widthPercentage: 30},
             { content: "Permission", widthPercentage: 10}

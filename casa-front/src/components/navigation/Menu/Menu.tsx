@@ -3,6 +3,7 @@ import MenuItem from '../MenuItem/MenuItem'
 import MenuCSS from './Menu.module.scss'
 
 import Logo from "../../../assets/logo.png"
+import { getRole } from '../../../routes/GuardedRoute';
 
 interface IMenuProps {admin : boolean, superadmin?: boolean, superadminInit?: boolean}
 
@@ -41,7 +42,7 @@ const Menu = ({admin, superadmin, superadminInit} : IMenuProps) => {
             </div>
             <div className={MenuCSS.rightMenu}>
                 <div className={`${MenuCSS.menuRight} ${MenuCSS.menuGrid}`}>
-                <MenuItem className={MenuCSS.nonMainOption} tooltipText="Profile details" tooltip={true} image={undefined} path="/profile" text={'PROFILE'} />                
+                <MenuItem className={MenuCSS.nonMainOption} tooltipText="Profile details" tooltip={true} image={undefined} path={getRole() == "admin" ? "/profile/admin" : "/profile"} text={'PROFILE'} />                
                 { superadminInit ?
                     (<MenuItem className={MenuCSS.nonMainOption} tooltipText="Sign out" tooltip={true} image={undefined} path="/logout/super-admin-init" text={'LOGOUT'} />)
                     :

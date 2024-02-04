@@ -22,5 +22,21 @@
     font-size: smaller;
     border-radius: 10px;
     display: flex;
+    width: 100%;
+    justify-content: space-between;
     background-color: var(--primary-color-background-transparent);
   }
+
+  .inputRow{
+    text-align: right;
+    input {
+      width: 30%;
+    }
+
+    button {
+      background: none;
+      border: none;
+      margin-left: 10px;
+    }
+  }
+

@@ -86,9 +86,13 @@ public class InfluxDBService {
         String toString = to.toString();
 
         boolean hourly = true;
+        long duration = Duration.between(from, to).toHours();
+
         if (Duration.between(from, to).toDays() > 2) {
             hourly = false;
+            duration = Duration.between(from, to).toDays();
         }
+
 
         String flux = buildFluxActivityQuery(device, fromString, toString, hourly);
         QueryApi queryApi = client.getQueryApi();
@@ -109,7 +113,7 @@ public class InfluxDBService {
         if (!hourly) {
             maxCount *= 24L;
         }
-        return new OnlineMeasurementList(device.getId(), from, to, new TreeMap<>(counts), hourly, maxCount, 15L);
+        return new OnlineMeasurementList(device.getId(), from, to, new TreeMap<>(counts), hourly, maxCount, maxCount * duration, 15L);
     }
 
     private String buildFluxQuery(String measurement, Device device, User user, String fromString, String toString, boolean findUser) {

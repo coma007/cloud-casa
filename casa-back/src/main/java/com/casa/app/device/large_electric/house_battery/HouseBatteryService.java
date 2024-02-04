@@ -143,22 +143,16 @@ public class HouseBatteryService {
             for (RealEstate e : estates) {
                 List<HouseBattery> batteries = houseBatteryRepository.findAllByRealEstate(e);
                 for (HouseBattery b : batteries) {
-                    int pages = deviceService.queryNumOfPages(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
-                    for (int i = 1; i <= pages; i++) {
-                        MeasurementList measurements = deviceService.queryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "", i);
-                        for (AbstractMeasurement m : measurements.getMeasurements()) {
-                            power += ((HouseBatteryPowerUsageMeasurement) m).getPower();
-                        }
+                    MeasurementList measurements = deviceService.fullQueryMeasurements(b.getId(), MeasurementType.houseBatteryPowerUsage, from, to, "");
+                    for (AbstractMeasurement m : measurements.getMeasurements()) {
+                        power += ((HouseBatteryPowerUsageMeasurement) m).getPower();
                     }
                 }
                 List<SolarPanelSystem> systems = solarPanelSystemRepository.findAllByRealEstate(e);
                 for (SolarPanelSystem s : systems) {
-                    int pages = deviceService.queryNumOfPages(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
-                    for (int i = 1; i <= pages; i++) {
-                        MeasurementList measurements = deviceService.queryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "", i);
-                        for (AbstractMeasurement m : measurements.getMeasurements()) {
-                            production += ((SolarPanelSystemPowerMeasurement) m).getPower();
-                        }
+                    MeasurementList measurements = deviceService.fullQueryMeasurements(s.getId(), MeasurementType.solarPanelSystem, from, to, "");
+                    for (AbstractMeasurement m : measurements.getMeasurements()) {
+                        production += ((SolarPanelSystemPowerMeasurement) m).getPower();
                     }
                 }
             }

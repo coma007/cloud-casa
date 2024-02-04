@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, CHARGER_END_CHARGING, CHARGER_SET_MAX_PERCENTAGE as CHARGER_SET_MAX_PERCENTAGE, CHARGER_START_CHARGING, DEVICE_FILTER, DEVICE_GET_ALL, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_IS_OWNER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_MANAGER, ID_BY_USERNAME, LAMP_MANAGER, PERMISSION_CREATE, PERMISSION_DELETE, PERMISSION_EXISTS, SPRINKLER_SCHEDULE, WASHING_MACHINE_MODE, WASHING_MACHINE_SCHEDULE, WASHING_MACHINE_WORKING } from "../../api";
+import { ACTIVITY_FILTER, AIR_CONDITION_MODE, AIR_CONDITION_SCHEDULE, AIR_CONDITION_TEMPERATURE, AIR_CONDITION_WORKING, CHARGER_END_CHARGING, CHARGER_SET_MAX_PERCENTAGE as CHARGER_SET_MAX_PERCENTAGE, CHARGER_START_CHARGING, DEVICE_FILTER, DEVICE_GET_ALL, DEVICE_GET_ALL_BY_OWNER, DEVICE_GET_ALL_BY_REAL_ESTATE, DEVICE_GET_DETAILS, DEVICE_GET_PAGE_NUMBER, DEVICE_IS_OWNER, DEVICE_REGISTER, DEVICE_TOGGLE_SOLAR_PANEL_SYSTEM, GATE_ADD_PLATE, GATE_MANAGER, GATE_REMOVE_PLATE, ID_BY_USERNAME, LAMP_MANAGER, PERMISSION_CREATE, PERMISSION_DELETE, PERMISSION_EXISTS, SPRINKLER_SCHEDULE, WASHING_MACHINE_MODE, WASHING_MACHINE_SCHEDULE, WASHING_MACHINE_WORKING } from "../../api";
 import { ApiService, ServiceResponse } from "../../api/ApiService";
 import { DeviceCreate, DeviceDetails, ModeCommand, AirConditionerSchedule, TemperatureCommand, WorkingCommand, SprinklerSchedule, WashingMachineSchedule, Permission } from "./Device";
 import { DeviceMeasurementList } from "./DeviceMeasurementList";
@@ -69,6 +69,16 @@ export const DeviceService = {
 
     gateManager: async function (deviceId: number, func: string): Promise<any> {
         let response: ServiceResponse<any> = await axios.get(GATE_MANAGER(deviceId, func));
+        return response.data;
+    },
+    
+    gateAddLicencePlates: async function (deviceId: number, licencePlates: string): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(GATE_ADD_PLATE(deviceId, licencePlates));
+        return response.data;
+    },
+    
+    gateRemoveLicencePlates: async function (deviceId: number, licencePlates: string): Promise<any> {
+        let response: ServiceResponse<any> = await axios.get(GATE_REMOVE_PLATE(deviceId, licencePlates));
         return response.data;
     },
 

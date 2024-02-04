@@ -4,10 +4,13 @@ import DeviceInfoCSS from './DeviceInfo.module.scss';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { WebSocketService } from '../../../../api/websocket/WebSocketService';
+import { DeviceService } from '../../DeviceService';
 
 const DeviceInfo = (props: { deviceType: string; device: any }) => {
 
-    const [status, setStatus] = useState(props.device.Status)
+    const [status, setStatus] = useState(props.device.Status);
+    
+    const [plateInput, setPlateInput] = useState('');
 
     useEffect(()=> {
         setStatus(props.device.Status)
@@ -22,6 +25,17 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
     function handleSolarPanelMessage(message: {topic : string, message : string, fromId : string, toId : string, attachment : string}){
         setStatus(message.message)
     }
+
+    const handleRemoveVehicle = (plates) => {
+        DeviceService.gateRemoveLicencePlates(props.device.Id, plates);
+        props.device.AllowedVehicles = props.device.AllowedVehicles.filter(item => item !== plates);
+    };
+
+    const handleAddVehicle = () => {
+        DeviceService.gateAddLicencePlates(props.device.Id, plateInput);
+        props.device.AllowedVehicles.push(plateInput);
+        setPlateInput("");
+    };
 
     const additionalProperties = () => {
         switch (props.deviceType) {
@@ -105,20 +119,42 @@ const DeviceInfo = (props: { deviceType: string; device: any }) => {
                     <>
                         <hr />
                         <p className={DeviceInfoCSS.row}>
-                            <b>ALLOWED VEHICLES:</b> <small><i>use scroll to view all vehicles bellow</i></small>
-                        </p>
-                        <div className={DeviceInfoCSS.scrollableListContainer}>
-                            <ul className={DeviceInfoCSS.scrollableList}>
-                                {props.device.AllowedVehicles.map((mode, index) => (
-                                    <li key={index}>{mode}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </>
+        <b>ALLOWED VEHICLES:</b> <small><i>use scroll to view all vehicles below</i></small>
+        </p>
+        <p className={DeviceInfoCSS.inputRow}    >
+        <input
+            type="text"
+            maxLength={8}
+            placeholder="Enter vehicle plate"
+            value={plateInput}
+            onChange={(e) => setPlateInput(e.target.value)}
+        />
+        <button onClick={handleAddVehicle}>Add</button>
+        </p>
+    
+                    <div className={DeviceInfoCSS.scrollableListContainer}>
+                        <ul className={DeviceInfoCSS.scrollableList}>
+                            {props.device.AllowedVehicles.map((mode, index) => (
+                                <li key={index}>
+                                    <span>
+                                    {mode}
+                                    </span>
+                                    <button 
+                                    style={{
+                                        background: 'none',
+                                        border: 'none', 
+                                        cursor: 'pointer', 
+                                    }}
+                                    onClick={() => {handleRemoveVehicle(mode)} }>Remove</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
                 );
 
             default:
-                return null;
+                return null;                           
         }
     };
 

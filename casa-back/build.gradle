@@ -57,7 +57,7 @@ dependencies {
 	implementation "org.springframework.integration:spring-integration-mqtt:6.1.4"
 
 	implementation 'com.influxdb:influxdb-client-java:3.3.0'
-
+	implementation 'org.redisson:redisson-hibernate-6:3.26.0'
 }
 
 tasks.named('bootBuildImage') {

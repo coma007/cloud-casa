@@ -1,4 +1,4 @@
-const url = "http://localhost:8080/api"
+const url = "http://localhost:80/api"
 
 const STATIC_URL = "http://localhost/static/"
 export const PROFILE_IMG = () => STATIC_URL + "images/profile/";
@@ -60,6 +60,8 @@ export const LOCATION_COUNTRIES = () => url + "/location/getAllCountries";
 
 export const LAMP_MANAGER = (deviceId) => url + "/lamp/turnOn/" + deviceId;
 export const GATE_MANAGER = (deviceId, func) => url + "/vehicleGate/" + func + "/" + deviceId;
+export const GATE_ADD_PLATE = (deviceId, licencePlate) => url + "/vehicleGate/addLicencePlate/" + deviceId + "?licencePlate=" + licencePlate;
+export const GATE_REMOVE_PLATE = (deviceId, licencePlate) => url + "/vehicleGate/removeLicencePlate/" + deviceId + "?licencePlate=" + licencePlate;
 
 export const PERMISSION_CREATE = () => url + "/permission/create";
 export const PERMISSION_DELETE = () => url + "/permission/delete";

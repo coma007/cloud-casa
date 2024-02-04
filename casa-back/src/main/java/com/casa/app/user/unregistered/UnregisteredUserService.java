@@ -79,7 +79,7 @@ public class UnregisteredUserService {
         regularUser = userRepository.save(regularUser);
         verificationTokenRepository.save(token);
 
-        File file = new File(FileUtil.imagesDir + regularUser.getId().toString() + "." + regularUser.getImageExtension());
+        File file = new File(FileUtil.profileDir + regularUser.getId().toString() + "." + regularUser.getImageExtension());
         try (OutputStream os = new FileOutputStream(file)) {
             os.write(multipartFile.getBytes());
         } catch (IOException e) {

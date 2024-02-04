@@ -42,7 +42,7 @@ export const RegularUserAuthGuard = () => {
     return getRole() === "regular user" ? <Outlet /> : <Navigate to="/login" />
 }
 
-const getRole : () => string = () => {
+export const getRole : () => string = () => {
     const auth = localStorage.getItem("token");
     try {
         const decodedToken: any = jwtDecode(auth!);

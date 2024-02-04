@@ -5,5 +5,6 @@ export interface OnlineMeasurementList {
     counts: any;
     hourly: boolean,
     maxCount: number,
+    totalMaxCount: number,
     delay: number
 }

@@ -5,6 +5,7 @@ import math
 import os
 import random
 import string
+import json
 
 # Ambient sensor
 
@@ -35,8 +36,11 @@ def determine_season(time = None):
     else:
         return SPRING
 
-def generate_temperature(season):
-    random.seed(datetime.now().timestamp())
+def generate_temperature(season, current_date = None):
+    if current_date == None:
+        random.seed(datetime.now().timestamp())
+    else:
+        random.seed(current_date.timestamp())
     now = datetime.now()
     is_night = False
 
@@ -58,10 +62,13 @@ def generate_temperature(season):
     if is_night:
         temp -= random.uniform(0, 1) * abs(night_temp)
 
-    return max(min(temp, -10.0), 42.0)
+    return min(max(temp, -10.0), 42.0) * 1.0
 
-def generate_humidity(season):
-    random.seed(datetime.now().timestamp())
+def generate_humidity(season, current_date = None):
+    if current_date == None:
+        random.seed(datetime.now().timestamp())
+    else:
+        random.seed(current_date.timestamp())
     now = datetime.now()
     is_night = False
 
@@ -83,7 +90,7 @@ def generate_humidity(season):
     if is_night:
         humidity -= random.uniform(0, 1) * abs(night_humidity)
 
-    return min(humidity, 100)
+    return min(humidity, 100) * 1.0
 
 def time_is_between(t, min_time, max_time):
     if min_time > max_time:
@@ -97,15 +104,15 @@ def generate_charger_command():
     max_percentage = random.randint(80,100)
     chance = random.random()
     if chance < 0.2:
-        return "Maximum battery percentage set to " + max_percentage + " on slot " + slot
+        return "Maximum battery percentage set to " + str(max_percentage) + " on slot " + str(slot)
     elif chance < 0.4:
-        return "Charging started on slot " + slot
+        return "Charging started on slot " + str(slot)
     elif chance < 0.6:
-        return "Charging failed to start on slot " + slot
+        return "Charging failed to start on slot " + str(slot)
     elif chance < 0.8:
-        return "Charging ended on slot " + slot
+        return "Charging ended on slot " + str(slot)
     else:
-        return "Charging failed to end on slot " + slot
+        return "Charging failed to end on slot " + str(slot)
 
 
 # ===================================
@@ -138,7 +145,7 @@ def calculate_output(size, effectiveness, current_day= None):
     if output < 0.001 and time_efficiency > 0:
         output = 0.001
     
-    return output
+    return output * 1.0
 
 def generate_solar_panel_command():
     chance = random.random()
@@ -167,7 +174,7 @@ def calculate_brightness(current_day=None):
     noise = random.uniform(0, 1) * 0.1 - 0.05
     brightness = max(0, min(1, brightness + noise))
 
-    return brightness
+    return brightness * 1.0
 
 def generate_lamp_command():
     chance = random.random()
@@ -203,13 +210,90 @@ def random_digits(num_digits):
 
 # =============================
 
+# AC
+
+def generate_ac_status():
+    chance = random.random()
+    if chance > 0.5:
+        return "TURN ON"
+    return "TURN OFF"
+
+
+def generate_ac_execution():
+    chance = random.random()
+    if chance > 0.5:
+        return "SUCCESS"
+    return "FAILURE"
+
+def generate_ac_mode():
+    chance = random.random()
+    if chance < 0.25:
+        return "COOLING"
+    elif chance < 0.5:
+        return "HEATING"
+    elif chance < 0.75:
+        return "AUTO"
+    return "VENTILATION"
+
+def generate_ac_schedule(id, start_date):
+    start_time = start_date.isoformat()
+    end_time = (start_date + timedelta(minutes=random.randint(10,60))).isoformat()
+    override_chance = random.random()
+    activated_chance = random.random()
+    working_chance = random.random()
+    temperature = random.randint(15,25)
+    repeating_chance = random.random()
+    increment = random.randint(1,5)
+    mode_chance = random.random()
+    if mode_chance > 0.4:
+        mode = generate_ac_mode()
+    else:
+        mode = None
+    return json.dumps({"id": id,
+            "startTime":start_time,
+            "endTime":end_time,
+            "override":override_chance > 0.5,
+            "activated":activated_chance > 0.5,
+            "working":working_chance > 0.5,
+            "mode": mode,
+            "temperature":temperature,
+            "repeating":repeating_chance > 0.5,
+            "repeatingDaysIncrement":increment})
+
+# ===========================
+
+# Machine
+
+def generate_machine_mode():
+    chance = random.random()
+    if chance < 0.5:
+        return "COLOR"
+    return "WHITE"
+
+def generate_machine_schedule(id, start_date):
+    start_time = start_date.isoformat()
+    end_time = (start_date + timedelta(minutes=random.randint(10,60))).isoformat()
+    activated_chance = random.random()
+    working_chance = random.random()
+    mode_chance = random.random()
+    if mode_chance > 0.4:
+        mode = generate_machine_mode()
+    else:
+        mode = None
+    return json.dumps({"id": id,
+            "startTime":start_time,
+            "endTime":end_time,
+            "activated":activated_chance > 0.5,
+            "working":working_chance > 0.5,
+            "mode": mode})
+
 # InfluxDB connection parameters
-url = 'http://localhost:8086/'
-token = 'pQVzSD0oNDK9glRJxcIHui3bgE4twPPSja7Zb6GxB87FaSntn_pbrsxrtocLNdGt3utxnGbVznz8eA1iavMFYA=='
+url = 'http://192.168.139.105:8086/'
+token = 'yc-jzAQc7uoLFLCWsk2YVmYOF9r_6mgqTQxtFY3ZTN_46r4VHFfC-fnAi-Qfayl5hQeYC9HxnI0Z1fYQHU9eSQ=='
 org = 'casa'
 bucket = 'casa-bucket'
 batch_size = 43200
-# batch_size = 20
+write_batch_size = 10000
 
 measurements = [
     "online",
@@ -222,7 +306,6 @@ measurements = [
     "air_conditioning_working_command",
     "air_conditioning_new_schedule_command",
     "ambient_sensor",
-    "washing_machine",
     "electric_vehicle_charger_command",
     "electric_vehicle_charger_power_usage",
     "house_battery_import_export",
@@ -243,17 +326,23 @@ measurements = [
     "washing_machine_working_command",
     "washing_machine_mode_ack",
     "washing_machine_new_schedule_ack",
-    "washing_machine_working_ack",
-    "washing_machine_execution",
-    "air_conditioning_execution"
+    "washing_machine_working_ack"
 ]
 
+# measurements = [
+#     "house_battery_import_export",
+#     "house_battery_state",
+#     "house_battery_power_usage",
+# ]
+battery_ids = [1,2,3,4,5]
+
 users = ["nemanja.majstorovic3214@gmail.com", "nemanja.dutina@gmail.com", "milica.sladakovic@gmail.com", "thiaslsf@gmail.com"]
-ids = [1,2,3,4,5,6,7]
-device_types = [0,10,20,30,40,50,60,70,80]
+ids = [1,2]
+device_types = [10,20,30,40,50,60,70,80,90]
 client = InfluxDBClient(url=url, token=token, org=org)
 
 data = []
+write_api = client.write_api(write_options=SYNCHRONOUS)  
 
 for m in measurements:
     for i in range(2, -1, -1):
@@ -263,36 +352,109 @@ for m in measurements:
             match m:
                 case "online":
                     for t in device_types:
-                        for k in ids:
-                            chance = random.random()
-                            if chance > 0.7:
-                                data.append(Point(m)
-                                    .tag("id", t + k)
-                                    .time(current_time - timedelta(minutes=j), write_precision='ms')
-                                    .field("is_online", chance < 0.85))
+                        if t != 80:
+                            for k in ids:
+                                chance = random.random()
+                                if chance > 0.6:
+                                    data.append(Point(m)
+                                        .tag("id", t + k)
+                                        .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                        .field("is_online", True))
+                        else:
+                            for k in battery_ids:
+                                chance = random.random()
+                                if chance > 0.6:
+                                    data.append(Point(m)
+                                        .tag("id", t + k)
+                                        .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                        .field("is_online", True))
                 case "air_conditioning_working_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("air_conditioning_execution")
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_ac_status())
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_new_schedule_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("air_conditioning_execution")
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_ac_schedule(10 + k, current_time - timedelta(minutes=j)))
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_temperature_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("air_conditioning_execution")
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", str(random.randint(15,25) * 1.0))
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_mode_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("air_conditioning_execution")
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_ac_mode())
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_mode_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "mode command")
+                                .field("mode", generate_ac_mode())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_temperature_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "temperature command")
+                                .field("temperature", str(random.randint(15,25) * 1.0))
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_working_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "working command")
+                                .field("working", generate_ac_status())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "air_conditioning_new_schedule_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 10 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "new schedule command")
+                                .field("airConditionSchedule", generate_ac_schedule(10 + k, current_time - timedelta(minutes=j)))
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "ambient_sensor":
                     for k in ids:
                         data.append(Point(m)
-                            .tag("id", k)
+                            .tag("id", 90 + k)
                             .time(current_time - timedelta(minutes=j), write_precision='ms')
-                            .field("temperature", generate_temperature(determine_season(current_time - timedelta(minutes=j))))
-                            .field("humidity", generate_humidity(determine_season(current_time - timedelta(minutes=j)))))
+                            .field("temperature", generate_temperature(determine_season(current_time - timedelta(minutes=j)), current_time - timedelta(minutes=j)))
+                            .field("humidity", generate_humidity(determine_season(current_time - timedelta(minutes=j)), current_time - timedelta(minutes=j))))
                 case "electric_vehicle_charger_command":
                     for k in ids:
                         chance = random.random()
@@ -312,7 +474,7 @@ for m in measurements:
                                 .field("power", random.randint(30,50) * 1.0)
                                 .field("slotNum", random.randint(1,3)))
                 case "house_battery_import_export":
-                    for k in ids:
+                    for k in battery_ids:
                         chance = random.random()
                         if chance < 0.5:
                             type = "export"
@@ -324,13 +486,13 @@ for m in measurements:
                             .field("type", type)
                             .field("value", random.randint(0,6) * 1.0))
                 case "house_battery_state":
-                    for k in ids:
+                    for k in battery_ids:
                         data.append(Point(m)
                             .tag("id", 70 + k)
                             .time(current_time - timedelta(minutes=j), write_precision='ms')
                             .field("currentState", random.randint(25,75) * 1.0))
                 case "house_battery_power_usage":
-                    for k in ids:
+                    for k in battery_ids:
                         data.append(Point(m)
                             .tag("id", 70 + k)
                             .time(current_time - timedelta(minutes=j), write_precision='ms')
@@ -340,7 +502,7 @@ for m in measurements:
                         data.append(Point(m)
                             .tag("id", 60 + k)
                             .time(current_time - timedelta(minutes=j), write_precision='ms')
-                            .field("power", calculate_output(random.randint(10,20) * 1.0, random.randint(30,40) * 1.0), current_time - timedelta(minutes=j)))
+                            .field("power", calculate_output(random.randint(10,20) * 1.0, random.randint(30,40) * 1.0, current_time - timedelta(minutes=j))))
                 case "solar_panel_system_command":
                     for k in ids:
                         chance = random.random()
@@ -405,33 +567,74 @@ for m in measurements:
                                 .field("is_private", private)
                                 .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_mode_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "mode command")
+                                .field("mode", generate_machine_mode())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_new_schedule_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "new schedule command")
+                                .field("washingMachineSchedule", generate_machine_schedule(20 + k, current_time - timedelta(minutes=j)))
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_working_command":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point(m)
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("type", "working command")
+                                .field("working", generate_ac_status())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_mode_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("washing_machine_execution")
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_machine_mode())
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_new_schedule_ack":
-                    break
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("washing_machine_execution")
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_machine_schedule(20 + k, current_time - timedelta(minutes=j)))
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
                 case "washing_machine_working_ack":
-                    break
-                case "washing_machine_execution":
-                    break
-                case "air_conditioning_execution":
-                    break
-            # data.append(Point("air_conditioning_temperature_command")
-            #     .tag("id", 502)
-            #     .time(current_time - timedelta(minutes=j), write_precision='ms')
-            #     .field("temperature", 0.0)
-            #     .field("type", "temperature command")
-            #     .field("user", "nemanja.majstorovic3214@gmail.com"))
-            
-    write_api = client.write_api(write_options=SYNCHRONOUS)  
-    try:
-        write_api.write(bucket=bucket, org=org, record=data)
-    except Exception as e:
-        print(f"An error occurred: {e}")
+                    for k in ids:
+                        chance = random.random()
+                        if chance > 0.7:
+                            data.append(Point("washing_machine_execution")
+                                .tag("id", 20 + k)
+                                .time(current_time - timedelta(minutes=j), write_precision='ms')
+                                .field("command", generate_ac_status())
+                                .field("executed", generate_ac_execution())
+                                .field("user", users[random.randint(0, len(users)-1)]))
+            if len(data) > write_batch_size:
+                try:
+                    write_api.write(bucket=bucket, org=org, record=data)
+                    data = []
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+                    data = []
+                    
+    print(m + " finished")
 
 # Close the InfluxDB connection
 client.close()

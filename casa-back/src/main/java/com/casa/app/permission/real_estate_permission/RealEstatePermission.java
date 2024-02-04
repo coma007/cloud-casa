@@ -7,12 +7,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @IdClass(RealEstatePermissionKey.class)
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class RealEstatePermission {
     @Id
     @ManyToOne

@@ -74,24 +74,36 @@ public class EmailService {
     }
 
 
-    public void sendVerificationEmail(RegularUser user, String url) throws UnsupportedEncodingException, jakarta.mail.MessagingException {
+    public void sendVerificationEmail(RegularUser user, String url) throws IOException, jakarta.mail.MessagingException {
         String toAddress = user.getUsername();
         String fromAddress = getMailProperties().getProperty("mail.user");
         String senderName = "Casa";
 
 
         String subject = "Please verify your registration";
-        String content = "Dear [[name]],<br>"
+        String content = "<html>" +
+                "<head>" +
+                "<style>" +
+                "body { font-family: 'Lato', sans-serif; font-size: 12px; }" +
+                "</style>" +
+                "</head>" +
+                "<body>" +
+                "<img src='cid:image' style='width: 100%; max-width: 500px;'><br>"
+                + "Dear <i>[[name]]</i>,<br> <br>"
                 + "Please click the link below to verify your registration:<br>"
-                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\"><font color='#32F0D9'>VERIFY</font></a></h3>"
                 + "Thank you,<br>"
-                + "Casa";
+                + "<i>Casa Team</i></body></html>";
 
         content = content.replace("[[name]]", user.getFirstName());
         content = content.replace("[[URL]]", url);
 
         Session session = getSession();
-        sendEmail(session, toAddress, subject, content);
+
+        String imagePath = "logo.png";
+        MimeMessage message = createEmailWithImage(session, toAddress, fromAddress, senderName, subject, content, imagePath);
+
+        Transport.send(message);
     }
 
     public void sendPasswordEmail(Admin user, String username, String pwd) throws IOException, jakarta.mail.MessagingException {

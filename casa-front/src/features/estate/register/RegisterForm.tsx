@@ -6,10 +6,12 @@ import { EstateService } from '../EstateService';
 import RegisterPageCSS from "./RegisterPage.module.scss"
 import Button from '../../../components/forms/Button/Button';
 import UploadImage from '../../../components/forms/UploadImage/UploadImage';
+import { useNavigate } from 'react-router-dom';
 
 
 const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, setSelectedCity, selectedCountry, setSelectedCountry, fileRef }) => {
 
+    let navigate = useNavigate();
 
     const handleInputChange = (
         e: any,
@@ -41,7 +43,8 @@ const RegisterForm = ({ formData, setFormData, countries, cities, selectedCity, 
         formData.file = fileRef?.current?.files[0]!;
         e.preventDefault();
         console.log(formData)
-        EstateService.register(formData).then((value) => console.log(value));
+        EstateService.register(formData).then((value) => { console.log(value); navigate("/real-estate-overview"); });
+        
     };
 
     return (

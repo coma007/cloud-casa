@@ -5,11 +5,16 @@ import com.casa.app.user.regular_user.dtos.RegularUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeviceDetailsDTO{
+public class DeviceDetailsDTO implements Serializable {
 
     private Long id;
     private String type;

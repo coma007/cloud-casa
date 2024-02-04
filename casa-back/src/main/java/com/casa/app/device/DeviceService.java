@@ -35,7 +35,10 @@ import com.casa.app.user.UserService;
 import com.casa.app.user.regular_user.RegularUser;
 import com.casa.app.user.regular_user.RegularUserService;
 import com.casa.app.user.regular_user.dtos.RegularUserDTO;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -98,15 +101,22 @@ public class DeviceService {
     }
 
     public DeviceDetailsDTO getDeviceDetails(Long deviceId) throws UserNotFoundException, UnathorizedReadException {
-        Device device = deviceRepository.findById(deviceId).orElse(null);
+        DeviceDetailsDTO dto = getDeviceById(deviceId);
         RegularUser currentUser = regularUserService.getUserByToken();
         if(permissionService.canReadDevice(deviceId, currentUser.getId())){
-            DeviceDetailsDTO dto = getDeviceDetailsDTO(device);
+
             dto.setOwner(RegularUserDTO.toDto(currentUser));
             return dto;
         }
         else
             throw new UnathorizedReadException();
+    }
+
+    public DeviceDetailsDTO getDeviceById(Long deviceId) {
+        System.err.println("Udjoh, videh, prodjoh, kesirah (valjda) " + deviceId);
+        Device device = deviceRepository.findById(deviceId).orElse(null);
+        DeviceDetailsDTO dto = getDeviceDetailsDTO(device);
+        return dto;
     }
 
     private static DeviceDetailsDTO getDeviceDetailsDTO(Device device) {

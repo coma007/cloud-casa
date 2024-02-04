@@ -11,6 +11,7 @@ import RequestOverviewPage from "../features/request/overview/RequestOverviewPag
 import DeviceOverviewPage from "../features/device/overview/DeviceOverviewPage";
 import DeviceDetails from "../features/device/details/DeviceDetails";
 import PowerUsageReportPage from "../features/report/powerUsageReport/PowerUsageReportPage/PowerUsageReportPage";
+import ProfilePageAdmin from "../features/user/auth/pages/ProfilePage/ProfilePageAdmin";
 
 const Router = () => {
 
@@ -27,6 +28,7 @@ const Router = () => {
                 <Route element={<AdminAuthGuard />}>
                     <Route path="/" element={<RequestOverviewPage />} />
                     <Route path="/requests" element={<RequestOverviewPage />} />
+                    <Route path="/profile/admin" element={<ProfilePageAdmin />} />
                     <Route path="/logout/admin" element={<Logout />} />
                     <Route path="/reports/powerUsage" element={<PowerUsageReportPage />} />
                 </Route>

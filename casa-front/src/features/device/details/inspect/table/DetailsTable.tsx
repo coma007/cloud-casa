@@ -127,7 +127,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         content = m.licence_plates
 
                     }
-                    else if (props.deviceType == 'air_conditioning' || props.deviceType == 'washing_machine') {
+                    if (props.deviceType == 'air_conditioning' || props.deviceType == 'washing_machine') {
                         // TODO maybe add schedule modal
                         const onClick = m.command.includes("startTime") ? () =>{
                             console.log("CLICK");
@@ -139,6 +139,7 @@ const DetailsTable = (props: { deviceType: string, measurements: DeviceMeasureme
                         })
                     }
                     else if (props.deviceType == "vehicle_gate" && props.topic == "vehicle_gate_licence_plates") {
+                        console.log("Usao")
                         data.push({
                             rowData: [
                                 { content: formattedTime, widthPercentage: 60 },

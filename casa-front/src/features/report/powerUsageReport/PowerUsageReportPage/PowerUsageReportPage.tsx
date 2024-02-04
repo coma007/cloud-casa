@@ -21,7 +21,7 @@ const PowerUsageReportPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [numOfPages, setNumOfPages] = useState(1);
 
-    const pageSize = 1;
+    const pageSize = 10;
 
     const width = [40, 40, 40]
     const [header, setHeader] =useState<TableRow>({
@@ -48,6 +48,7 @@ const PowerUsageReportPage = () => {
             } else {
                 newToDate = toDate + "T00:00:00.000Z";
             }
+            setAllData([])
             const fetchedData = await PowerUsageService.getCityData(newFromDate, newToDate);
             replaceData(fetchedData);
         })();
@@ -95,6 +96,7 @@ const PowerUsageReportPage = () => {
             } else {
                 newToDate = toDate + "T00:00:00.000Z";
             }
+            setAllData([])
             const fetchedData = await PowerUsageService.getEstateData(newFromDate, newToDate);
             replaceData(fetchedData);
         })();
@@ -102,6 +104,7 @@ const PowerUsageReportPage = () => {
 
     useEffect(() => {
         let width = [40,40,40]
+
         console.log(powerUsageForCity);
         if (powerUsageForCity) {
             setHeader({

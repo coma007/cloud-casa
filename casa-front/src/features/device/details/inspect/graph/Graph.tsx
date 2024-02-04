@@ -18,12 +18,14 @@ const Graph = (props: { label: string, deviceType: string, measurements: DeviceM
     const [showGraph, setShowGraph] = useState(false)
    
     useEffect(() => {
-        console.log(props.deviceType)
+        // console.log(props.deviceType)
+        // console.log(props.measurements)
         if (Object.keys(props.measurements).length > 0) {
+            let measurements = props.measurements.measurements.reverse()
             let newData: ({ value: number | null, timestamp: string | null })[] = []
             // console.log(props.measurements.measurements)
             if (props.deviceType == "house_battery") {
-                for (let record of props.measurements.measurements) {
+                for (let record of measurements) {
                     // console.log(record)
                     if (record !== undefined) {
                         const timestamp = new Date(record.timestamp * 1000)
@@ -33,8 +35,8 @@ const Graph = (props: { label: string, deviceType: string, measurements: DeviceM
                 }
             }
             else if (props.deviceType == "lamp") {
-                for (let record of props.measurements.measurements) {
-                    console.log(record)
+                for (let record of measurements) {
+                    // console.log(record)
                     if (record !== undefined) {
                         const timestamp = new Date(record.timestamp * 1000)
                         const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
@@ -43,8 +45,8 @@ const Graph = (props: { label: string, deviceType: string, measurements: DeviceM
                 }
             }
             else if (props.deviceType == "ambient_sensor") {
-                for (let record of props.measurements.measurements) {
-                    console.log(record)
+                for (let record of measurements) {
+                    // console.log(record)
                     if (record !== undefined) {
                         const timestamp = new Date(record.timestamp * 1000)
                         const formattedTime = `${timestamp.getDate()}.${timestamp.getMonth() + 1}.${timestamp.getFullYear()}. ${timestamp.getHours()}:${timestamp.getMinutes()}:${timestamp.getSeconds()}`
