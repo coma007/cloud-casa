@@ -328,8 +328,8 @@ func StartSimulation(device WashingMachine) {
 
 	for {
 		device.checkSchedule()
-		fmt.Printf("MODE: %s\n", device.CurrentMode)
-		fmt.Printf("WORKING: %t\n", device.Working)
+		//fmt.Printf("MODE: %s\n", device.CurrentMode)
+		//fmt.Printf("WORKING: %t\n", device.Working)
 
 		utils.Ping(device.Id, client)
 		time.Sleep(15 * time.Second)
